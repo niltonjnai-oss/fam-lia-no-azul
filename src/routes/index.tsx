@@ -35,6 +35,7 @@ import {
   PainelExtras,
   usePainelPrefs,
 } from "@/components/PainelExtras";
+import { LancamentoRapido } from "@/components/LancamentoRapido";
 
 export const Route = createFileRoute("/")({
   head: () => ({
