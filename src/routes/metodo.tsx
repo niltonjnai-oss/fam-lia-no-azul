@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle2, AlertTriangle } from "lucide-react";
+import { CheckCircle2, AlertTriangle, HelpCircle, ArrowUp } from "lucide-react";
 
 import {
   qk,
@@ -58,6 +58,15 @@ function statusFor(cls: Classificacao, pctRenda: number): { label: string; ok: b
 function MetodoPage() {
   const { mes } = useMes();
   const [modo, setModo] = useState<Modo>("classico");
+  const explicacaoRef = useRef<HTMLDivElement>(null);
+  const topoRef = useRef<HTMLDivElement>(null);
+
+  const scrollToExplicacao = () => {
+    explicacaoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  const scrollToTopo = () => {
+    topoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const blocosQ = useQuery({ queryKey: qk.bloco503020(mes), queryFn: () => fetch503020(mes) });
   const rendaQ = useQuery({ queryKey: qk.renda(mes), queryFn: () => fetchRenda(mes) });
@@ -99,12 +108,22 @@ function MetodoPage() {
 
   return (
     <div className="space-y-5">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Método 50-30-20</h1>
-        <p className="text-sm text-muted-foreground">
-          Essenciais, Estilo de Vida e Reserva/Dívidas em equilíbrio.
-        </p>
-      </header>
+      <div ref={topoRef}>
+        <header>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Método 50-30-20</h1>
+          <p className="text-sm text-muted-foreground">
+            Essenciais, Estilo de Vida e Reserva/Dívidas em equilíbrio.
+          </p>
+        </header>
+
+        <button
+          onClick={scrollToExplicacao}
+          className="mt-3 inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/20"
+        >
+          <HelpCircle className="h-4 w-4" />
+          O que é 50-30-20?
+        </button>
+      </div>
 
       <MesSelector />
 
@@ -234,6 +253,78 @@ function MetodoPage() {
             </table>
           </div>
         )}
+      </section>
+
+      <section
+        ref={explicacaoRef}
+        className="rounded-2xl border border-border bg-card p-6 shadow-soft"
+      >
+        <h2 className="text-lg font-bold text-foreground">O que é o método 50-30-20?</h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          É uma forma simples de organizar o seu dinheiro dividindo a renda do mês em três partes. A ideia é equilibrar o que você precisa, o que você gosta e o que guarda para o futuro.
+        </p>
+
+        <h3 className="mt-5 text-sm font-semibold text-foreground">Como funciona a divisão:</h3>
+        <ul className="mt-2 space-y-3 text-sm text-muted-foreground">
+          <li className="flex gap-3">
+            <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+              50
+            </span>
+            <span>
+              <strong className="text-foreground">Essencial:</strong> o que a família não pode deixar de pagar. Moradia, contas de luz e água, mercado, transporte, escola dos filhos, saúde. Até metade da renda deve caber aqui.
+            </span>
+          </li>
+          <li className="flex gap-3">
+            <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+              30
+            </span>
+            <span>
+              <strong className="text-foreground">Estilo de Vida:</strong> o que torna a vida melhor, mas é escolha. Lazer, restaurantes, streaming, academia, presentes. No máximo um terço da renda.
+            </span>
+          </li>
+          <li className="flex gap-3">
+            <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+              20
+            </span>
+            <span>
+              <strong className="text-foreground">Reserva e Dívidas:</strong> o que protege o seu futuro. Guardar para a reserva de emergência, investir e pagar dívidas. Pelo menos um quinto da renda.
+            </span>
+          </li>
+        </ul>
+
+        <h3 className="mt-5 text-sm font-semibold text-foreground">Um exemplo com R$ 6.000 de renda:</h3>
+        <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+          <li>Essencial: até R$ 3.000 (50%)</li>
+          <li>Estilo de Vida: até R$ 1.800 (30%)</li>
+          <li>Reserva e Dívidas: pelo menos R$ 1.200 (20%)</li>
+        </ul>
+
+        <h3 className="mt-5 text-sm font-semibold text-foreground">Como usar aqui no app:</h3>
+        <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
+          <li>Cadastre sua renda e suas despesas (no Orçamento ou pelo &quot;Comece aqui&quot;).</li>
+          <li>Cada despesa já é classificada automaticamente em um dos três blocos.</li>
+          <li>Volte a esta tela e compare o que você realizou com a meta de cada bloco.</li>
+        </ol>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Se o Essencial passar de 50% ou o Estilo de Vida de 30%, é sinal de ajustar. Se a Reserva/Dívidas estiver abaixo de 20%, vale priorizar guardar e quitar dívidas.
+        </p>
+
+        <div className="mt-4 rounded-xl bg-primary/5 p-4">
+          <p className="text-sm font-medium text-foreground">Dica</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Não precisa ser perfeito no primeiro mês. O 50-30-20 é um guia para enxergar onde o dinheiro está indo e ir ajustando aos poucos.
+          </p>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={scrollToTopo}
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <ArrowUp className="h-4 w-4" />
+            Voltar ao topo
+          </button>
+        </div>
       </section>
     </div>
   );
