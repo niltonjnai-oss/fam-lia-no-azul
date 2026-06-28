@@ -30,6 +30,11 @@ import { useMes } from "@/lib/mes-context";
 import { formatBRL, formatPct } from "@/lib/format";
 import { MesSelector } from "@/components/MesSelector";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  PersonalizarPainelButton,
+  PainelExtras,
+  usePainelPrefs,
+} from "@/components/PainelExtras";
 
 export const Route = createFileRoute("/")({
   head: () => ({
