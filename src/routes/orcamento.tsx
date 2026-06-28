@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Mic, Pencil, Check, X } from "lucide-react";
+import { Plus, Mic } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -36,6 +36,7 @@ import {
   inserirCategoria,
   inserirSubitem,
   upsertLancamento,
+  type Categoria,
   type Classificacao,
   type Subitem,
   type Lancamento,
@@ -59,6 +60,21 @@ export const Route = createFileRoute("/orcamento")({
   component: OrcamentoPage,
 });
 
+function diffClasses(diff: number): string {
+  if (diff > 0) return "text-success";
+  if (diff < 0) return "text-danger";
+  return "text-muted-foreground";
+}
+function diffBadgeClasses(diff: number): string {
+  if (diff > 0) return "bg-success/10 text-success";
+  if (diff < 0) return "bg-danger/10 text-danger";
+  return "bg-muted text-muted-foreground";
+}
+function signed(diff: number): string {
+  const s = diff > 0 ? "+" : diff < 0 ? "−" : "";
+  return `${s}${formatBRL(Math.abs(diff))}`;
+}
+
 function OrcamentoPage() {
   const { mes } = useMes();
   const qc = useQueryClient();
@@ -81,8 +97,34 @@ function OrcamentoPage() {
       if (!m.has(s.categoria_id)) m.set(s.categoria_id, []);
       m.get(s.categoria_id)!.push(s);
     });
+    for (const arr of m.values()) arr.sort((a, b) => a.ordem - b.ordem);
     return m;
   }, [subsQ.data]);
+
+  const totais = useMemo(() => {
+    let prev = 0, real = 0, diff = 0;
+    (lancsQ.data ?? []).forEach((l) => {
+      prev += Number(l.custo_previsto);
+      real += Number(l.custo_real);
+      diff += Number(l.diferenca);
+    });
+    return { prev, real, diff };
+  }, [lancsQ.data]);
+
+  const cats = useMemo(
+    () => [...(catsQ.data ?? [])].sort((a, b) => a.ordem - b.ordem),
+    [catsQ.data],
+  );
+
+  // Estado de aberto/fechado lembrado durante a sessão. Primeira aberta por padrão.
+  const [openCats, setOpenCats] = useState<string[]>([]);
+  const [openInit, setOpenInit] = useState(false);
+  useEffect(() => {
+    if (!openInit && cats.length > 0) {
+      setOpenCats([cats[0].id]);
+      setOpenInit(true);
+    }
+  }, [cats, openInit]);
 
   const upsertMut = useMutation({
     mutationFn: upsertLancamento,
@@ -105,91 +147,136 @@ function OrcamentoPage() {
         <MesSelector />
       </header>
 
+      {/* Resumo fixo no topo */}
+      <section className="sticky top-2 z-20 grid grid-cols-3 gap-2 rounded-2xl border border-border bg-card/95 p-3 shadow-soft backdrop-blur sm:gap-3 sm:p-4">
+        <div>
+          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Previsto</div>
+          <div className="tabular mt-0.5 text-sm font-bold sm:text-base">
+            {carregando ? <Skeleton className="h-5 w-20" /> : formatBRL(totais.prev)}
+          </div>
+        </div>
+        <div>
+          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Real</div>
+          <div className="tabular mt-0.5 text-sm font-bold sm:text-base">
+            {carregando ? <Skeleton className="h-5 w-20" /> : formatBRL(totais.real)}
+          </div>
+        </div>
+        <div>
+          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Diferença</div>
+          <div className={`tabular mt-0.5 text-sm font-bold sm:text-base ${diffClasses(totais.diff)}`}>
+            {carregando ? <Skeleton className="h-5 w-20" /> : signed(totais.diff)}
+          </div>
+        </div>
+      </section>
+
       {carregando ? (
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
             <Skeleton key={i} className="h-16 w-full rounded-2xl" />
           ))}
         </div>
-      ) : (catsQ.data ?? []).length === 0 ? (
+      ) : cats.length === 0 ? (
         <EmptyState
           title="Nenhuma categoria criada"
-          description="Crie sua primeira categoria pelo botão + para começar a planejar o mês."
+          description="Crie sua primeira categoria pelo botão abaixo para começar a planejar o mês."
         />
       ) : (
-        <Accordion type="multiple" className="space-y-2">
-          {(catsQ.data ?? []).map((cat) => {
-            const subs = subsByCat.get(cat.id) ?? [];
-            const totalPrev = subs.reduce(
-              (acc, s) => acc + Number(lancsBySub.get(s.id)?.custo_previsto ?? 0),
-              0,
-            );
-            const totalReal = subs.reduce(
-              (acc, s) => acc + Number(lancsBySub.get(s.id)?.custo_real ?? 0),
-              0,
-            );
-            const diff = totalPrev - totalReal;
-            const estourou = diff < 0;
-            return (
-              <AccordionItem
-                key={cat.id}
-                value={cat.id}
-                className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft"
-              >
-                <AccordionTrigger className="px-4 py-3 hover:no-underline">
-                  <div className="flex w-full items-center gap-3">
-                    <div className="min-w-0 flex-1 text-left">
-                      <div className="truncate text-sm font-semibold">{cat.nome}</div>
-                      <div className="tabular text-xs text-muted-foreground">
-                        Previsto {formatBRL(totalPrev)} · Real {formatBRL(totalReal)}
-                      </div>
-                    </div>
-                    <div
-                      className={[
-                        "tabular shrink-0 rounded-lg px-2 py-1 text-xs font-semibold",
-                        estourou ? "bg-danger/10 text-danger" : "bg-success/10 text-success",
-                      ].join(" ")}
-                    >
-                      {estourou ? "−" : "+"}
-                      {formatBRL(Math.abs(diff))}
-                    </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="px-4 pb-4">
-                  {subs.length === 0 ? (
-                    <p className="border-t border-border pt-3 text-xs text-muted-foreground">
-                      Nenhum subitem nesta categoria.
-                    </p>
-                  ) : (
-                    <ul className="space-y-1.5 border-t border-border pt-3">
-                      {subs.map((s) => (
-                        <SubitemRow
-                          key={s.id}
-                          subitem={s}
-                          lancamento={lancsBySub.get(s.id)}
-                          onSave={(prev, real) =>
-                            upsertMut.mutateAsync({
-                              subitem_id: s.id,
-                              mes_ref: mes,
-                              custo_previsto: prev,
-                              custo_real: real,
-                            })
-                          }
-                        />
-                      ))}
-                    </ul>
-                  )}
-                  <NovoSubitemDialog categoriaId={cat.id} proximaOrdem={subs.length + 1} />
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
+        <Accordion
+          type="multiple"
+          value={openCats}
+          onValueChange={(v) => setOpenCats(v as string[])}
+          className="space-y-2"
+        >
+          {cats.map((cat) => (
+            <CategoriaSection
+              key={cat.id}
+              categoria={cat}
+              subitens={subsByCat.get(cat.id) ?? []}
+              lancsBySub={lancsBySub}
+              onSave={(subitem_id, custo_previsto, custo_real) =>
+                upsertMut.mutateAsync({ subitem_id, mes_ref: mes, custo_previsto, custo_real })
+              }
+            />
+          ))}
         </Accordion>
       )}
 
       <NovaCategoriaDialog proximaOrdem={(catsQ.data?.length ?? 0) + 1} />
       <NovoGastoFab />
     </div>
+  );
+}
+
+function CategoriaSection({
+  categoria,
+  subitens,
+  lancsBySub,
+  onSave,
+}: {
+  categoria: Categoria;
+  subitens: Subitem[];
+  lancsBySub: Map<string, Lancamento>;
+  onSave: (subitem_id: string, custo_previsto: number, custo_real: number) => Promise<void>;
+}) {
+  const sub = useMemo(() => {
+    let prev = 0, real = 0, diff = 0;
+    subitens.forEach((s) => {
+      const l = lancsBySub.get(s.id);
+      prev += Number(l?.custo_previsto ?? 0);
+      real += Number(l?.custo_real ?? 0);
+      diff += Number(l?.diferenca ?? 0);
+    });
+    return { prev, real, diff };
+  }, [subitens, lancsBySub]);
+
+  return (
+    <AccordionItem
+      value={categoria.id}
+      className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft"
+    >
+      <AccordionTrigger className="px-4 py-3 hover:no-underline">
+        <div className="flex w-full items-center gap-3">
+          <div className="min-w-0 flex-1 text-left">
+            <div className="truncate text-sm font-semibold">{categoria.nome}</div>
+            <div className="tabular text-[11px] text-muted-foreground">
+              Prev {formatBRL(sub.prev)} · Real {formatBRL(sub.real)}
+            </div>
+          </div>
+          <span
+            className={`tabular shrink-0 rounded-lg px-2 py-1 text-xs font-semibold ${diffBadgeClasses(sub.diff)}`}
+          >
+            {signed(sub.diff)}
+          </span>
+        </div>
+      </AccordionTrigger>
+      <AccordionContent className="px-3 pb-4 sm:px-4">
+        {subitens.length === 0 ? (
+          <p className="border-t border-border pt-3 text-xs text-muted-foreground">
+            Nenhum subitem nesta categoria.
+          </p>
+        ) : (
+          <>
+            <div className="hidden border-t border-border pt-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground sm:grid sm:grid-cols-[1fr_120px_120px_110px] sm:gap-3 sm:px-1">
+              <span>Subitem</span>
+              <span className="text-right">Previsto</span>
+              <span className="text-right">Real</span>
+              <span className="text-right">Diferença</span>
+            </div>
+            <ul className="divide-y divide-border border-t border-border sm:divide-y-0 sm:border-t-0">
+              {subitens.map((s) => (
+                <SubitemRow
+                  key={s.id}
+                  subitem={s}
+                  lancamento={lancsBySub.get(s.id)}
+                  onSave={(p, r) => onSave(s.id, p, r)}
+                />
+              ))}
+            </ul>
+          </>
+        )}
+        <NovoSubitemDialog categoriaId={categoria.id} proximaOrdem={subitens.length + 1} />
+      </AccordionContent>
+    </AccordionItem>
   );
 }
 
@@ -202,102 +289,74 @@ function SubitemRow({
   lancamento: Lancamento | undefined;
   onSave: (previsto: number, real: number) => Promise<void>;
 }) {
-  const [editando, setEditando] = useState(false);
-  const [prev, setPrev] = useState(String(lancamento?.custo_previsto ?? "0"));
-  const [real, setReal] = useState(String(lancamento?.custo_real ?? "0"));
-  const [saving, setSaving] = useState(false);
+  const prevDb = Number(lancamento?.custo_previsto ?? 0);
+  const realDb = Number(lancamento?.custo_real ?? 0);
+  const diff = Number(lancamento?.diferenca ?? 0);
 
-  const previsto = Number(lancamento?.custo_previsto ?? 0);
-  const realizado = Number(lancamento?.custo_real ?? 0);
-  const diff = previsto - realizado;
-  const estourou = diff < 0;
+  const [prev, setPrev] = useState(String(prevDb));
+  const [real, setReal] = useState(String(realDb));
 
-  if (editando) {
-    return (
-      <li className="space-y-2 rounded-lg bg-muted/40 p-2">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-sm font-medium">{subitem.nome}</span>
-          <div className="flex gap-1">
-            <button
-              type="button"
-              disabled={saving}
-              onClick={async () => {
-                setSaving(true);
-                try {
-                  await onSave(Number(prev) || 0, Number(real) || 0);
-                  setEditando(false);
-                } finally {
-                  setSaving(false);
-                }
-              }}
-              className="grid h-8 w-8 place-items-center rounded-md bg-primary/10 text-primary hover:bg-primary/20"
-              aria-label="Salvar"
-            >
-              <Check className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setEditando(false)}
-              className="grid h-8 w-8 place-items-center rounded-md hover:bg-muted"
-              aria-label="Cancelar"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <label className="block">
-            <span className="text-[11px] text-muted-foreground">Previsto</span>
-            <Input
-              inputMode="decimal"
-              value={prev}
-              onChange={(e) => setPrev(e.target.value)}
-              className="tabular h-9"
-            />
-          </label>
-          <label className="block">
-            <span className="text-[11px] text-muted-foreground">Real</span>
-            <Input
-              inputMode="decimal"
-              value={real}
-              onChange={(e) => setReal(e.target.value)}
-              className="tabular h-9"
-            />
-          </label>
-        </div>
-      </li>
-    );
-  }
+  useEffect(() => {
+    setPrev(String(prevDb));
+    setReal(String(realDb));
+  }, [prevDb, realDb]);
+
+  const commit = async (nextPrev: number, nextReal: number) => {
+    if (nextPrev === prevDb && nextReal === realDb) return;
+    await onSave(nextPrev, nextReal);
+  };
 
   return (
-    <li className="flex items-center justify-between gap-2 text-sm">
-      <div className="min-w-0 flex-1">
-        <div className="truncate font-medium">{subitem.nome}</div>
-        <div className="tabular text-[11px] text-muted-foreground">
-          Previsto {formatBRL(previsto)} · Real {formatBRL(realizado)}
-        </div>
+    <li className="py-2 sm:grid sm:grid-cols-[1fr_120px_120px_110px] sm:items-center sm:gap-3 sm:px-1">
+      <div className="min-w-0 truncate text-sm font-medium">{subitem.nome}</div>
+
+      {/* Mobile: lado a lado */}
+      <div className="mt-2 grid grid-cols-2 gap-2 sm:hidden">
+        <label className="block">
+          <span className="text-[11px] text-muted-foreground">Previsto</span>
+          <Input
+            inputMode="decimal"
+            value={prev}
+            onChange={(e) => setPrev(e.target.value)}
+            onBlur={() => commit(Number(prev) || 0, Number(real) || 0)}
+            className="tabular h-11"
+          />
+        </label>
+        <label className="block">
+          <span className="text-[11px] text-muted-foreground">Real</span>
+          <Input
+            inputMode="decimal"
+            value={real}
+            onChange={(e) => setReal(e.target.value)}
+            onBlur={() => commit(Number(prev) || 0, Number(real) || 0)}
+            className="tabular h-11"
+          />
+        </label>
       </div>
-      <span
-        className={[
-          "tabular shrink-0 rounded-md px-2 py-0.5 text-[11px] font-semibold",
-          estourou ? "bg-danger/10 text-danger" : "bg-success/10 text-success",
-        ].join(" ")}
-      >
-        {estourou ? "−" : "+"}
-        {formatBRL(Math.abs(diff))}
-      </span>
-      <button
-        type="button"
-        onClick={() => {
-          setPrev(String(previsto));
-          setReal(String(realizado));
-          setEditando(true);
-        }}
-        className="grid h-8 w-8 place-items-center rounded-md hover:bg-muted"
-        aria-label="Editar"
-      >
-        <Pencil className="h-4 w-4" />
-      </button>
+      <div className="mt-2 flex justify-end sm:hidden">
+        <span className={`tabular rounded-md px-2 py-0.5 text-xs font-semibold ${diffBadgeClasses(diff)}`}>
+          {signed(diff)}
+        </span>
+      </div>
+
+      {/* Desktop: colunas */}
+      <Input
+        inputMode="decimal"
+        value={prev}
+        onChange={(e) => setPrev(e.target.value)}
+        onBlur={() => commit(Number(prev) || 0, Number(real) || 0)}
+        className="tabular hidden h-10 text-right sm:block"
+      />
+      <Input
+        inputMode="decimal"
+        value={real}
+        onChange={(e) => setReal(e.target.value)}
+        onBlur={() => commit(Number(prev) || 0, Number(real) || 0)}
+        className="tabular hidden h-10 text-right sm:block"
+      />
+      <div className={`tabular hidden text-right text-sm font-semibold sm:block ${diffClasses(diff)}`}>
+        {signed(diff)}
+      </div>
     </li>
   );
 }
@@ -335,7 +394,9 @@ function NovoSubitemDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Novo subitem</DialogTitle>
-          <DialogDescription>Escolha um nome e a classificação 50-30-20.</DialogDescription>
+          <DialogDescription>
+            Escolha um nome e a classificação 50-30-20 (obrigatória).
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
           <div>

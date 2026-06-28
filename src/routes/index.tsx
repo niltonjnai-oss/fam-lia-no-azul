@@ -30,6 +30,11 @@ import { useMes } from "@/lib/mes-context";
 import { formatBRL, formatPct } from "@/lib/format";
 import { MesSelector } from "@/components/MesSelector";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  PersonalizarPainelButton,
+  PainelExtras,
+  usePainelPrefs,
+} from "@/components/PainelExtras";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -80,6 +85,8 @@ function PainelPage() {
   const resumoQ = useQuery({ queryKey: qk.resumo(mes), queryFn: () => fetchResumoMensal(mes) });
   const blocosQ = useQuery({ queryKey: qk.bloco503020(mes), queryFn: () => fetch503020(mes) });
 
+  const { prefs, setPrefs } = usePainelPrefs();
+
   const carregando = rendaQ.isLoading || resumoQ.isLoading || blocosQ.isLoading;
 
   const rendaTotal = (rendaQ.data ?? []).reduce((acc, r) => acc + Number(r.valor), 0);
@@ -101,9 +108,12 @@ function PainelPage() {
           <p className="text-sm capitalize text-muted-foreground">{formatMes(mes)}</p>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Olá, família!</h1>
         </div>
-        <Link to="/onboarding" className="text-xs font-medium text-primary hover:underline">
-          Refazer onboarding
-        </Link>
+        <div className="flex items-center gap-2">
+          <PersonalizarPainelButton prefs={prefs} setPrefs={setPrefs} />
+          <Link to="/onboarding" className="text-xs font-medium text-primary hover:underline">
+            Refazer onboarding
+          </Link>
+        </div>
       </header>
 
       <MesSelector />
@@ -240,6 +250,8 @@ function PainelPage() {
           <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </Link>
       </section>
+
+      <PainelExtras mes={mes} prefs={prefs} />
     </div>
   );
 }
