@@ -108,12 +108,22 @@ function MetodoPage() {
 
   return (
     <div className="space-y-5">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Método 50-30-20</h1>
-        <p className="text-sm text-muted-foreground">
-          Essenciais, Estilo de Vida e Reserva/Dívidas em equilíbrio.
-        </p>
-      </header>
+      <div ref={topoRef}>
+        <header>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Método 50-30-20</h1>
+          <p className="text-sm text-muted-foreground">
+            Essenciais, Estilo de Vida e Reserva/Dívidas em equilíbrio.
+          </p>
+        </header>
+
+        <button
+          onClick={scrollToExplicacao}
+          className="mt-3 inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/20"
+        >
+          <HelpCircle className="h-4 w-4" />
+          O que é 50-30-20?
+        </button>
+      </div>
 
       <MesSelector />
 
