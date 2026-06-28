@@ -1,0 +1,115 @@
+import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import {
+  LayoutDashboard,
+  Wallet,
+  PieChart,
+  CreditCard,
+  PiggyBank,
+  ShieldCheck,
+} from "lucide-react";
+import type { ComponentType } from "react";
+
+type NavItem = {
+  to: string;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+};
+
+const navItems: NavItem[] = [
+  { to: "/", label: "Painel", icon: LayoutDashboard },
+  { to: "/orcamento", label: "Orçamento", icon: Wallet },
+  { to: "/metodo", label: "50-30-20", icon: PieChart },
+  { to: "/dividas", label: "Dívidas", icon: CreditCard },
+  { to: "/reserva", label: "Reserva", icon: PiggyBank },
+];
+
+export function AppLayout() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Sidebar (desktop) */}
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-border bg-sidebar px-4 py-6 lg:flex lg:flex-col">
+        <div className="mb-8 flex items-center gap-2 px-2">
+          <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="text-sm font-bold leading-tight">Família no Azul</div>
+            <div className="text-xs text-muted-foreground">Controle familiar</div>
+          </div>
+        </div>
+        <nav className="flex flex-col gap-1">
+          {navItems.map((item) => {
+            const active = pathname === item.to;
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={[
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200",
+                  active
+                    ? "bg-primary text-primary-foreground shadow-soft"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent",
+                ].join(" ")}
+              >
+                <Icon className="h-5 w-5 shrink-0" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="mt-auto rounded-xl bg-accent p-3 text-xs text-accent-foreground">
+          <div className="font-semibold">Dica do mês</div>
+          <p className="mt-1 text-muted-foreground">
+            Revise o orçamento toda semana para evitar surpresas no fim do mês.
+          </p>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <main className="pb-24 lg:ml-64 lg:pb-8">
+        <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:py-8">
+          <Outlet />
+        </div>
+      </main>
+
+      {/* Bottom nav (mobile) */}
+      <nav
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface/95 backdrop-blur lg:hidden"
+        aria-label="Navegação principal"
+      >
+        <ul className="mx-auto flex max-w-xl items-stretch justify-between px-2">
+          {navItems.map((item) => {
+            const active = pathname === item.to;
+            const Icon = item.icon;
+            return (
+              <li key={item.to} className="flex-1">
+                <Link
+                  to={item.to}
+                  className={[
+                    "flex min-h-[56px] flex-col items-center justify-center gap-0.5 px-2 py-2 text-[11px] font-medium transition-colors",
+                    active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                  ].join(" ")}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <span
+                    className={[
+                      "grid h-9 w-9 place-items-center rounded-xl transition-colors",
+                      active ? "bg-primary/10" : "bg-transparent",
+                    ].join(" ")}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="h-[env(safe-area-inset-bottom)]" />
+      </nav>
+    </div>
+  );
+}
