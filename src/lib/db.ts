@@ -214,6 +214,16 @@ export async function fetchRenda(mes: string): Promise<Renda[]> {
   return throwIf<Renda[]>(data as Renda[] | null, error);
 }
 
+export async function fetchGastosMes(mes: string): Promise<GastosMes | null> {
+  const { data, error } = await supabase
+    .from("v_gastos_mes")
+    .select("mes_ref, total_previsto, total_real, total_comprometido")
+    .eq("mes_ref", mes)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data as GastosMes | null) ?? null;
+}
+
 export async function fetchResumoMensal(mes: string): Promise<ResumoMensal | null> {
   const { data, error } = await supabase
     .from("v_resumo_mensal")
