@@ -58,6 +58,15 @@ function statusFor(cls: Classificacao, pctRenda: number): { label: string; ok: b
 function MetodoPage() {
   const { mes } = useMes();
   const [modo, setModo] = useState<Modo>("classico");
+  const explicacaoRef = useRef<HTMLDivElement>(null);
+  const topoRef = useRef<HTMLDivElement>(null);
+
+  const scrollToExplicacao = () => {
+    explicacaoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  const scrollToTopo = () => {
+    topoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const blocosQ = useQuery({ queryKey: qk.bloco503020(mes), queryFn: () => fetch503020(mes) });
   const rendaQ = useQuery({ queryKey: qk.renda(mes), queryFn: () => fetchRenda(mes) });
