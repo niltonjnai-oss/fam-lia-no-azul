@@ -111,7 +111,7 @@ function PainelPage() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <p className="text-sm capitalize text-muted-foreground">{formatMes(mes)}</p>
+          <p className="text-sm text-muted-foreground">{formatMes(mes)}</p>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Olá, família!</h1>
         </div>
         <div className="flex items-center gap-2">
