@@ -87,15 +87,17 @@ function PainelPage() {
 
   const rendaQ = useQuery({ queryKey: qk.renda(mes), queryFn: () => fetchRenda(mes) });
   const resumoQ = useQuery({ queryKey: qk.resumo(mes), queryFn: () => fetchResumoMensal(mes) });
+  const gastosQ = useQuery({ queryKey: qk.gastosMes(mes), queryFn: () => fetchGastosMes(mes) });
   const blocosQ = useQuery({ queryKey: qk.bloco503020(mes), queryFn: () => fetch503020(mes) });
 
   const { prefs, setPrefs } = usePainelPrefs();
 
-  const carregando = rendaQ.isLoading || resumoQ.isLoading || blocosQ.isLoading;
+  const carregando = rendaQ.isLoading || resumoQ.isLoading || gastosQ.isLoading || blocosQ.isLoading;
 
   const rendaTotal = (rendaQ.data ?? []).reduce((acc, r) => acc + Number(r.valor), 0);
-  const gastosTotal = Number(resumoQ.data?.total_real ?? 0);
+  const gastosTotal = Number(gastosQ.data?.total_comprometido ?? 0);
   const saldo = rendaTotal - gastosTotal;
+
 
   const blocos = blocosQ.data ?? [];
 
