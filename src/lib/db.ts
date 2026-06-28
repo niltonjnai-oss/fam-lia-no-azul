@@ -112,6 +112,7 @@ export const qk = {
   renda: (mes: string) => ["renda", mes] as const,
   resumo: (mes: string) => ["v_resumo_mensal", mes] as const,
   bloco503020: (mes: string) => ["v_50_30_20", mes] as const,
+  gastosMes: (mes: string) => ["v_gastos_mes", mes] as const,
   dividas: ["divida"] as const,
   reserva: ["reserva_config"] as const,
   transacoesHoje: (data: string) => ["transacao", "dia", data] as const,
