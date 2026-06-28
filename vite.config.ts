@@ -6,10 +6,23 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// Expose user-provided Supabase config (without the reserved VITE_ prefix)
+// to the browser bundle at build time. Both values are public-safe:
+// the URL is the project endpoint and the publishable key is the anon
+// key (protected by RLS server-side).
+const SUPABASE_URL = "https://humbgsiwezsmkidrmyxn.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = process.env.APP_SUPABASE_PUBLISHABLE_KEY ?? "";
+
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+  },
+  vite: {
+    define: {
+      "import.meta.env.APP_SUPABASE_URL": JSON.stringify(SUPABASE_URL),
+      "import.meta.env.APP_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(SUPABASE_PUBLISHABLE_KEY),
+    },
   },
 });
