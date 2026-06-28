@@ -159,6 +159,8 @@ function PainelPage() {
         ))}
       </section>
 
+      <LancamentoRapido />
+
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
           <h2 className="text-sm font-semibold">Divisão por classificação</h2>
