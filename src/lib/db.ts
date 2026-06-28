@@ -107,7 +107,65 @@ export const qk = {
   bloco503020: (mes: string) => ["v_50_30_20", mes] as const,
   dividas: ["divida"] as const,
   reserva: ["reserva_config"] as const,
+  transacoesHoje: (data: string) => ["transacao", "dia", data] as const,
 };
+
+export const hojeISO = (): string => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
+
+export interface TransacaoDia {
+  id: string;
+  data: string;
+  valor: number;
+  descricao: string | null;
+  subitem_id: string;
+  mes_ref: string;
+}
+
+export async function fetchTransacoesDoDia(data: string): Promise<TransacaoDia[]> {
+  const { data: rows, error } = await supabase
+    .from("transacao")
+    .select("id, data, valor, descricao, subitem_id, mes_ref")
+    .eq("data", data)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (rows ?? []) as TransacaoDia[];
+}
+
+export async function registrarGasto(args: {
+  subitem_id: string;
+  mes_ref: string;
+  valor: number;
+  descricao?: string | null;
+}): Promise<void> {
+  const { error } = await supabase.rpc("registrar_gasto_rapido", {
+    p_subitem_id: args.subitem_id,
+    p_mes_ref: args.mes_ref,
+    p_valor: args.valor,
+    p_descricao: args.descricao ?? null,
+  });
+  if (error) throw new Error(error.message);
+}
+
+export async function excluirGastoRapido(id: string): Promise<void> {
+  const { error } = await supabase.rpc("excluir_gasto_rapido", {
+    p_transacao_id: id,
+  });
+  if (error) throw new Error(error.message);
+}
+
+export async function fetchSubitemOutros(categoriaId: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("subitem")
+    .select("id")
+    .eq("categoria_id", categoriaId)
+    .eq("nome", "Outros")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data as { id: string } | null)?.id ?? null;
+}
 
 // ---------- Fetchers ----------
 function throwIf<T>(data: T | null, error: { message: string } | null): T {

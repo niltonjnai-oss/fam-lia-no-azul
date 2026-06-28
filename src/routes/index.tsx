@@ -35,6 +35,7 @@ import {
   PainelExtras,
   usePainelPrefs,
 } from "@/components/PainelExtras";
+import { LancamentoRapido } from "@/components/LancamentoRapido";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -157,6 +158,8 @@ function PainelPage() {
           </div>
         ))}
       </section>
+
+      <LancamentoRapido />
 
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
