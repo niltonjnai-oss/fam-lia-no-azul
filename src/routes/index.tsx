@@ -36,6 +36,7 @@ import {
   usePainelPrefs,
 } from "@/components/PainelExtras";
 import { LancamentoRapido } from "@/components/LancamentoRapido";
+import { DespesasFixasDisponivel } from "@/components/DespesasFixasDisponivel";
 
 export const Route = createFileRoute("/")({
   head: () => ({
