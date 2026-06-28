@@ -227,6 +227,32 @@ export async function inserirRenda(args: {
   if (error) throw new Error(error.message);
 }
 
+/** Atualiza (ou insere) uma renda no mês para uma descrição específica.
+ *  Sem unique constraint no schema, fazemos select+update / insert. */
+export async function upsertRendaPorDescricao(args: {
+  mes_ref: string;
+  descricao: string;
+  valor: number;
+}): Promise<void> {
+  const { data, error } = await supabase
+    .from("renda")
+    .select("id")
+    .eq("mes_ref", args.mes_ref)
+    .eq("descricao", args.descricao)
+    .limit(1);
+  if (error) throw new Error(error.message);
+  if (data && data.length > 0) {
+    const { error: upErr } = await supabase
+      .from("renda")
+      .update({ valor: args.valor })
+      .eq("id", (data[0] as { id: string }).id);
+    if (upErr) throw new Error(upErr.message);
+  } else {
+    const { error: insErr } = await supabase.from("renda").insert(args);
+    if (insErr) throw new Error(insErr.message);
+  }
+}
+
 export async function inserirDivida(args: {
   nome: string;
   valor_total: number;

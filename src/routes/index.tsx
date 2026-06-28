@@ -101,6 +101,11 @@ function PainelPage() {
     { label: "Saldo", valor: saldo, Icon: Sparkles, tone: "text-primary", bg: "bg-primary/10" },
   ];
 
+  const orcamentoVazio =
+    !carregando &&
+    Number(resumoQ.data?.total_previsto ?? 0) === 0 &&
+    Number(resumoQ.data?.total_real ?? 0) === 0;
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-2">
@@ -117,6 +122,25 @@ function PainelPage() {
       </header>
 
       <MesSelector />
+
+      {orcamentoVazio && (
+        <Link
+          to="/onboarding"
+          className="flex items-center gap-3 rounded-2xl border border-primary/30 bg-primary/5 p-4 transition-colors hover:bg-primary/10"
+        >
+          <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-semibold">Comece aqui</div>
+            <div className="text-xs text-muted-foreground">
+              Em 1 minuto seu orçamento inicial fica montado.
+            </div>
+          </div>
+          <ArrowUpRight className="h-4 w-4 text-primary" />
+        </Link>
+      )}
+
 
       <section className="grid grid-cols-3 gap-3">
         {cards.map(({ label, valor, Icon, tone, bg }) => (
