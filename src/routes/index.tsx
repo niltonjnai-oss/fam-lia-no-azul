@@ -85,6 +85,8 @@ function PainelPage() {
   const resumoQ = useQuery({ queryKey: qk.resumo(mes), queryFn: () => fetchResumoMensal(mes) });
   const blocosQ = useQuery({ queryKey: qk.bloco503020(mes), queryFn: () => fetch503020(mes) });
 
+  const { prefs, setPrefs } = usePainelPrefs();
+
   const carregando = rendaQ.isLoading || resumoQ.isLoading || blocosQ.isLoading;
 
   const rendaTotal = (rendaQ.data ?? []).reduce((acc, r) => acc + Number(r.valor), 0);
