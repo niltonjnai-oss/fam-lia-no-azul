@@ -13,7 +13,7 @@ export function MesSelector() {
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
-      <div className="tabular text-sm font-semibold capitalize sm:text-base">
+      <div className="tabular text-sm font-semibold sm:text-base">
         {formatMes(mes)}
       </div>
       <button
