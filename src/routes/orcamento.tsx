@@ -142,7 +142,7 @@ function OrcamentoPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Orçamento</h1>
           <p className="text-sm text-muted-foreground">
-            Compare o previsto e o real de cada categoria.
+            Seus gastos do mês
           </p>
         </div>
         <MesSelector />
