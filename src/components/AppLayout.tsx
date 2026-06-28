@@ -8,6 +8,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import type { ComponentType } from "react";
+import { MesProvider } from "@/lib/mes-context";
 
 type NavItem = {
   to: string;
@@ -27,7 +28,7 @@ export function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <MesProvider><div className="min-h-screen bg-background text-foreground">
       {/* Sidebar (desktop) */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-border bg-sidebar px-4 py-6 lg:flex lg:flex-col">
         <div className="mb-8 flex items-center gap-2 px-2">
@@ -110,6 +111,6 @@ export function AppLayout() {
         </ul>
         <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
-    </div>
+    </div></MesProvider>
   );
 }
