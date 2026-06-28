@@ -164,9 +164,9 @@ function PainelPage() {
         ))}
       </section>
 
-      <DespesasFixasDisponivel mes={mes} />
-
       <LancamentoRapido />
+
+      <DespesasFixasDisponivel mes={mes} />
 
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
