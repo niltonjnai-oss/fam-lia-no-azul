@@ -132,6 +132,7 @@ function OrcamentoPage() {
       qc.invalidateQueries({ queryKey: qk.lancamentos(mes) });
       qc.invalidateQueries({ queryKey: qk.resumo(mes) });
       qc.invalidateQueries({ queryKey: qk.bloco503020(mes) });
+      qc.invalidateQueries({ queryKey: qk.gastosMes(mes) });
     },
   });
 

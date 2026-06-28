@@ -74,6 +74,13 @@ export interface Linha503020 {
   realizado: number;
 }
 
+export interface GastosMes {
+  mes_ref: string;
+  total_previsto: number;
+  total_real: number;
+  total_comprometido: number;
+}
+
 // ---------- Helpers ----------
 export const mesAtual = (): string => {
   const d = new Date();
@@ -105,6 +112,7 @@ export const qk = {
   renda: (mes: string) => ["renda", mes] as const,
   resumo: (mes: string) => ["v_resumo_mensal", mes] as const,
   bloco503020: (mes: string) => ["v_50_30_20", mes] as const,
+  gastosMes: (mes: string) => ["v_gastos_mes", mes] as const,
   dividas: ["divida"] as const,
   reserva: ["reserva_config"] as const,
   transacoesHoje: (data: string) => ["transacao", "dia", data] as const,
@@ -204,6 +212,16 @@ export async function fetchRenda(mes: string): Promise<Renda[]> {
     .select("id, mes_ref, descricao, valor")
     .eq("mes_ref", mes);
   return throwIf<Renda[]>(data as Renda[] | null, error);
+}
+
+export async function fetchGastosMes(mes: string): Promise<GastosMes | null> {
+  const { data, error } = await supabase
+    .from("v_gastos_mes")
+    .select("mes_ref, total_previsto, total_real, total_comprometido")
+    .eq("mes_ref", mes)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data as GastosMes | null) ?? null;
 }
 
 export async function fetchResumoMensal(mes: string): Promise<ResumoMensal | null> {
