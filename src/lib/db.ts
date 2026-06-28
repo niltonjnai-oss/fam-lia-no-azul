@@ -74,6 +74,13 @@ export interface Linha503020 {
   realizado: number;
 }
 
+export interface GastosMes {
+  mes_ref: string;
+  total_previsto: number;
+  total_real: number;
+  total_comprometido: number;
+}
+
 // ---------- Helpers ----------
 export const mesAtual = (): string => {
   const d = new Date();
