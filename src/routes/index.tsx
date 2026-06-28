@@ -108,9 +108,12 @@ function PainelPage() {
           <p className="text-sm capitalize text-muted-foreground">{formatMes(mes)}</p>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Olá, família!</h1>
         </div>
-        <Link to="/onboarding" className="text-xs font-medium text-primary hover:underline">
-          Refazer onboarding
-        </Link>
+        <div className="flex items-center gap-2">
+          <PersonalizarPainelButton prefs={prefs} setPrefs={setPrefs} />
+          <Link to="/onboarding" className="text-xs font-medium text-primary hover:underline">
+            Refazer onboarding
+          </Link>
+        </div>
       </header>
 
       <MesSelector />
