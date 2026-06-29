@@ -130,12 +130,16 @@ function ReservaPage() {
     );
   }
 
-  const progresso = Number(r.progresso);
-  const pct = Math.min(100, progresso * 100);
+  const aporteNum = Number(aporte) || 0;
+  const metaReserva = metaSugerida;
+  const faltaParaMeta = Math.max(0, metaReserva - guardadoNum);
+  const mesesParaMeta = aporteNum > 0 ? Math.ceil(faltaParaMeta / aporteNum) : null;
+  const progresso = metaReserva > 0 ? Math.min(1, guardadoNum / metaReserva) : 0;
+  const pct = progresso * 100;
   const radius = 88;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (pct / 100) * circumference;
-  const mesesTxt = r.meses_para_meta === null ? "Sem aporte" : `${r.meses_para_meta}`;
+  const mesesTxt = mesesParaMeta === null ? "Sem aporte" : `${mesesParaMeta}`;
 
   return (
     <div className="space-y-5">
