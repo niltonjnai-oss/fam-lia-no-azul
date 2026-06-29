@@ -36,11 +36,11 @@ export const Route = createFileRoute("/reserva")({
   component: ReservaPage,
 });
 
-const ATALHOS = [
+const ATALHOS: ReadonlyArray<{ meses: number; rotulo: string; destaque?: boolean }> = [
   { meses: 3, rotulo: "renda estável" },
   { meses: 6, rotulo: "recomendado", destaque: true },
   { meses: 12, rotulo: "renda variável" },
-] as const;
+];
 
 function ReservaPage() {
   const reservaQ = useQuery({ queryKey: qk.reserva, queryFn: fetchReservaConfig });
