@@ -396,3 +396,279 @@ function Field({
     </label>
   );
 }
+
+type PatchT = Partial<{ custo: string; mult: string; guardado: string; aporte: string }>;
+
+function DefinaMetaSection(props: {
+  modo: "despesa" | "alvo";
+  setModo: (m: "despesa" | "alvo") => void;
+  custo: string;
+  setCusto: (v: string) => void;
+  mult: string;
+  setMult: (v: string) => void;
+  guardado: string;
+  setGuardado: (v: string) => void;
+  aporte: string;
+  setAporte: (v: string) => void;
+  salvar: () => void;
+  salvarPatch: (p: PatchT) => void;
+  cvNum: number;
+  multNum: number;
+  metaSugerida: number;
+  mutPending: boolean;
+}) {
+  const {
+    modo, setModo, custo, setCusto, mult, setMult, guardado, setGuardado, aporte, setAporte,
+    salvar, salvarPatch, cvNum, multNum, metaSugerida, mutPending,
+  } = props;
+
+  // Estado local do modo "alvo" (não persistido — derivado quando seleciona prazo)
+  const [alvo, setAlvo] = useState("");
+  const [mesesAlvo, setMesesAlvo] = useState("");
+
+  const alvoNum = Number(alvo) || 0;
+  const mesesAlvoNum = Math.max(0, Math.floor(Number(mesesAlvo) || 0));
+
+  const prazos: ReadonlyArray<{ meses: number; rotulo: string; destaque?: boolean }> = [
+    { meses: 3, rotulo: "mais rápido, exige mais" },
+    { meses: 6, rotulo: "equilíbrio ideal", destaque: true },
+    { meses: 12, rotulo: "mais leve no bolso" },
+  ];
+
+  const aplicarPrazo = (m: number) => {
+    if (alvoNum <= 0 || m <= 0) return;
+    const aportePorMes = +(alvoNum / m).toFixed(2);
+    // meta = alvo: usar custo_vida_mensal = alvo/m e multiplicador = m
+    const novoCusto = aportePorMes;
+    setCusto(String(novoCusto));
+    setMult(String(m));
+    setAporte(String(aportePorMes));
+    setMesesAlvo(String(m));
+    salvarPatch({
+      custo: String(novoCusto),
+      mult: String(m),
+      aporte: String(aportePorMes),
+    });
+  };
+
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5 shadow-soft space-y-4">
+      <div>
+        <h2 className="text-sm font-semibold">Defina sua meta</h2>
+        <p className="text-xs text-muted-foreground">
+          Escolha como prefere calcular a sua reserva.
+        </p>
+      </div>
+
+      {/* Toggle de modos */}
+      <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1" role="tablist">
+        {([
+          { key: "despesa", label: "Pela despesa mensal" },
+          { key: "alvo", label: "Por valor-alvo" },
+        ] as const).map((opt) => {
+          const ativo = modo === opt.key;
+          return (
+            <button
+              key={opt.key}
+              type="button"
+              role="tab"
+              aria-selected={ativo}
+              onClick={() => setModo(opt.key)}
+              className={cn(
+                "min-h-[44px] rounded-lg px-3 py-2 text-xs font-semibold transition-colors",
+                ativo
+                  ? "bg-[var(--color-warning)] text-[var(--color-warning-foreground)] shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {modo === "despesa" ? (
+        <>
+          <label className="block">
+            <span className="block text-xs font-medium text-muted-foreground">
+              Custo de vida mensal
+            </span>
+            <input
+              value={custo}
+              inputMode="decimal"
+              onChange={(e) => setCusto(e.target.value)}
+              onBlur={salvar}
+              className="tabular mt-1 w-full rounded-xl border-2 border-primary/30 bg-background px-4 py-3 text-lg font-semibold outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+              placeholder="R$ 0,00"
+            />
+          </label>
+
+          <div className="rounded-xl border-2 border-[var(--color-warning)] bg-[var(--color-warning)]/10 p-4">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-warning-foreground)]/80">
+              Meta sugerida
+            </div>
+            <div className="tabular mt-1 text-2xl font-bold text-foreground">
+              {formatBRL(metaSugerida)}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {cvNum > 0 ? `${formatBRL(cvNum)} × ${multNum || 0} meses` : "Informe seu custo de vida"}
+            </div>
+          </div>
+
+          <div>
+            <div className="mb-2 text-xs font-medium text-muted-foreground">
+              Quantos meses guardar?
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {ATALHOS.map((a) => {
+                const ativo = multNum === a.meses;
+                const destaque = a.destaque;
+                return (
+                  <button
+                    key={a.meses}
+                    type="button"
+                    onClick={() => {
+                      setMult(String(a.meses));
+                      salvarPatch({ mult: String(a.meses) });
+                    }}
+                    className={cn(
+                      "min-h-[44px] rounded-xl border-2 px-2 py-2 text-center transition-colors",
+                      ativo
+                        ? "border-[var(--color-warning)] bg-[var(--color-warning)]/15"
+                        : destaque
+                          ? "border-[var(--color-warning)]/50 bg-background hover:bg-[var(--color-warning)]/5"
+                          : "border-border bg-background hover:bg-muted",
+                    )}
+                  >
+                    <div className="text-sm font-bold">{a.meses} meses</div>
+                    <div className="text-[10px] text-muted-foreground">{a.rotulo}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <label className="block">
+            <span className="block text-xs font-medium text-muted-foreground">
+              Valor que quero guardar de reserva
+            </span>
+            <input
+              value={alvo}
+              inputMode="decimal"
+              onChange={(e) => setAlvo(e.target.value)}
+              className="tabular mt-1 w-full rounded-xl border-2 border-primary/30 bg-background px-4 py-3 text-lg font-semibold outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+              placeholder="Ex.: R$ 1.800,00"
+            />
+          </label>
+
+          {alvoNum > 0 ? (
+            <>
+              <div>
+                <div className="mb-2 text-xs font-medium text-muted-foreground">
+                  Em quanto tempo quer juntar?
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {prazos.map((p) => {
+                    const ativo = multNum === p.meses && Math.abs(cvNum * multNum - alvoNum) < 0.01;
+                    const valorMes = alvoNum / p.meses;
+                    return (
+                      <button
+                        key={p.meses}
+                        type="button"
+                        onClick={() => aplicarPrazo(p.meses)}
+                        className={cn(
+                          "min-h-[44px] rounded-xl border-2 px-2 py-2 text-center transition-colors",
+                          ativo
+                            ? "border-[var(--color-warning)] bg-[var(--color-warning)]/15"
+                            : p.destaque
+                              ? "border-[var(--color-warning)]/50 bg-background hover:bg-[var(--color-warning)]/5"
+                              : "border-border bg-background hover:bg-muted",
+                        )}
+                      >
+                        <div className="text-sm font-bold">Em {p.meses} meses</div>
+                        <div className="tabular text-xs font-semibold text-primary">
+                          {formatBRL(valorMes)}/mês
+                        </div>
+                        <div className="text-[10px] text-muted-foreground">{p.rotulo}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-border bg-background p-3 space-y-2">
+                <label className="block">
+                  <span className="block text-xs font-medium text-muted-foreground">
+                    Em quantos meses quero juntar (personalizado)
+                  </span>
+                  <input
+                    value={mesesAlvo}
+                    inputMode="numeric"
+                    onChange={(e) => setMesesAlvo(e.target.value.replace(/\D/g, ""))}
+                    placeholder="Ex.: 10"
+                    className="tabular mt-1 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                </label>
+                {mesesAlvoNum > 0 && (
+                  <div className="flex items-center justify-between rounded-lg bg-[var(--color-warning)]/10 px-3 py-2">
+                    <div className="text-xs">
+                      Em <strong>{mesesAlvoNum} meses</strong> ·{" "}
+                      <span className="tabular font-bold text-primary">
+                        {formatBRL(alvoNum / mesesAlvoNum)}/mês
+                      </span>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => aplicarPrazo(mesesAlvoNum)}
+                      className="h-9"
+                    >
+                      Aplicar
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              <div className="rounded-xl border-2 border-[var(--color-warning)] bg-[var(--color-warning)]/10 p-4">
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-warning-foreground)]/80">
+                  Meta atual
+                </div>
+                <div className="tabular mt-1 text-2xl font-bold text-foreground">
+                  {formatBRL(metaSugerida)}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {multNum > 0
+                    ? `Aporte de ${formatBRL(Number(aporte) || 0)}/mês por ${multNum} meses`
+                    : "Escolha um prazo acima"}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="rounded-xl border border-dashed border-border bg-background p-4 text-center text-xs text-muted-foreground">
+              Informe quanto você quer guardar para ver os prazos.
+            </div>
+          )}
+        </>
+      )}
+
+      <details className="text-xs">
+        <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+          Ajustar manualmente
+        </summary>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <Field label="Custo de vida mensal" value={custo} onChange={setCusto} />
+          <Field label="Multiplicador (meses)" value={mult} onChange={setMult} />
+          <Field label="Valor guardado" value={guardado} onChange={setGuardado} />
+          <Field label="Aporte mensal" value={aporte} onChange={setAporte} />
+        </div>
+        <div className="mt-3 flex justify-end">
+          <Button onClick={salvar} disabled={mutPending}>
+            <Save className="h-4 w-4" />
+            Salvar
+          </Button>
+        </div>
+      </details>
+    </section>
+  );
+}
