@@ -545,18 +545,12 @@ function DefinaMetaSection(props: {
         </>
       ) : (
         <>
-          <label className="block">
-            <span className="block text-xs font-medium text-muted-foreground">
-              Valor que quero guardar de reserva
-            </span>
-            <input
-              value={alvo}
-              inputMode="decimal"
-              onChange={(e) => setAlvo(e.target.value)}
-              className="tabular mt-1 w-full rounded-xl border-2 border-primary/30 bg-background px-4 py-3 text-lg font-semibold outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
-              placeholder="Ex.: R$ 1.800,00"
-            />
-          </label>
+          <CurrencyInput
+            label="Valor que quero guardar de reserva"
+            value={alvo}
+            onChange={setAlvo}
+            placeholder="Ex.: R$ 1.800,00"
+          />
 
           {alvoNum > 0 ? (
             <>
