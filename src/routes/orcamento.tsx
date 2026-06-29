@@ -268,8 +268,13 @@ function CategoriaSection({
             </div>
           </div>
           <span
-            className={`tabular shrink-0 rounded-lg px-2 py-1 text-xs font-semibold ${diffBadgeClasses(sub.diff)}`}
+            className={`tabular inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold ${diffBadgeClasses(sub.diff)}`}
+            aria-label={`${diffLabel(sub.diff)} ${signed(sub.diff)}`}
           >
+            {(() => {
+              const I = diffIcon(sub.diff);
+              return <I className="h-3.5 w-3.5" aria-hidden="true" />;
+            })()}
             {signed(sub.diff)}
           </span>
         </div>
