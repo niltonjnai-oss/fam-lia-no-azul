@@ -490,19 +490,13 @@ function DefinaMetaSection(props: {
 
       {modo === "despesa" ? (
         <>
-          <label className="block">
-            <span className="block text-xs font-medium text-muted-foreground">
-              Custo de vida mensal
-            </span>
-            <input
-              value={custo}
-              inputMode="decimal"
-              onChange={(e) => setCusto(e.target.value)}
-              onBlur={salvar}
-              className="tabular mt-1 w-full rounded-xl border-2 border-primary/30 bg-background px-4 py-3 text-lg font-semibold outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
-              placeholder="R$ 0,00"
-            />
-          </label>
+          <CurrencyInput
+            label="Custo de vida mensal"
+            value={custo}
+            onChange={setCusto}
+            onBlur={salvar}
+            placeholder="R$ 0,00"
+          />
 
           <div className="rounded-xl border-2 border-[var(--color-warning)] bg-[var(--color-warning)]/10 p-4">
             <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-warning-foreground)]/80">
