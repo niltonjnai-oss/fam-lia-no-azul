@@ -53,6 +53,13 @@ function ReservaPage() {
   const [guardado, setGuardado] = useState("");
   const [aporte, setAporte] = useState("");
   const [explanationOpen, setExplanationOpen] = useState(false);
+  const [modo, setModo] = useState<"despesa" | "alvo">(() => {
+    if (typeof window === "undefined") return "despesa";
+    return (window.localStorage.getItem("reserva_modo") as "despesa" | "alvo") || "despesa";
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") window.localStorage.setItem("reserva_modo", modo);
+  }, [modo]);
 
   useEffect(() => {
     if (!r) return;
