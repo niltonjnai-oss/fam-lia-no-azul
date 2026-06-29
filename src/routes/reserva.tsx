@@ -6,6 +6,7 @@ import { PiggyBank, Target, CalendarClock, ShieldCheck, Save } from "lucide-reac
 import { qk, fetchReservaConfig, atualizarReservaConfig } from "@/lib/db";
 import { formatBRL } from "@/lib/format";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageTitle } from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/EmptyState";
 
