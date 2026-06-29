@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { RotateCcw } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Cell,
