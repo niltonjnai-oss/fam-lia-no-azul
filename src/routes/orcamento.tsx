@@ -46,6 +46,7 @@ import { formatBRL } from "@/lib/format";
 import { MesSelector } from "@/components/MesSelector";
 import { EmptyState } from "@/components/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageTitle } from "@/components/PageTitle";
 
 export const Route = createFileRoute("/orcamento")({
   head: () => ({
@@ -140,7 +141,7 @@ function OrcamentoPage() {
     <div className="space-y-5">
       <header className="space-y-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">Orçamento</h1>
+          <PageTitle>Orçamento</PageTitle>
           <p className="text-sm text-muted-foreground">
             Seus gastos do mês
           </p>

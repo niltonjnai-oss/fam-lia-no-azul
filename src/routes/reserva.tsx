@@ -6,6 +6,7 @@ import { PiggyBank, Target, CalendarClock, ShieldCheck, Save } from "lucide-reac
 import { qk, fetchReservaConfig, atualizarReservaConfig } from "@/lib/db";
 import { formatBRL } from "@/lib/format";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageTitle } from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/EmptyState";
 
@@ -66,7 +67,7 @@ function ReservaPage() {
     return (
       <div className="space-y-5">
         <header>
-          <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">Reserva de Emergência</h1>
+          <PageTitle>Reserva de Emergência</PageTitle>
         </header>
         <EmptyState
           title="Configuração da reserva não encontrada"
@@ -87,7 +88,7 @@ function ReservaPage() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">Reserva de Emergência</h1>
+        <PageTitle>Reserva de Emergência</PageTitle>
         <p className="text-sm text-muted-foreground">Seu colchão de segurança para imprevistos.</p>
       </header>
 

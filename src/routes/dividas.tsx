@@ -36,6 +36,7 @@ import {
 import { formatBRL } from "@/lib/format";
 import { EmptyState } from "@/components/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageTitle } from "@/components/PageTitle";
 
 export const Route = createFileRoute("/dividas")({
   head: () => ({
@@ -68,7 +69,7 @@ function DividasPage() {
     <div className="space-y-5">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">Dívidas</h1>
+          <PageTitle>Dívidas</PageTitle>
           <p className="text-sm text-muted-foreground">
             Priorize as dívidas mais caras para sair do vermelho mais rápido.
           </p>

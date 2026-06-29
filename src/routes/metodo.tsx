@@ -16,6 +16,7 @@ import { useMes } from "@/lib/mes-context";
 import { formatBRL, formatPct } from "@/lib/format";
 import { MesSelector } from "@/components/MesSelector";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageTitle } from "@/components/PageTitle";
 
 export const Route = createFileRoute("/metodo")({
   head: () => ({
@@ -110,7 +111,7 @@ function MetodoPage() {
     <div className="space-y-5">
       <div ref={topoRef}>
         <header>
-          <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">Método 50-30-20</h1>
+          <PageTitle>Método 50-30-20</PageTitle>
           <p className="text-sm text-muted-foreground">
             Essenciais, Estilo de Vida e Reserva/Dívidas em equilíbrio.
           </p>
