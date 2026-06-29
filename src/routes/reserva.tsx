@@ -21,6 +21,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageTitle } from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/EmptyState";
+import { CurrencyInput } from "@/components/CurrencyInput";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/reserva")({
