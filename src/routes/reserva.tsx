@@ -1,7 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { PiggyBank, Target, CalendarClock, ShieldCheck, Save } from "lucide-react";
+import {
+  PiggyBank,
+  Target,
+  CalendarClock,
+  ShieldCheck,
+  Save,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  Check,
+  Circle,
+  MapPin,
+} from "lucide-react";
 
 import { qk, fetchReservaConfig, atualizarReservaConfig } from "@/lib/db";
 import { formatBRL } from "@/lib/format";
@@ -9,6 +21,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageTitle } from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/EmptyState";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/reserva")({
   head: () => ({
@@ -23,6 +36,12 @@ export const Route = createFileRoute("/reserva")({
   component: ReservaPage,
 });
 
+const ATALHOS: ReadonlyArray<{ meses: number; rotulo: string; destaque?: boolean }> = [
+  { meses: 3, rotulo: "renda estável" },
+  { meses: 6, rotulo: "recomendado", destaque: true },
+  { meses: 12, rotulo: "renda variável" },
+];
+
 function ReservaPage() {
   const reservaQ = useQuery({ queryKey: qk.reserva, queryFn: fetchReservaConfig });
   const qc = useQueryClient();
@@ -33,32 +52,66 @@ function ReservaPage() {
   const [mult, setMult] = useState("");
   const [guardado, setGuardado] = useState("");
   const [aporte, setAporte] = useState("");
+  const [explanationOpen, setExplanationOpen] = useState(false);
 
   useEffect(() => {
     if (!r) return;
     setCusto(String(r.custo_vida_mensal));
-    setMult(String(r.multiplicador));
+    setMult(String(r.multiplicador || 6));
     setGuardado(String(r.valor_guardado));
     setAporte(String(r.aporte_mensal));
   }, [r]);
 
   const mut = useMutation({
-    mutationFn: () =>
+    mutationFn: (patch?: Partial<{ custo: string; mult: string; guardado: string; aporte: string }>) =>
       atualizarReservaConfig(r!.id, {
-        custo_vida_mensal: Number(custo) || 0,
-        multiplicador: Number(mult) || 0,
-        valor_guardado: Number(guardado) || 0,
-        aporte_mensal: Number(aporte) || 0,
+        custo_vida_mensal: Number(patch?.custo ?? custo) || 0,
+        multiplicador: Number(patch?.mult ?? mult) || 0,
+        valor_guardado: Number(patch?.guardado ?? guardado) || 0,
+        aporte_mensal: Number(patch?.aporte ?? aporte) || 0,
       }),
     onSuccess: () => qc.invalidateQueries({ queryKey: qk.reserva }),
   });
+  const salvar = () => mut.mutate(undefined);
+
+  const cvNum = Number(custo) || 0;
+  const multNum = Number(mult) || 0;
+  const guardadoNum = Number(guardado) || 0;
+  const metaSugerida = cvNum * multNum;
+
+  const etapas = useMemo(() => {
+    const e1 = cvNum * 1;
+    const e2 = cvNum * Math.max(1, Math.round(multNum / 2));
+    const e3 = cvNum * multNum;
+    const base = [
+      { nome: "Primeiro fôlego", sub: "o suficiente para um susto pequeno", meses: 1, valor: e1 },
+      { nome: "Meia reserva", sub: "metade do caminho", meses: Math.max(1, Math.round(multNum / 2)), valor: e2 },
+      { nome: "Reserva completa", sub: "tranquilidade total", meses: multNum, valor: e3 },
+    ];
+    // status: concluído / atual / a conquistar
+    let foundAtual = false;
+    return base.map((et) => {
+      let status: "concluido" | "atual" | "futuro";
+      if (guardadoNum >= et.valor && et.valor > 0) status = "concluido";
+      else if (!foundAtual) {
+        status = "atual";
+        foundAtual = true;
+      } else status = "futuro";
+      return { ...et, status };
+    });
+  }, [cvNum, multNum, guardadoNum]);
+
+  const selecionarMeses = (m: number) => {
+    setMult(String(m));
+    if (r) mut.mutate({ mult: String(m) });
+  };
 
   if (reservaQ.isLoading) {
     return (
       <div className="space-y-5">
         <Skeleton className="h-10 w-64" />
+        <Skeleton className="h-40 w-full rounded-2xl" />
         <Skeleton className="h-80 w-full rounded-2xl" />
-        <Skeleton className="h-48 w-full rounded-2xl" />
       </div>
     );
   }
@@ -82,8 +135,7 @@ function ReservaPage() {
   const radius = 88;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (pct / 100) * circumference;
-  const mesesTxt =
-    r.meses_para_meta === null ? "Sem aporte" : `${r.meses_para_meta}`;
+  const mesesTxt = r.meses_para_meta === null ? "Sem aporte" : `${r.meses_para_meta}`;
 
   return (
     <div className="space-y-5">
@@ -92,6 +144,85 @@ function ReservaPage() {
         <p className="text-sm text-muted-foreground">Seu colchão de segurança para imprevistos.</p>
       </header>
 
+      {/* Bloco 1 — Explicação */}
+      <section className="rounded-2xl border border-border bg-primary/5 border-l-4 border-l-[var(--color-warning)] p-5 shadow-soft">
+        <div className="flex items-start gap-3">
+          <div className="rounded-full bg-primary/10 p-2 text-primary">
+            <Info className="h-5 w-5" />
+          </div>
+          <div className="flex-1 space-y-3 text-sm leading-relaxed">
+            <h2 className="text-base font-semibold text-primary">O que é e por que importa</h2>
+
+            <p>
+              <strong>O que é a reserva de emergência?</strong> É um dinheiro guardado só para
+              emergências de verdade — o carro que quebra, uma consulta médica urgente, um conserto
+              inesperado em casa ou a perda de uma fonte de renda. Não é para viagem, troca de
+              celular ou compras: para esses sonhos, use as metas. A reserva tem uma função só:
+              proteger a sua família quando a vida surpreende.
+            </p>
+
+            <p>
+              <strong>Por que ela é tão importante?</strong> Sem reserva, qualquer imprevisto vira
+              dívida — normalmente no cartão ou no cheque especial, que cobram os juros mais altos.
+              Com reserva, o mesmo imprevisto é só um susto. Ela é o que separa uma família que
+              vive no aperto de uma que dorme tranquila.
+            </p>
+
+            {explanationOpen && (
+              <div className="space-y-3">
+                <div>
+                  <p>
+                    <strong>Quanto guardar?</strong> A regra é juntar de 3 a 12 meses do seu custo
+                    de vida mensal:
+                  </p>
+                  <ul className="ml-5 mt-1 list-disc space-y-1">
+                    <li>
+                      <strong>3 meses</strong> — para quem tem renda estável (servidor, CLT antigo).
+                    </li>
+                    <li>
+                      <strong>6 meses</strong> — o recomendado para a maioria das famílias.
+                    </li>
+                    <li>
+                      <strong>12 meses</strong> — para quem tem renda variável, é autônomo ou tem
+                      filhos pequenos.
+                    </li>
+                  </ul>
+                </div>
+                <p>
+                  <strong>Onde guardar?</strong> Em um lugar seguro e de resgate fácil (como Tesouro
+                  Selic ou um CDB com liquidez diária). Aqui o objetivo é segurança e
+                  disponibilidade, não rentabilidade — você precisa poder sacar na hora da
+                  emergência.
+                </p>
+                <p>
+                  <strong>Como começar?</strong> Não espere sobrar dinheiro (nunca sobra). Separe um
+                  valor assim que o salário cai — o "pague-se primeiro". Comece pequeno se precisar:
+                  o importante é a constância, não o tamanho do primeiro depósito.
+                </p>
+              </div>
+            )}
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setExplanationOpen((v) => !v)}
+              className="h-11 -ml-2 text-primary hover:bg-primary/10"
+            >
+              {explanationOpen ? (
+                <>
+                  <ChevronUp className="h-4 w-4" /> Mostrar menos
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4" /> Ver como funciona
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Card de progresso (anel) */}
       <section className="rounded-2xl border border-border bg-card p-6 shadow-soft">
         <div className="flex flex-col items-center">
           <div className="relative h-56 w-56">
@@ -132,25 +263,147 @@ function ReservaPage() {
         </div>
       </section>
 
+      {/* Bloco 2 — Meta sugerida com atalhos */}
+      <section className="rounded-2xl border border-border bg-card p-5 shadow-soft space-y-4">
+        <div>
+          <h2 className="text-sm font-semibold">Defina sua meta</h2>
+          <p className="text-xs text-muted-foreground">
+            Comece pelo seu custo de vida mensal e escolha quantos meses quer ter guardado.
+          </p>
+        </div>
+
+        <label className="block">
+          <span className="block text-xs font-medium text-muted-foreground">
+            Custo de vida mensal
+          </span>
+          <input
+            value={custo}
+            inputMode="decimal"
+            onChange={(e) => setCusto(e.target.value)}
+            onBlur={salvar}
+            className="tabular mt-1 w-full rounded-xl border-2 border-primary/30 bg-background px-4 py-3 text-lg font-semibold outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
+            placeholder="R$ 0,00"
+          />
+        </label>
+
+        <div className="rounded-xl border-2 border-[var(--color-warning)] bg-[var(--color-warning)]/10 p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-warning-foreground)]/80">
+            Meta sugerida
+          </div>
+          <div className="tabular mt-1 text-2xl font-bold text-foreground">
+            {formatBRL(metaSugerida)}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {cvNum > 0 ? `${formatBRL(cvNum)} × ${multNum || 0} meses` : "Informe seu custo de vida"}
+          </div>
+        </div>
+
+        <div>
+          <div className="mb-2 text-xs font-medium text-muted-foreground">
+            Quantos meses guardar?
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {ATALHOS.map((a) => {
+              const ativo = multNum === a.meses;
+              const destaque = a.destaque;
+              return (
+                <button
+                  key={a.meses}
+                  type="button"
+                  onClick={() => selecionarMeses(a.meses)}
+                  className={cn(
+                    "min-h-[44px] rounded-xl border-2 px-2 py-2 text-center transition-colors",
+                    ativo
+                      ? "border-[var(--color-warning)] bg-[var(--color-warning)]/15"
+                      : destaque
+                        ? "border-[var(--color-warning)]/50 bg-background hover:bg-[var(--color-warning)]/5"
+                        : "border-border bg-background hover:bg-muted",
+                  )}
+                >
+                  <div className="text-sm font-bold">{a.meses} meses</div>
+                  <div className="text-[10px] text-muted-foreground">{a.rotulo}</div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <details className="text-xs">
+          <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+            Ajustar manualmente
+          </summary>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <Field label="Multiplicador (meses)" value={mult} onChange={setMult} />
+            <Field label="Valor guardado" value={guardado} onChange={setGuardado} />
+            <Field label="Aporte mensal" value={aporte} onChange={setAporte} />
+          </div>
+          <div className="mt-3 flex justify-end">
+            <Button onClick={salvar} disabled={mut.isPending}>
+              <Save className="h-4 w-4" />
+              Salvar
+            </Button>
+          </div>
+        </details>
+      </section>
+
+      {/* Bloco 3 — Plano em etapas */}
       <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="text-sm font-semibold">Configuração da meta</h2>
+        <h2 className="text-sm font-semibold">Seu plano em etapas</h2>
         <p className="text-xs text-muted-foreground">
-          A meta e demais cálculos atualizam automaticamente após salvar.
+          Comemore cada conquista no caminho até a meta completa.
         </p>
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <Field label="Custo de vida mensal" value={custo} onChange={setCusto} />
-          <Field label="Multiplicador (meses)" value={mult} onChange={setMult} />
-          <Field label="Valor guardado" value={guardado} onChange={setGuardado} />
-          <Field label="Aporte mensal" value={aporte} onChange={setAporte} />
-        </div>
-
-        <div className="mt-4 flex justify-end">
-          <Button onClick={() => mut.mutate()} disabled={mut.isPending}>
-            <Save className="h-4 w-4" />
-            Salvar
-          </Button>
-        </div>
+        <ol className="mt-4 space-y-3">
+          {etapas.map((et, i) => (
+            <li
+              key={i}
+              className={cn(
+                "flex items-start gap-3 rounded-xl border p-3",
+                et.status === "concluido" && "border-[var(--color-success)]/30 bg-[var(--color-success)]/5",
+                et.status === "atual" && "border-[var(--color-warning)] bg-[var(--color-warning)]/10",
+                et.status === "futuro" && "border-border bg-background",
+              )}
+            >
+              <div
+                className={cn(
+                  "mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full",
+                  et.status === "concluido" && "bg-[var(--color-success)] text-[var(--color-success-foreground)]",
+                  et.status === "atual" && "bg-[var(--color-warning)] text-[var(--color-warning-foreground)]",
+                  et.status === "futuro" && "bg-muted text-muted-foreground",
+                )}
+                aria-hidden
+              >
+                {et.status === "concluido" ? (
+                  <Check className="h-4 w-4" />
+                ) : et.status === "atual" ? (
+                  <MapPin className="h-4 w-4" />
+                ) : (
+                  <Circle className="h-4 w-4" />
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-baseline justify-between gap-2">
+                  <div className="text-sm font-semibold">
+                    Etapa {i + 1} — {et.nome}
+                  </div>
+                  <div className="tabular text-sm font-bold">{formatBRL(et.valor)}</div>
+                </div>
+                <div className="text-xs text-muted-foreground">{et.sub}</div>
+                <div className="mt-1 text-[11px] font-medium">
+                  {et.status === "concluido" && (
+                    <span className="text-[var(--color-success)]">✓ Concluído</span>
+                  )}
+                  {et.status === "atual" && (
+                    <span className="text-[var(--color-warning-foreground)]">Você está aqui</span>
+                  )}
+                  {et.status === "futuro" && (
+                    <span className="text-muted-foreground">A conquistar</span>
+                  )}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
       </section>
     </div>
   );
