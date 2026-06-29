@@ -178,7 +178,17 @@ function PainelPage() {
         <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
           <h2 className="text-sm font-semibold">Divisão por classificação</h2>
           <p className="text-xs text-muted-foreground">Como sua renda foi gasta este mês.</p>
-          <div className="mt-3 h-56">
+          <div className="mt-3 h-56" role="img" aria-label={
+            (() => {
+              const total = blocos.reduce((a, b) => a + Number(b.realizado), 0);
+              if (total === 0) return "Sem gastos registrados neste mês.";
+              return "Divisão por classificação: " + blocos.map((b) => {
+                const v = Number(b.realizado);
+                const pct = total > 0 ? Math.round((v / total) * 100) : 0;
+                return `${b.classificacao} ${formatBRL(v)} (${pct}%)`;
+              }).join(", ") + ".";
+            })()
+          }>
             {carregando ? (
               <Skeleton className="h-full w-full rounded-xl" />
             ) : blocos.every((b) => Number(b.realizado) === 0) ? (
@@ -220,6 +230,30 @@ function PainelPage() {
               </ResponsiveContainer>
             )}
           </div>
+          {!carregando && blocos.some((b) => Number(b.realizado) > 0) && (
+            <ul className="mt-3 space-y-1 text-xs">
+              {blocos.map((b) => {
+                const v = Number(b.realizado);
+                const total = blocos.reduce((a, x) => a + Number(x.realizado), 0);
+                const pct = total > 0 ? Math.round((v / total) * 100) : 0;
+                return (
+                  <li key={b.classificacao} className="flex items-center justify-between gap-2">
+                    <span className="flex items-center gap-2">
+                      <span
+                        className="inline-block h-2.5 w-2.5 rounded-full"
+                        style={{ backgroundColor: CHART_COLORS[b.classificacao] }}
+                        aria-hidden="true"
+                      />
+                      <span className="text-muted-foreground">{b.classificacao}</span>
+                    </span>
+                    <span className="tabular font-medium">
+                      {formatBRL(v)} <span className="text-muted-foreground">({pct}%)</span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
