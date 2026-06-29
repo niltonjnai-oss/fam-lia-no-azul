@@ -391,8 +391,15 @@ function SubitemRow({
         onBlur={() => commit(Number(prev) || 0, Number(real) || 0)}
         className="tabular hidden h-10 text-right sm:block"
       />
-      <div className={`tabular hidden text-right text-sm font-semibold sm:block ${diffClasses(diff)}`}>
-        {signed(diff)}
+      <div
+        className={`tabular hidden items-center justify-end gap-1 text-right text-sm font-semibold sm:flex ${diffClasses(diff)}`}
+        aria-label={`${diffLabel(diff)} ${signed(diff)}`}
+      >
+        {(() => {
+          const I = diffIcon(diff);
+          return <I className="h-4 w-4" aria-hidden="true" />;
+        })()}
+        <span>{signed(diff)}</span>
       </div>
     </li>
   );
