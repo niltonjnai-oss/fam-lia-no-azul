@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Mic } from "lucide-react";
+import { Plus, Mic, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -74,6 +74,16 @@ function diffBadgeClasses(diff: number): string {
 function signed(diff: number): string {
   const s = diff > 0 ? "+" : diff < 0 ? "−" : "";
   return `${s}${formatBRL(Math.abs(diff))}`;
+}
+function diffIcon(diff: number) {
+  if (diff > 0) return TrendingUp;
+  if (diff < 0) return TrendingDown;
+  return Minus;
+}
+function diffLabel(diff: number): string {
+  if (diff > 0) return "sobrou";
+  if (diff < 0) return "estourou";
+  return "neutro";
 }
 
 function OrcamentoPage() {
@@ -165,8 +175,21 @@ function OrcamentoPage() {
         </div>
         <div>
           <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Diferença</div>
-          <div className={`tabular mt-0.5 text-sm font-bold sm:text-base ${diffClasses(totais.diff)}`}>
-            {carregando ? <Skeleton className="h-5 w-20" /> : signed(totais.diff)}
+          <div
+            className={`tabular mt-0.5 flex items-center gap-1 text-sm font-bold sm:text-base ${diffClasses(totais.diff)}`}
+            aria-label={`Diferença ${diffLabel(totais.diff)} ${signed(totais.diff)}`}
+          >
+            {carregando ? (
+              <Skeleton className="h-5 w-20" />
+            ) : (
+              <>
+                {(() => {
+                  const I = diffIcon(totais.diff);
+                  return <I className="h-4 w-4" aria-hidden="true" />;
+                })()}
+                <span>{signed(totais.diff)}</span>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -245,8 +268,13 @@ function CategoriaSection({
             </div>
           </div>
           <span
-            className={`tabular shrink-0 rounded-lg px-2 py-1 text-xs font-semibold ${diffBadgeClasses(sub.diff)}`}
+            className={`tabular inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold ${diffBadgeClasses(sub.diff)}`}
+            aria-label={`${diffLabel(sub.diff)} ${signed(sub.diff)}`}
           >
+            {(() => {
+              const I = diffIcon(sub.diff);
+              return <I className="h-3.5 w-3.5" aria-hidden="true" />;
+            })()}
             {signed(sub.diff)}
           </span>
         </div>
@@ -336,7 +364,14 @@ function SubitemRow({
         </label>
       </div>
       <div className="mt-2 flex justify-end sm:hidden">
-        <span className={`tabular rounded-md px-2 py-0.5 text-xs font-semibold ${diffBadgeClasses(diff)}`}>
+        <span
+          className={`tabular inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold ${diffBadgeClasses(diff)}`}
+          aria-label={`${diffLabel(diff)} ${signed(diff)}`}
+        >
+          {(() => {
+            const I = diffIcon(diff);
+            return <I className="h-3 w-3" aria-hidden="true" />;
+          })()}
           {signed(diff)}
         </span>
       </div>
@@ -356,8 +391,15 @@ function SubitemRow({
         onBlur={() => commit(Number(prev) || 0, Number(real) || 0)}
         className="tabular hidden h-10 text-right sm:block"
       />
-      <div className={`tabular hidden text-right text-sm font-semibold sm:block ${diffClasses(diff)}`}>
-        {signed(diff)}
+      <div
+        className={`tabular hidden items-center justify-end gap-1 text-right text-sm font-semibold sm:flex ${diffClasses(diff)}`}
+        aria-label={`${diffLabel(diff)} ${signed(diff)}`}
+      >
+        {(() => {
+          const I = diffIcon(diff);
+          return <I className="h-4 w-4" aria-hidden="true" />;
+        })()}
+        <span>{signed(diff)}</span>
       </div>
     </li>
   );
