@@ -72,6 +72,7 @@ function ReservaPage() {
       }),
     onSuccess: () => qc.invalidateQueries({ queryKey: qk.reserva }),
   });
+  const salvar = () => mut.mutate(undefined);
 
   const cvNum = Number(custo) || 0;
   const multNum = Number(mult) || 0;
