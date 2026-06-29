@@ -248,10 +248,10 @@ function ReservaPage() {
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
               <PiggyBank className="h-6 w-6 text-primary" />
               <div className="tabular mt-1 text-2xl font-bold">
-                {formatBRL(Number(r.valor_guardado))}
+                {formatBRL(guardadoNum)}
               </div>
               <div className="text-xs text-muted-foreground">
-                de {formatBRL(Number(r.meta_reserva))}
+                de {formatBRL(metaReserva)}
               </div>
               <div className="mt-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
                 {pct.toFixed(0)}% concluído
@@ -260,8 +260,8 @@ function ReservaPage() {
           </div>
 
           <div className="mt-6 grid w-full grid-cols-3 gap-3">
-            <Stat icon={Target} label="Meta" value={formatBRL(Number(r.meta_reserva))} />
-            <Stat icon={ShieldCheck} label="Falta" value={formatBRL(Number(r.falta_para_meta))} />
+            <Stat icon={Target} label="Meta" value={formatBRL(metaReserva)} />
+            <Stat icon={ShieldCheck} label="Falta" value={formatBRL(faltaParaMeta)} />
             <Stat icon={CalendarClock} label="Meses" value={mesesTxt} />
           </div>
         </div>
