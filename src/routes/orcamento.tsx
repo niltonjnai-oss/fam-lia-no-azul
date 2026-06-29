@@ -364,7 +364,14 @@ function SubitemRow({
         </label>
       </div>
       <div className="mt-2 flex justify-end sm:hidden">
-        <span className={`tabular rounded-md px-2 py-0.5 text-xs font-semibold ${diffBadgeClasses(diff)}`}>
+        <span
+          className={`tabular inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold ${diffBadgeClasses(diff)}`}
+          aria-label={`${diffLabel(diff)} ${signed(diff)}`}
+        >
+          {(() => {
+            const I = diffIcon(diff);
+            return <I className="h-3 w-3" aria-hidden="true" />;
+          })()}
           {signed(diff)}
         </span>
       </div>
