@@ -75,6 +75,16 @@ function signed(diff: number): string {
   const s = diff > 0 ? "+" : diff < 0 ? "−" : "";
   return `${s}${formatBRL(Math.abs(diff))}`;
 }
+function diffIcon(diff: number) {
+  if (diff > 0) return TrendingUp;
+  if (diff < 0) return TrendingDown;
+  return Minus;
+}
+function diffLabel(diff: number): string {
+  if (diff > 0) return "sobrou";
+  if (diff < 0) return "estourou";
+  return "neutro";
+}
 
 function OrcamentoPage() {
   const { mes } = useMes();
