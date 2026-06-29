@@ -17,6 +17,7 @@ import {
   Sparkles,
   CheckCircle2,
   AlertTriangle,
+  RotateCcw,
 } from "lucide-react";
 
 import {
