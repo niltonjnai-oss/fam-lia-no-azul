@@ -280,7 +280,7 @@ function ReservaPage() {
             value={custo}
             inputMode="decimal"
             onChange={(e) => setCusto(e.target.value)}
-            onBlur={() => mut.mutate()}
+            onBlur={salvar}
             className="tabular mt-1 w-full rounded-xl border-2 border-primary/30 bg-background px-4 py-3 text-lg font-semibold outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
             placeholder="R$ 0,00"
           />
@@ -338,7 +338,7 @@ function ReservaPage() {
             <Field label="Aporte mensal" value={aporte} onChange={setAporte} />
           </div>
           <div className="mt-3 flex justify-end">
-            <Button onClick={() => mut.mutate()} disabled={mut.isPending}>
+            <Button onClick={salvar} disabled={mut.isPending}>
               <Save className="h-4 w-4" />
               Salvar
             </Button>
