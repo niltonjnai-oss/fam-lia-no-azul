@@ -110,7 +110,7 @@ function MetodoPage() {
     <div className="space-y-5">
       <div ref={topoRef}>
         <header>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Método 50-30-20</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">Método 50-30-20</h1>
           <p className="text-sm text-muted-foreground">
             Essenciais, Estilo de Vida e Reserva/Dívidas em equilíbrio.
           </p>

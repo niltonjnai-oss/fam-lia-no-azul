@@ -66,7 +66,7 @@ function ReservaPage() {
     return (
       <div className="space-y-5">
         <header>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Reserva de Emergência</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">Reserva de Emergência</h1>
         </header>
         <EmptyState
           title="Configuração da reserva não encontrada"
@@ -87,7 +87,7 @@ function ReservaPage() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Reserva de Emergência</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">Reserva de Emergência</h1>
         <p className="text-sm text-muted-foreground">Seu colchão de segurança para imprevistos.</p>
       </header>
 

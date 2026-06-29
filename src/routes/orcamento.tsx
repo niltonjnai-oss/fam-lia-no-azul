@@ -140,7 +140,7 @@ function OrcamentoPage() {
     <div className="space-y-5">
       <header className="space-y-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Orçamento</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">Orçamento</h1>
           <p className="text-sm text-muted-foreground">
             Seus gastos do mês
           </p>

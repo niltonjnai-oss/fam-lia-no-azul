@@ -118,7 +118,7 @@ function PainelPage() {
       <header className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <p className="text-sm text-muted-foreground">{formatMes(mes)}</p>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Olá, família!</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">Olá, família!</h1>
         </div>
         <div className="flex items-center gap-2">
           <PersonalizarPainelButton prefs={prefs} setPrefs={setPrefs} />
