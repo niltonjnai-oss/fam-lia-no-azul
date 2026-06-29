@@ -175,8 +175,21 @@ function OrcamentoPage() {
         </div>
         <div>
           <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Diferença</div>
-          <div className={`tabular mt-0.5 text-sm font-bold sm:text-base ${diffClasses(totais.diff)}`}>
-            {carregando ? <Skeleton className="h-5 w-20" /> : signed(totais.diff)}
+          <div
+            className={`tabular mt-0.5 flex items-center gap-1 text-sm font-bold sm:text-base ${diffClasses(totais.diff)}`}
+            aria-label={`Diferença ${diffLabel(totais.diff)} ${signed(totais.diff)}`}
+          >
+            {carregando ? (
+              <Skeleton className="h-5 w-20" />
+            ) : (
+              <>
+                {(() => {
+                  const I = diffIcon(totais.diff);
+                  return <I className="h-4 w-4" aria-hidden="true" />;
+                })()}
+                <span>{signed(totais.diff)}</span>
+              </>
+            )}
           </div>
         </div>
       </section>
