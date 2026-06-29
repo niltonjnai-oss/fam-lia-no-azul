@@ -268,87 +268,24 @@ function ReservaPage() {
       </section>
 
       {/* Bloco 2 — Meta sugerida com atalhos */}
-      <section className="rounded-2xl border border-border bg-card p-5 shadow-soft space-y-4">
-        <div>
-          <h2 className="text-sm font-semibold">Defina sua meta</h2>
-          <p className="text-xs text-muted-foreground">
-            Comece pelo seu custo de vida mensal e escolha quantos meses quer ter guardado.
-          </p>
-        </div>
-
-        <label className="block">
-          <span className="block text-xs font-medium text-muted-foreground">
-            Custo de vida mensal
-          </span>
-          <input
-            value={custo}
-            inputMode="decimal"
-            onChange={(e) => setCusto(e.target.value)}
-            onBlur={salvar}
-            className="tabular mt-1 w-full rounded-xl border-2 border-primary/30 bg-background px-4 py-3 text-lg font-semibold outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
-            placeholder="R$ 0,00"
-          />
-        </label>
-
-        <div className="rounded-xl border-2 border-[var(--color-warning)] bg-[var(--color-warning)]/10 p-4">
-          <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-warning-foreground)]/80">
-            Meta sugerida
-          </div>
-          <div className="tabular mt-1 text-2xl font-bold text-foreground">
-            {formatBRL(metaSugerida)}
-          </div>
-          <div className="text-xs text-muted-foreground">
-            {cvNum > 0 ? `${formatBRL(cvNum)} × ${multNum || 0} meses` : "Informe seu custo de vida"}
-          </div>
-        </div>
-
-        <div>
-          <div className="mb-2 text-xs font-medium text-muted-foreground">
-            Quantos meses guardar?
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            {ATALHOS.map((a) => {
-              const ativo = multNum === a.meses;
-              const destaque = a.destaque;
-              return (
-                <button
-                  key={a.meses}
-                  type="button"
-                  onClick={() => selecionarMeses(a.meses)}
-                  className={cn(
-                    "min-h-[44px] rounded-xl border-2 px-2 py-2 text-center transition-colors",
-                    ativo
-                      ? "border-[var(--color-warning)] bg-[var(--color-warning)]/15"
-                      : destaque
-                        ? "border-[var(--color-warning)]/50 bg-background hover:bg-[var(--color-warning)]/5"
-                        : "border-border bg-background hover:bg-muted",
-                  )}
-                >
-                  <div className="text-sm font-bold">{a.meses} meses</div>
-                  <div className="text-[10px] text-muted-foreground">{a.rotulo}</div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <details className="text-xs">
-          <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
-            Ajustar manualmente
-          </summary>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <Field label="Multiplicador (meses)" value={mult} onChange={setMult} />
-            <Field label="Valor guardado" value={guardado} onChange={setGuardado} />
-            <Field label="Aporte mensal" value={aporte} onChange={setAporte} />
-          </div>
-          <div className="mt-3 flex justify-end">
-            <Button onClick={salvar} disabled={mut.isPending}>
-              <Save className="h-4 w-4" />
-              Salvar
-            </Button>
-          </div>
-        </details>
-      </section>
+      <DefinaMetaSection
+        modo={modo}
+        setModo={setModo}
+        custo={custo}
+        setCusto={setCusto}
+        mult={mult}
+        setMult={setMult}
+        guardado={guardado}
+        setGuardado={setGuardado}
+        aporte={aporte}
+        setAporte={setAporte}
+        salvar={salvar}
+        salvarPatch={(p) => mut.mutate(p)}
+        cvNum={cvNum}
+        multNum={multNum}
+        metaSugerida={metaSugerida}
+        mutPending={mut.isPending}
+      />
 
       {/* Bloco 3 — Plano em etapas */}
       <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
