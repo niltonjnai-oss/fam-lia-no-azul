@@ -210,7 +210,12 @@ function ReservaPage() {
   const radius = 88;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (pct / 100) * circumference;
-  const mesesTxt = mesesParaMeta === null ? "Sem aporte" : `${mesesParaMeta}`;
+  const mesesTxt =
+    faltaParaMeta === 0 && metaReserva > 0
+      ? "Meta atingida"
+      : mesesParaMeta === null
+        ? "Sem aporte"
+        : `${mesesParaMeta}`;
   const recomendarPorMes = multNum > 0 ? faltaParaMeta / multNum : 0;
 
   return (
