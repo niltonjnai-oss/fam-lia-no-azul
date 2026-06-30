@@ -32,7 +32,7 @@ export function AppLayout() {
   const { user } = useAuth();
 
   return (
-    <MesProvider><div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Sidebar (desktop) */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-border bg-sidebar px-4 py-6 lg:flex lg:flex-col">
         <div className="mb-8 flex items-center gap-2 px-2">
