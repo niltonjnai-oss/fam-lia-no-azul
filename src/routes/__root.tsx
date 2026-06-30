@@ -16,6 +16,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppLayout } from "../components/AppLayout";
 import { AuthProvider, useAuth } from "../lib/auth-context";
 import { Toaster } from "../components/ui/sonner";
+import { MesProvider } from "../lib/mes-context";
 
 function NotFoundComponent() {
   return (
