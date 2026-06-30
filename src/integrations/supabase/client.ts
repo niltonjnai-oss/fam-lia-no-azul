@@ -11,7 +11,12 @@ import { createClient } from "@supabase/supabase-js";
 const SUPABASE_URL = import.meta.env.APP_SUPABASE_URL as string;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.APP_SUPABASE_PUBLISHABLE_KEY as string;
 
-if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+const FALLBACK_SUPABASE_URL = "https://humbgsiwezsmkidrmyxn.supabase.co";
+const FALLBACK_SUPABASE_PUBLISHABLE_KEY = "supabase-publishable-key-not-configured";
+
+export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
+
+if (!isSupabaseConfigured) {
   // Não derruba o app — apenas avisa em dev.
   // eslint-disable-next-line no-console
   console.warn(
@@ -19,10 +24,14 @@ if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
   );
 }
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+export const supabase = createClient(
+  SUPABASE_URL || FALLBACK_SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY || FALLBACK_SUPABASE_PUBLISHABLE_KEY,
+  {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
   },
-});
+  },
+);
