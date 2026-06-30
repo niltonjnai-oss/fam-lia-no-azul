@@ -93,6 +93,27 @@ export function AppLayout() {
 
       {/* Main content */}
       <main className="pb-24 lg:ml-64 lg:pb-8">
+        {/* Mobile header */}
+        <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-3 lg:hidden">
+          <div className="flex items-center gap-2">
+            <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <span className="text-sm font-bold">Família no Azul</span>
+          </div>
+          {user && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => signOut()}
+              className="h-9 gap-1.5 px-2 text-muted-foreground"
+              aria-label="Sair"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="text-xs">Sair</span>
+            </Button>
+          )}
+        </div>
         <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:py-8">
           <Outlet />
         </div>
