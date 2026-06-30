@@ -6,9 +6,12 @@ import {
   CreditCard,
   PiggyBank,
   ShieldCheck,
+  LogOut,
 } from "lucide-react";
 import type { ComponentType } from "react";
 import { MesProvider } from "@/lib/mes-context";
+import { useAuth, signOut } from "@/lib/auth-context";
+import { Button } from "@/components/ui/button";
 
 type NavItem = {
   to: string;
@@ -26,6 +29,7 @@ const navItems: NavItem[] = [
 
 export function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { user } = useAuth();
 
   return (
     <MesProvider><div className="min-h-screen bg-background text-foreground">
@@ -61,11 +65,29 @@ export function AppLayout() {
             );
           })}
         </nav>
-        <div className="mt-auto rounded-xl bg-accent p-3 text-xs text-accent-foreground">
-          <div className="font-semibold">Dica do mês</div>
-          <p className="mt-1 text-muted-foreground">
-            Revise o orçamento toda semana para evitar surpresas no fim do mês.
-          </p>
+        <div className="mt-auto space-y-3">
+          {user && (
+            <div className="rounded-xl border border-border bg-card p-3 text-xs">
+              <div className="truncate font-medium text-foreground" title={user.email ?? ""}>
+                {user.email}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => signOut()}
+                className="mt-2 h-8 w-full justify-start gap-2 px-2 text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="h-4 w-4" />
+                Sair
+              </Button>
+            </div>
+          )}
+          <div className="rounded-xl bg-accent p-3 text-xs text-accent-foreground">
+            <div className="font-semibold">Dica do mês</div>
+            <p className="mt-1 text-muted-foreground">
+              Revise o orçamento toda semana para evitar surpresas no fim do mês.
+            </p>
+          </div>
         </div>
       </aside>
 
