@@ -5,6 +5,7 @@ import {
   createRootRouteWithContext,
   useRouter,
   useRouterState,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -13,6 +14,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppLayout } from "../components/AppLayout";
+import { AuthProvider, useAuth } from "../lib/auth-context";
+import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -126,12 +129,40 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isOnboarding = pathname.startsWith("/onboarding");
-
   return (
     <QueryClientProvider client={queryClient}>
-      {isOnboarding ? <Outlet /> : <AppLayout />}
+      <AuthProvider>
+        <AuthGate />
+        <Toaster />
+      </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+function AuthGate() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { session, loading } = useAuth();
+  const navigate = useNavigate();
+  const isAuthRoute = pathname.startsWith("/auth");
+  const isOnboarding = pathname.startsWith("/onboarding");
+
+  useEffect(() => {
+    if (loading) return;
+    if (!session && !isAuthRoute) {
+      navigate({ to: "/auth", replace: true });
+    }
+  }, [session, loading, isAuthRoute, navigate]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (isAuthRoute) return <Outlet />;
+  if (!session) return null;
+  if (isOnboarding) return <Outlet />;
+  return <AppLayout />;
 }

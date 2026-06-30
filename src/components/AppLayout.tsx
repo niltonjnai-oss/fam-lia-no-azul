@@ -6,9 +6,12 @@ import {
   CreditCard,
   PiggyBank,
   ShieldCheck,
+  LogOut,
 } from "lucide-react";
 import type { ComponentType } from "react";
 import { MesProvider } from "@/lib/mes-context";
+import { useAuth, signOut } from "@/lib/auth-context";
+import { Button } from "@/components/ui/button";
 
 type NavItem = {
   to: string;
@@ -26,6 +29,7 @@ const navItems: NavItem[] = [
 
 export function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { user } = useAuth();
 
   return (
     <MesProvider><div className="min-h-screen bg-background text-foreground">
@@ -61,16 +65,55 @@ export function AppLayout() {
             );
           })}
         </nav>
-        <div className="mt-auto rounded-xl bg-accent p-3 text-xs text-accent-foreground">
-          <div className="font-semibold">Dica do mês</div>
-          <p className="mt-1 text-muted-foreground">
-            Revise o orçamento toda semana para evitar surpresas no fim do mês.
-          </p>
+        <div className="mt-auto space-y-3">
+          {user && (
+            <div className="rounded-xl border border-border bg-card p-3 text-xs">
+              <div className="truncate font-medium text-foreground" title={user.email ?? ""}>
+                {user.email}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => signOut()}
+                className="mt-2 h-8 w-full justify-start gap-2 px-2 text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="h-4 w-4" />
+                Sair
+              </Button>
+            </div>
+          )}
+          <div className="rounded-xl bg-accent p-3 text-xs text-accent-foreground">
+            <div className="font-semibold">Dica do mês</div>
+            <p className="mt-1 text-muted-foreground">
+              Revise o orçamento toda semana para evitar surpresas no fim do mês.
+            </p>
+          </div>
         </div>
       </aside>
 
       {/* Main content */}
       <main className="pb-24 lg:ml-64 lg:pb-8">
+        {/* Mobile header */}
+        <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-3 lg:hidden">
+          <div className="flex items-center gap-2">
+            <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <span className="text-sm font-bold">Família no Azul</span>
+          </div>
+          {user && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => signOut()}
+              className="h-9 gap-1.5 px-2 text-muted-foreground"
+              aria-label="Sair"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="text-xs">Sair</span>
+            </Button>
+          )}
+        </div>
         <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:py-8">
           <Outlet />
         </div>
