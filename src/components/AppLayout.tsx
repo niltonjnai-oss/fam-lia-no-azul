@@ -9,7 +9,7 @@ import {
   LogOut,
 } from "lucide-react";
 import type { ComponentType } from "react";
-import { MesProvider } from "@/lib/mes-context";
+
 import { useAuth, signOut } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 
