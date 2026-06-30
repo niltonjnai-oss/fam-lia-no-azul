@@ -154,6 +154,6 @@ export function AppLayout() {
         </ul>
         <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
-    </div></MesProvider>
+    </div>
   );
 }
