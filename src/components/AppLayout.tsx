@@ -38,14 +38,14 @@ export function AppLayout() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Sidebar (desktop) */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-border bg-sidebar px-4 py-6 lg:flex lg:flex-col">
-        <div className="mb-8 flex items-center gap-2 px-2">
-          <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <ShieldCheck className="h-5 w-5" />
-          </div>
-          <div>
-            <div className="text-sm font-bold leading-tight">Família no Azul</div>
-            <div className="text-xs text-muted-foreground">Controle familiar</div>
-          </div>
+        <div className="mb-8 px-2">
+          <Link to="/" className="block">
+            <img
+              src={logoHorizontal.url}
+              alt="Família no Azul"
+              className="h-10 w-auto"
+            />
+          </Link>
         </div>
         <nav className="flex flex-col gap-1">
           {navItems.map((item) => {
