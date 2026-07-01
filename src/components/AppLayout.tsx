@@ -5,7 +5,6 @@ import {
   PieChart,
   CreditCard,
   PiggyBank,
-  ShieldCheck,
   LogOut,
 } from "lucide-react";
 import type { ComponentType } from "react";
@@ -14,6 +13,7 @@ import { useAuth, signOut } from "@/lib/auth-context";
 import { useIsAdmin } from "@/lib/use-is-admin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
 
 type NavItem = {
   to: string;
