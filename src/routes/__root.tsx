@@ -147,14 +147,16 @@ function AuthGate() {
   const { session, loading } = useAuth();
   const navigate = useNavigate();
   const isAuthRoute = pathname.startsWith("/auth");
+  const isResetPassword = pathname.startsWith("/reset-password");
+  const isPublicRoute = isAuthRoute || isResetPassword;
   const isOnboarding = pathname.startsWith("/onboarding");
 
   useEffect(() => {
     if (loading) return;
-    if (!session && !isAuthRoute) {
+    if (!session && !isPublicRoute) {
       navigate({ to: "/auth", replace: true });
     }
-  }, [session, loading, isAuthRoute, navigate]);
+  }, [session, loading, isPublicRoute, navigate]);
 
   if (loading) {
     return (
@@ -164,7 +166,7 @@ function AuthGate() {
     );
   }
 
-  if (isAuthRoute) return <Outlet />;
+  if (isPublicRoute) return <Outlet />;
   if (!session) return null;
   if (isOnboarding) return <Outlet />;
   return <AppLayout />;
