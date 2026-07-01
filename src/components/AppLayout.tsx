@@ -110,6 +110,11 @@ export function AppLayout() {
               <ShieldCheck className="h-4 w-4" />
             </div>
             <span className="text-sm font-bold">Família no Azul</span>
+            {isAdmin && (
+              <Badge variant="default" className="h-5 px-1.5 py-0 text-[10px]">
+                Admin
+              </Badge>
+            )}
           </div>
           {user && (
             <Button
