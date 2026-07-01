@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ReservaRouteImport } from './routes/reserva'
 import { Route as OrcamentoRouteImport } from './routes/orcamento'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -17,6 +18,11 @@ import { Route as DividasRouteImport } from './routes/dividas'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReservaRoute = ReservaRouteImport.update({
   id: '/reserva',
   path: '/reserva',
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
   '/reserva': typeof ReservaRoute
+  '/reset-password': typeof ResetPasswordRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
   '/reserva': typeof ReservaRoute
+  '/reset-password': typeof ResetPasswordRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
   '/reserva': typeof ReservaRoute
+  '/reset-password': typeof ResetPasswordRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/orcamento'
     | '/reserva'
+    | '/reset-password'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/orcamento'
     | '/reserva'
+    | '/reset-password'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/orcamento'
     | '/reserva'
+    | '/reset-password'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,10 +131,18 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   OrcamentoRoute: typeof OrcamentoRoute
   ReservaRoute: typeof ReservaRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reserva': {
       id: '/reserva'
       path: '/reserva'
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   OrcamentoRoute: OrcamentoRoute,
   ReservaRoute: ReservaRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
