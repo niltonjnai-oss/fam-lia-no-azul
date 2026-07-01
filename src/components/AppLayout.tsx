@@ -106,10 +106,11 @@ export function AppLayout() {
         {/* Mobile header */}
         <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-3 lg:hidden">
           <div className="flex items-center gap-2">
-            <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-              <ShieldCheck className="h-4 w-4" />
-            </div>
-            <span className="text-sm font-bold">Família no Azul</span>
+            <img
+              src={logoHorizontal.url}
+              alt="Família no Azul"
+              className="h-7 w-auto"
+            />
             {isAdmin && (
               <Badge variant="default" className="h-5 px-1.5 py-0 text-[10px]">
                 Admin
