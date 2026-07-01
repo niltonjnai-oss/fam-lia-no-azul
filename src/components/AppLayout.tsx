@@ -5,7 +5,6 @@ import {
   PieChart,
   CreditCard,
   PiggyBank,
-  ShieldCheck,
   LogOut,
 } from "lucide-react";
 import type { ComponentType } from "react";
@@ -14,6 +13,7 @@ import { useAuth, signOut } from "@/lib/auth-context";
 import { useIsAdmin } from "@/lib/use-is-admin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
 
 type NavItem = {
   to: string;
@@ -38,14 +38,14 @@ export function AppLayout() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Sidebar (desktop) */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-border bg-sidebar px-4 py-6 lg:flex lg:flex-col">
-        <div className="mb-8 flex items-center gap-2 px-2">
-          <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <ShieldCheck className="h-5 w-5" />
-          </div>
-          <div>
-            <div className="text-sm font-bold leading-tight">Família no Azul</div>
-            <div className="text-xs text-muted-foreground">Controle familiar</div>
-          </div>
+        <div className="mb-8 px-2">
+          <Link to="/" className="block">
+            <img
+              src={logoHorizontal.url}
+              alt="Família no Azul"
+              className="h-10 w-auto"
+            />
+          </Link>
         </div>
         <nav className="flex flex-col gap-1">
           {navItems.map((item) => {
@@ -106,10 +106,11 @@ export function AppLayout() {
         {/* Mobile header */}
         <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-3 lg:hidden">
           <div className="flex items-center gap-2">
-            <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-              <ShieldCheck className="h-4 w-4" />
-            </div>
-            <span className="text-sm font-bold">Família no Azul</span>
+            <img
+              src={logoHorizontal.url}
+              alt="Família no Azul"
+              className="h-7 w-auto"
+            />
             {isAdmin && (
               <Badge variant="default" className="h-5 px-1.5 py-0 text-[10px]">
                 Admin

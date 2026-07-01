@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ShieldCheck, Mail, Lock, Loader2 } from "lucide-react";
+import { Mail, Lock, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import logoVertical from "@/assets/familia_no_azul_vertical.png.asset.json";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,10 +72,11 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-md">
         <div className="mb-6 flex flex-col items-center text-center">
-          <div className="mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-primary text-primary-foreground">
-            <ShieldCheck className="h-7 w-7" />
-          </div>
-          <h1 className="text-2xl font-bold text-primary">Família no Azul</h1>
+          <img
+            src={logoVertical.url}
+            alt="Família no Azul"
+            className="mb-3 h-32 w-auto"
+          />
           <p className="mt-1 text-sm text-muted-foreground">
             Entre para acompanhar o orçamento da sua família.
           </p>
