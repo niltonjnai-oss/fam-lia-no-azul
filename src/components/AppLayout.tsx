@@ -11,7 +11,9 @@ import {
 import type { ComponentType } from "react";
 
 import { useAuth, signOut } from "@/lib/auth-context";
+import { useIsAdmin } from "@/lib/use-is-admin";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type NavItem = {
   to: string;
@@ -30,6 +32,7 @@ const navItems: NavItem[] = [
 export function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user } = useAuth();
+  const isAdmin = useIsAdmin();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -68,8 +71,15 @@ export function AppLayout() {
         <div className="mt-auto space-y-3">
           {user && (
             <div className="rounded-xl border border-border bg-card p-3 text-xs">
-              <div className="truncate font-medium text-foreground" title={user.email ?? ""}>
-                {user.email}
+              <div className="flex items-center gap-2">
+                <div className="truncate font-medium text-foreground" title={user.email ?? ""}>
+                  {user.email}
+                </div>
+                {isAdmin && (
+                  <Badge variant="default" className="h-5 shrink-0 px-1.5 py-0 text-[10px]">
+                    Admin
+                  </Badge>
+                )}
               </div>
               <Button
                 variant="ghost"
@@ -100,6 +110,11 @@ export function AppLayout() {
               <ShieldCheck className="h-4 w-4" />
             </div>
             <span className="text-sm font-bold">Família no Azul</span>
+            {isAdmin && (
+              <Badge variant="default" className="h-5 px-1.5 py-0 text-[10px]">
+                Admin
+              </Badge>
+            )}
           </div>
           {user && (
             <Button
