@@ -11,7 +11,9 @@ import {
 import type { ComponentType } from "react";
 
 import { useAuth, signOut } from "@/lib/auth-context";
+import { useIsAdmin } from "@/lib/use-is-admin";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type NavItem = {
   to: string;
