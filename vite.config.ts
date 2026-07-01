@@ -6,12 +6,16 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-// Expose user-provided Supabase config (without the reserved VITE_ prefix)
-// to the browser bundle at build time. Both values are public-safe:
-// the URL is the project endpoint and the publishable key is the anon
-// key (protected by RLS server-side).
-const SUPABASE_URL = "https://humbgsiwezsmkidrmyxn.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = process.env.APP_SUPABASE_PUBLISHABLE_KEY ?? "";
+// Expose user-provided Supabase config to the browser bundle at build time.
+// Both values are public-safe: the URL is the project endpoint and the
+// publishable/anon key is protected by RLS server-side.
+const SUPABASE_URL =
+  process.env.VITE_SUPABASE_URL ?? process.env.APP_SUPABASE_URL ?? "";
+const SUPABASE_PUBLISHABLE_KEY =
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.VITE_SUPABASE_ANON_KEY ??
+  process.env.APP_SUPABASE_PUBLISHABLE_KEY ??
+  "";
 
 export default defineConfig({
   tanstackStart: {
@@ -23,6 +27,8 @@ export default defineConfig({
     define: {
       "import.meta.env.APP_SUPABASE_URL": JSON.stringify(SUPABASE_URL),
       "import.meta.env.APP_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(SUPABASE_PUBLISHABLE_KEY),
+      "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(SUPABASE_URL),
+      "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(SUPABASE_PUBLISHABLE_KEY),
     },
   },
 });
