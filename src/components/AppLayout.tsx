@@ -71,8 +71,15 @@ export function AppLayout() {
         <div className="mt-auto space-y-3">
           {user && (
             <div className="rounded-xl border border-border bg-card p-3 text-xs">
-              <div className="truncate font-medium text-foreground" title={user.email ?? ""}>
-                {user.email}
+              <div className="flex items-center gap-2">
+                <div className="truncate font-medium text-foreground" title={user.email ?? ""}>
+                  {user.email}
+                </div>
+                {isAdmin && (
+                  <Badge variant="default" className="h-5 shrink-0 px-1.5 py-0 text-[10px]">
+                    Admin
+                  </Badge>
+                )}
               </div>
               <Button
                 variant="ghost"
