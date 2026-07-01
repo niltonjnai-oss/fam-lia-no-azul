@@ -32,6 +32,7 @@ const navItems: NavItem[] = [
 export function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user } = useAuth();
+  const isAdmin = useIsAdmin();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
