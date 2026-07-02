@@ -40,6 +40,7 @@ import {
 } from "@/components/PainelExtras";
 import { LancamentoRapido } from "@/components/LancamentoRapido";
 import { DespesasFixasDisponivel } from "@/components/DespesasFixasDisponivel";
+import { AssinaturaAppCard } from "@/components/AssinaturaAppCard";
 import { PageTitle } from "@/components/PageTitle";
 
 export const Route = createFileRoute("/")({
@@ -171,6 +172,8 @@ function PainelPage() {
       </section>
 
       <LancamentoRapido />
+
+      <AssinaturaAppCard />
 
       <DespesasFixasDisponivel mes={mes} />
 
