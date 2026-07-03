@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import logoVertical from "@/assets/familia_no_azul_vertical.png.asset.json";
+const logoVertical = { url: "/brand/familia-vertical.png" };
 
 export const Route = createFileRoute("/reset-password")({
   ssr: false,
