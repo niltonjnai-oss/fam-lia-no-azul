@@ -14,6 +14,7 @@ import { Route as ReservaRouteImport } from './routes/reserva'
 import { Route as OrcamentoRouteImport } from './routes/orcamento'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MetodoRouteImport } from './routes/metodo'
+import { Route as InicioRouteImport } from './routes/inicio'
 import { Route as IndicacaoRouteImport } from './routes/indicacao'
 import { Route as DividasRouteImport } from './routes/dividas'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -43,6 +44,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const MetodoRoute = MetodoRouteImport.update({
   id: '/metodo',
   path: '/metodo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InicioRoute = InicioRouteImport.update({
+  id: '/inicio',
+  path: '/inicio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndicacaoRoute = IndicacaoRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dividas': typeof DividasRoute
   '/indicacao': typeof IndicacaoRoute
+  '/inicio': typeof InicioRoute
   '/metodo': typeof MetodoRoute
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/dividas': typeof DividasRoute
   '/indicacao': typeof IndicacaoRoute
+  '/inicio': typeof InicioRoute
   '/metodo': typeof MetodoRoute
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/dividas': typeof DividasRoute
   '/indicacao': typeof IndicacaoRoute
+  '/inicio': typeof InicioRoute
   '/metodo': typeof MetodoRoute
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dividas'
     | '/indicacao'
+    | '/inicio'
     | '/metodo'
     | '/onboarding'
     | '/orcamento'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dividas'
     | '/indicacao'
+    | '/inicio'
     | '/metodo'
     | '/onboarding'
     | '/orcamento'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dividas'
     | '/indicacao'
+    | '/inicio'
     | '/metodo'
     | '/onboarding'
     | '/orcamento'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DividasRoute: typeof DividasRoute
   IndicacaoRoute: typeof IndicacaoRoute
+  InicioRoute: typeof InicioRoute
   MetodoRoute: typeof MetodoRoute
   OnboardingRoute: typeof OnboardingRoute
   OrcamentoRoute: typeof OrcamentoRoute
@@ -195,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/metodo'
       fullPath: '/metodo'
       preLoaderRoute: typeof MetodoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inicio': {
+      id: '/inicio'
+      path: '/inicio'
+      fullPath: '/inicio'
+      preLoaderRoute: typeof InicioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/indicacao': {
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DividasRoute: DividasRoute,
   IndicacaoRoute: IndicacaoRoute,
+  InicioRoute: InicioRoute,
   MetodoRoute: MetodoRoute,
   OnboardingRoute: OnboardingRoute,
   OrcamentoRoute: OrcamentoRoute,
