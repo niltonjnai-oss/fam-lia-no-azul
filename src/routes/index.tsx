@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { Component, type ErrorInfo, type ReactNode } from "react";
 import {
   Cell,
   Legend,
@@ -85,6 +86,46 @@ function statusClasses(s: Status): string {
       : "bg-warning/20 text-warning-foreground";
 }
 
+function isClassificacao(value: unknown): value is Classificacao {
+  return value === "Essencial" || value === "Estilo de Vida" || value === "Reserva/Dívidas";
+}
+
+function numeroSeguro(value: unknown): number {
+  const n = Number(value ?? 0);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function DashboardSectionError({ titulo }: { titulo: string }) {
+  return (
+    <section className="rounded-2xl border border-warning/30 bg-warning/10 p-4 text-sm shadow-soft">
+      <div className="font-semibold text-foreground">{titulo}</div>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Atualize a página ou continue usando as outras áreas do painel.
+      </p>
+    </section>
+  );
+}
+
+class DashboardSectionBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: unknown, info: ErrorInfo) {
+    console.error("Erro em seção do dashboard", error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.hasError) return this.props.fallback;
+    return this.props.children;
+  }
+}
+
 function PainelPage() {
   const { mes } = useMes();
 
@@ -97,12 +138,14 @@ function PainelPage() {
 
   const carregando = rendaQ.isLoading || resumoQ.isLoading || gastosQ.isLoading || blocosQ.isLoading;
 
-  const rendaTotal = (rendaQ.data ?? []).reduce((acc, r) => acc + Number(r.valor), 0);
-  const gastosTotal = Number(gastosQ.data?.total_comprometido ?? 0);
+  const rendaRows = Array.isArray(rendaQ.data) ? rendaQ.data : [];
+  const blocos = (Array.isArray(blocosQ.data) ? blocosQ.data : []).filter((b) =>
+    isClassificacao(b.classificacao),
+  );
+
+  const rendaTotal = rendaRows.reduce((acc, r) => acc + numeroSeguro(r.valor), 0);
+  const gastosTotal = numeroSeguro(gastosQ.data?.total_comprometido);
   const saldo = rendaTotal - gastosTotal;
-
-
-  const blocos = blocosQ.data ?? [];
 
   const cards = [
     { label: "Renda", valor: rendaTotal, Icon: ArrowUpRight, tone: "text-success", bg: "bg-success/10" },
@@ -171,22 +214,37 @@ function PainelPage() {
         ))}
       </section>
 
-      <LancamentoRapido />
+      <DashboardSectionBoundary
+        fallback={<DashboardSectionError titulo="Não foi possível carregar o lançamento rápido." />}
+      >
+        <LancamentoRapido />
+      </DashboardSectionBoundary>
 
-      <AssinaturaAppCard />
+      <DashboardSectionBoundary
+        fallback={<DashboardSectionError titulo="Não foi possível carregar Plano e Indique Amigo." />}
+      >
+        <AssinaturaAppCard />
+      </DashboardSectionBoundary>
 
-      <DespesasFixasDisponivel mes={mes} />
+      <DashboardSectionBoundary
+        fallback={<DashboardSectionError titulo="Não foi possível carregar despesas fixas." />}
+      >
+        <DespesasFixasDisponivel mes={mes} />
+      </DashboardSectionBoundary>
 
+      <DashboardSectionBoundary
+        fallback={<DashboardSectionError titulo="Não foi possível carregar os gráficos do mês." />}
+      >
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
           <h2 className="text-sm font-semibold">Divisão por classificação</h2>
           <p className="text-xs text-muted-foreground">Como sua renda foi gasta este mês.</p>
           <div className="mt-3 h-56" role="img" aria-label={
             (() => {
-              const total = blocos.reduce((a, b) => a + Number(b.realizado), 0);
+              const total = blocos.reduce((a, b) => a + numeroSeguro(b.realizado), 0);
               if (total === 0) return "Sem gastos registrados neste mês.";
               return "Divisão por classificação: " + blocos.map((b) => {
-                const v = Number(b.realizado);
+                const v = numeroSeguro(b.realizado);
                 const pct = total > 0 ? Math.round((v / total) * 100) : 0;
                 return `${b.classificacao} ${formatBRL(v)} (${pct}%)`;
               }).join(", ") + ".";
@@ -204,7 +262,7 @@ function PainelPage() {
                   <Pie
                     data={blocos.map((b) => ({
                       nome: b.classificacao,
-                      valor: Number(b.realizado),
+                      valor: numeroSeguro(b.realizado),
                       cor: CHART_COLORS[b.classificacao],
                     }))}
                     dataKey="valor"
@@ -236,8 +294,8 @@ function PainelPage() {
           {!carregando && blocos.some((b) => Number(b.realizado) > 0) && (
             <ul className="mt-3 space-y-1 text-xs">
               {blocos.map((b) => {
-                const v = Number(b.realizado);
-                const total = blocos.reduce((a, x) => a + Number(x.realizado), 0);
+                const v = numeroSeguro(b.realizado);
+                const total = blocos.reduce((a, x) => a + numeroSeguro(x.realizado), 0);
                 const pct = total > 0 ? Math.round((v / total) * 100) : 0;
                 return (
                   <li key={b.classificacao} className="flex items-center justify-between gap-2">
@@ -265,7 +323,7 @@ function PainelPage() {
           <div className="mt-4 space-y-4">
             {(["Essencial", "Estilo de Vida", "Reserva/Dívidas"] as Classificacao[]).map((cls) => {
               const linha = blocos.find((b) => b.classificacao === cls);
-              const realizado = Number(linha?.realizado ?? 0);
+              const realizado = numeroSeguro(linha?.realizado);
               const limite = rendaTotal * LIMITE_PCT[cls];
               const pctRenda = rendaTotal > 0 ? realizado / rendaTotal : 0;
               const st = statusBloco(cls, pctRenda);
@@ -298,6 +356,7 @@ function PainelPage() {
           </div>
         </div>
       </section>
+      </DashboardSectionBoundary>
 
       <section className="grid gap-3 sm:grid-cols-2">
         <Link
@@ -328,7 +387,11 @@ function PainelPage() {
         </Link>
       </section>
 
-      <PainelExtras mes={mes} prefs={prefs} />
+      <DashboardSectionBoundary
+        fallback={<DashboardSectionError titulo="Não foi possível carregar os cards extras." />}
+      >
+        <PainelExtras mes={mes} prefs={prefs} />
+      </DashboardSectionBoundary>
     </div>
   );
 }
