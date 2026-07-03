@@ -246,8 +246,86 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* Planos */}
+      <section id="planos" className="mx-auto max-w-6xl px-6 pb-16">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+            Plano
+          </span>
+          <h2
+            className="mt-3 text-3xl tracking-tight md:text-4xl"
+            style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+          >
+            Um plano <em className="italic" style={{ color: ORANGE }}>simples e acessível.</em>
+          </h2>
+          <p className="mt-3 text-sm text-[#0F2A47]/70">
+            Acesso completo ao Família no Azul por um ano inteiro.
+          </p>
+        </div>
+
+        <div className="mx-auto mt-10 max-w-md">
+          <div className="relative overflow-hidden rounded-3xl border border-white/70 bg-white/90 p-8 shadow-xl backdrop-blur">
+            <div
+              className="absolute right-6 top-6 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white"
+              style={{ backgroundColor: ORANGE }}
+            >
+              Anual
+            </div>
+            <div className="text-sm font-semibold text-[#0F2A47]/70">Família no Azul</div>
+            <div className="mt-4 flex items-baseline gap-1">
+              <span className="text-5xl font-bold tracking-tight" style={{ fontFamily: "'Fraunces', Georgia, serif" }}>
+                R$ 67,90
+              </span>
+              <span className="text-sm text-[#0F2A47]/60">/ano</span>
+            </div>
+            <p className="mt-1 text-xs text-[#0F2A47]/60">
+              Menos de R$ 5,70 por mês
+            </p>
+
+            <ul className="mt-6 space-y-3 text-sm text-[#0F2A47]/80">
+              {[
+                "Painel de orçamento completo",
+                "Método 50-30-20 automatizado",
+                "Reserva de emergência e controle de dívidas",
+                "Acesso por 12 meses",
+                "Suporte por e-mail",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span
+                    className="mt-0.5 grid h-5 w-5 flex-shrink-0 place-items-center rounded-full text-white"
+                    style={{ backgroundColor: ORANGE }}
+                  >
+                    <svg viewBox="0 0 20 20" className="h-3 w-3" fill="currentColor">
+                      <path d="M7.5 13.5L4 10l1.4-1.4 2.1 2.1 6-6L14.9 6z" />
+                    </svg>
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="https://pay.kiwify.com.br/4FFlpa2"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
+              style={{ backgroundColor: ORANGE }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
+            >
+              Assinar agora
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <p className="mt-3 text-center text-xs text-[#0F2A47]/50">
+              Pagamento seguro via Kiwify
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA final */}
-      <section id="planos" className="mx-auto max-w-6xl px-6 pb-24">
+      <section className="mx-auto max-w-6xl px-6 pb-24">
+
         <div
           className="overflow-hidden rounded-[2rem] p-10 text-white md:p-14"
           style={{ backgroundImage: `linear-gradient(135deg, ${NAVY} 0%, #1E4A78 100%)` }}
