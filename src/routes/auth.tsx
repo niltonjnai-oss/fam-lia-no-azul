@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Mail, Lock, Loader2, Eye, EyeOff, User, Check, X, AlertCircle, LifeBuoy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import logoVertical from "@/assets/familia_no_azul_vertical.png.asset.json";
+const logoVertical = { url: "/brand/familia-vertical.png" };
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

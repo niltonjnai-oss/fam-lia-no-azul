@@ -15,7 +15,7 @@ import { useAuth, signOut } from "@/lib/auth-context";
 import { useIsAdmin } from "@/lib/use-is-admin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+const logoHorizontal = { url: "/brand/familia-horizontal.png" };
 
 type NavItem = {
   to: string;
