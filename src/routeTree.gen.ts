@@ -14,8 +14,10 @@ import { Route as ReservaRouteImport } from './routes/reserva'
 import { Route as OrcamentoRouteImport } from './routes/orcamento'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MetodoRouteImport } from './routes/metodo'
+import { Route as IndicacaoRouteImport } from './routes/indicacao'
 import { Route as DividasRouteImport } from './routes/dividas'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AssinaturaRouteImport } from './routes/assinatura'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -43,6 +45,11 @@ const MetodoRoute = MetodoRouteImport.update({
   path: '/metodo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndicacaoRoute = IndicacaoRouteImport.update({
+  id: '/indicacao',
+  path: '/indicacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DividasRoute = DividasRouteImport.update({
   id: '/dividas',
   path: '/dividas',
@@ -53,6 +60,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssinaturaRoute = AssinaturaRouteImport.update({
+  id: '/assinatura',
+  path: '/assinatura',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -61,8 +73,10 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/assinatura': typeof AssinaturaRoute
   '/auth': typeof AuthRoute
   '/dividas': typeof DividasRoute
+  '/indicacao': typeof IndicacaoRoute
   '/metodo': typeof MetodoRoute
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
@@ -71,8 +85,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/assinatura': typeof AssinaturaRoute
   '/auth': typeof AuthRoute
   '/dividas': typeof DividasRoute
+  '/indicacao': typeof IndicacaoRoute
   '/metodo': typeof MetodoRoute
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
@@ -82,8 +98,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/assinatura': typeof AssinaturaRoute
   '/auth': typeof AuthRoute
   '/dividas': typeof DividasRoute
+  '/indicacao': typeof IndicacaoRoute
   '/metodo': typeof MetodoRoute
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
@@ -94,8 +112,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/assinatura'
     | '/auth'
     | '/dividas'
+    | '/indicacao'
     | '/metodo'
     | '/onboarding'
     | '/orcamento'
@@ -104,8 +124,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/assinatura'
     | '/auth'
     | '/dividas'
+    | '/indicacao'
     | '/metodo'
     | '/onboarding'
     | '/orcamento'
@@ -114,8 +136,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/assinatura'
     | '/auth'
     | '/dividas'
+    | '/indicacao'
     | '/metodo'
     | '/onboarding'
     | '/orcamento'
@@ -125,8 +149,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AssinaturaRoute: typeof AssinaturaRoute
   AuthRoute: typeof AuthRoute
   DividasRoute: typeof DividasRoute
+  IndicacaoRoute: typeof IndicacaoRoute
   MetodoRoute: typeof MetodoRoute
   OnboardingRoute: typeof OnboardingRoute
   OrcamentoRoute: typeof OrcamentoRoute
@@ -171,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MetodoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/indicacao': {
+      id: '/indicacao'
+      path: '/indicacao'
+      fullPath: '/indicacao'
+      preLoaderRoute: typeof IndicacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dividas': {
       id: '/dividas'
       path: '/dividas'
@@ -185,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assinatura': {
+      id: '/assinatura'
+      path: '/assinatura'
+      fullPath: '/assinatura'
+      preLoaderRoute: typeof AssinaturaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -197,8 +237,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AssinaturaRoute: AssinaturaRoute,
   AuthRoute: AuthRoute,
   DividasRoute: DividasRoute,
+  IndicacaoRoute: IndicacaoRoute,
   MetodoRoute: MetodoRoute,
   OnboardingRoute: OnboardingRoute,
   OrcamentoRoute: OrcamentoRoute,
@@ -208,13 +250,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

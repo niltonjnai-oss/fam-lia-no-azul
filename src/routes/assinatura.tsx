@@ -64,10 +64,12 @@ function AssinaturaPage() {
 
   return (
     <div className="space-y-6">
-      <PageTitle
-        title="Sua assinatura"
-        subtitle="Acompanhe a validade do seu acesso ao Família no Azul."
-      />
+      <div>
+        <PageTitle>Sua assinatura</PageTitle>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Acompanhe a validade do seu acesso ao Família no Azul.
+        </p>
+      </div>
 
       <section className="rounded-2xl border border-border bg-card p-5 shadow-soft sm:p-6">
         <div className="flex items-start justify-between gap-3">

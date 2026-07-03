@@ -56,10 +56,12 @@ function IndicacaoPage() {
 
   return (
     <div className="space-y-6">
-      <PageTitle
-        title="Indique e ganhe"
-        subtitle="Compartilhe o Família no Azul e ajude mais famílias a saírem do vermelho."
-      />
+      <div>
+        <PageTitle>Indique e ganhe</PageTitle>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Compartilhe o Família no Azul e ajude mais famílias a saírem do vermelho.
+        </p>
+      </div>
 
       <section className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-5 shadow-soft sm:p-6">
         <div className="flex items-center gap-2">
