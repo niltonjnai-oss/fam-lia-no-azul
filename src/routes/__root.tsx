@@ -148,7 +148,8 @@ function AuthGate() {
   const navigate = useNavigate();
   const isAuthRoute = pathname.startsWith("/auth");
   const isResetPassword = pathname.startsWith("/reset-password");
-  const isPublicRoute = isAuthRoute || isResetPassword;
+  const isLanding = pathname === "/inicio";
+  const isPublicRoute = isAuthRoute || isResetPassword || isLanding;
   const isOnboarding = pathname.startsWith("/onboarding");
 
   useEffect(() => {
