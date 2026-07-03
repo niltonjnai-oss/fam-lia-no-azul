@@ -155,7 +155,7 @@ function AuthGate() {
   useEffect(() => {
     if (loading) return;
     if (!session && !isPublicRoute) {
-      navigate({ to: "/auth", replace: true });
+      navigate({ to: "/inicio", replace: true });
     }
   }, [session, loading, isPublicRoute, navigate]);
 
