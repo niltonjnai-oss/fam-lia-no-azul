@@ -5,6 +5,8 @@ import {
   PieChart,
   CreditCard,
   PiggyBank,
+  Sparkles,
+  Gift,
   LogOut,
 } from "lucide-react";
 import type { ComponentType } from "react";
@@ -27,6 +29,8 @@ const navItems: NavItem[] = [
   { to: "/metodo", label: "50-30-20", icon: PieChart },
   { to: "/dividas", label: "Dívidas", icon: CreditCard },
   { to: "/reserva", label: "Reserva", icon: PiggyBank },
+  { to: "/assinatura", label: "Assinatura", icon: Sparkles },
+  { to: "/indicacao", label: "Indique", icon: Gift },
 ];
 
 export function AppLayout() {
