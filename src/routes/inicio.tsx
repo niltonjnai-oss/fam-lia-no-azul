@@ -5,9 +5,9 @@ import {
   Wallet,
   TrendingUp,
   ShieldCheck,
-  Sparkles,
   CreditCard,
 } from "lucide-react";
+import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
 
 export const Route = createFileRoute("/inicio")({
   head: () => ({
