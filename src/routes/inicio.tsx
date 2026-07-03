@@ -344,16 +344,18 @@ function LandingPage() {
               </p>
             </div>
             <div className="flex flex-col gap-3">
-              <Link
-                to="/auth"
+              <a
+                href="https://pay.kiwify.com.br/4FFlpa2"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-md transition-colors"
                 style={{ backgroundColor: ORANGE }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
               >
-                Criar minha conta
+                Assinar por R$ 67,90/ano
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </a>
               <Link
                 to="/auth"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 px-6 py-3 text-sm font-medium text-white hover:bg-white/10"
