@@ -41,7 +41,7 @@ import {
 } from "@/components/PainelExtras";
 import { LancamentoRapido } from "@/components/LancamentoRapido";
 import { DespesasFixasDisponivel } from "@/components/DespesasFixasDisponivel";
-import { AssinaturaAppCard } from "@/components/AssinaturaAppCard";
+
 import { PageTitle } from "@/components/PageTitle";
 
 export const Route = createFileRoute("/")({
@@ -220,11 +220,6 @@ function PainelPage() {
         <LancamentoRapido />
       </DashboardSectionBoundary>
 
-      <DashboardSectionBoundary
-        fallback={<DashboardSectionError titulo="Não foi possível carregar Plano e Indique Amigo." />}
-      >
-        <AssinaturaAppCard />
-      </DashboardSectionBoundary>
 
       <DashboardSectionBoundary
         fallback={<DashboardSectionError titulo="Não foi possível carregar despesas fixas." />}
