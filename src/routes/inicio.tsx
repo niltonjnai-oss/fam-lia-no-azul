@@ -63,9 +63,9 @@ const benefits = [
 ];
 
 const steps = [
-  { n: "01", title: "Conte sua renda", desc: "Em 1 minuto, cadastre as entradas do mês." },
-  { n: "02", title: "Registre os gastos", desc: "Categorize cada saída com dois toques." },
-  { n: "03", title: "Respire fundo", desc: "O painel mostra o caminho — e o próximo passo." },
+  { n: "01", title: "Conte sua renda", desc: "Em 1 minuto, cadastre as entradas do mês.", img: step1Img },
+  { n: "02", title: "Registre os gastos", desc: "Categorize cada saída com dois toques.", img: step2Img },
+  { n: "03", title: "Respire fundo", desc: "O painel mostra o caminho — e o próximo passo.", img: step3Img },
 ];
 
 const stats = [
