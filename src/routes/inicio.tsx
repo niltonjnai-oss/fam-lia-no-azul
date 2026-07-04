@@ -10,6 +10,9 @@ import {
   Star,
 } from "lucide-react";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import step1Img from "@/assets/step-1-renda.jpg";
+import step2Img from "@/assets/step-2-gastos.jpg";
+import step3Img from "@/assets/step-3-respire.jpg";
 
 export const Route = createFileRoute("/inicio")({
   head: () => ({
