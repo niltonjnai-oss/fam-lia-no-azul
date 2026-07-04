@@ -44,6 +44,12 @@ function hasAuthCallbackSignal() {
   );
 }
 
+function getAuthErrorNotice() {
+  const params = getHashParams();
+  if (!params.has("error") && !params.has("error_code")) return null;
+  return params.get("error_code") === "otp_expired" ? "expired-link" : "invalid-link";
+}
+
 function isFreshEmailConfirmation(session: Session) {
   const provider = session.user.app_metadata?.provider;
   if (provider && provider !== "email") return false;
@@ -76,11 +82,26 @@ function AuthPage() {
     if (isAuthNotice(storedNotice)) {
       setNotice(storedNotice);
       window.sessionStorage.removeItem(AUTH_NOTICE_STORAGE_KEY);
+      return;
+    }
+
+    const authErrorNotice = getAuthErrorNotice();
+    if (authErrorNotice) {
+      setNotice(authErrorNotice);
+      window.history.replaceState(null, "", "/auth");
     }
   }, []);
 
   useEffect(() => {
     if (authLoading || !session) return;
+
+    const authErrorNotice = getAuthErrorNotice();
+    if (authErrorNotice) {
+      setNotice(authErrorNotice);
+      window.history.replaceState(null, "", "/auth");
+      void signOut();
+      return;
+    }
 
     if (hasAuthCallbackSignal() && isFreshEmailConfirmation(session)) {
       setMode("login");

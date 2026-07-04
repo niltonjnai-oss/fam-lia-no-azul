@@ -196,15 +196,21 @@ function AuthGate() {
   const isLanding = pathname === "/inicio";
   const isPublicRoute = isAuthRoute || isResetPassword || isLanding;
   const isOnboarding = pathname.startsWith("/onboarding");
+  const authErrorNotice = !loading ? getAuthErrorNotice(pathname) : null;
   const isHandlingEmailConfirmation = !loading && shouldSendConfirmedEmailUserToAuth(pathname, session);
+  const isHandlingAuthError = !loading && Boolean(authErrorNotice);
 
   useEffect(() => {
     if (loading) return;
 
     const authErrorNotice = getAuthErrorNotice(pathname);
-    if (!session && authErrorNotice) {
+    if (authErrorNotice) {
       window.sessionStorage.setItem(AUTH_NOTICE_STORAGE_KEY, authErrorNotice);
-      navigate({ to: "/auth", replace: true });
+      if (session) {
+        void signOut().finally(() => navigate({ to: "/auth", replace: true }));
+      } else {
+        navigate({ to: "/auth", replace: true });
+      }
       return;
     }
 
@@ -219,7 +225,7 @@ function AuthGate() {
     }
   }, [session, loading, pathname, isPublicRoute, navigate]);
 
-  if (loading || isHandlingEmailConfirmation) {
+  if (loading || isHandlingEmailConfirmation || isHandlingAuthError) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
