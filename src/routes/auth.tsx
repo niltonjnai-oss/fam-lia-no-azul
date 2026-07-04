@@ -196,7 +196,7 @@ function SignupForm({ onGoogle, onSwitchToLogin }: { onGoogle: () => void; onSwi
         email: email.trim(),
         password,
         options: {
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: `${window.location.origin}/auth`,
           data: { full_name: name.trim() },
         },
       });
