@@ -319,8 +319,15 @@ function LandingPage() {
                   </h3>
                   <p className="mt-4 max-w-md text-base text-[#0F2A47]/70">{s.desc}</p>
                 </div>
-                <div className="rounded-3xl border border-white/70 bg-white/80 p-10 shadow-sm">
-                  <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-[#EAF4FC] to-[#D6EAF8]" />
+                <div className="overflow-hidden rounded-3xl border border-white/70 bg-white/80 p-3 shadow-sm">
+                  <img
+                    src={s.img}
+                    alt={s.title}
+                    width={1024}
+                    height={768}
+                    loading="lazy"
+                    className="aspect-[4/3] w-full rounded-2xl object-cover"
+                  />
                 </div>
               </div>
             ))}
