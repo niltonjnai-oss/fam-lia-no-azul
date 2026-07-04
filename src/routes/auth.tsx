@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
 import { Mail, Lock, Loader2, Eye, EyeOff, User, Check, X, AlertCircle, LifeBuoy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 const logoVertical = { url: "/brand/familia-vertical.png" };
-import { useAuth } from "@/lib/auth-context";
+import { signOut, useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,14 +19,99 @@ export const Route = createFileRoute("/auth")({
 });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const AUTH_NOTICE_STORAGE_KEY = "familia_auth_notice";
+const EMAIL_CONFIRMATION_WINDOW_MS = 15 * 60 * 1000;
+type AuthNotice = "email-confirmed" | "expired-link" | "invalid-link";
+
+function isAuthNotice(value: string | null): value is AuthNotice {
+  return value === "email-confirmed" || value === "expired-link" || value === "invalid-link";
+}
+
+function getHashParams() {
+  const hash = window.location.hash.startsWith("#")
+    ? window.location.hash.slice(1)
+    : window.location.hash;
+  return new URLSearchParams(hash);
+}
+
+function hasAuthCallbackSignal() {
+  const params = getHashParams();
+  return (
+    window.location.href.endsWith("#") ||
+    params.has("access_token") ||
+    params.has("refresh_token") ||
+    params.get("type") === "signup"
+  );
+}
+
+function getAuthErrorNotice() {
+  const params = getHashParams();
+  if (!params.has("error") && !params.has("error_code")) return null;
+  return params.get("error_code") === "otp_expired" ? "expired-link" : "invalid-link";
+}
+
+function isFreshEmailConfirmation(session: Session) {
+  const provider = session.user.app_metadata?.provider;
+  if (provider && provider !== "email") return false;
+
+  const confirmedAt = session.user.email_confirmed_at ?? session.user.confirmed_at;
+  const confirmedTime = Date.parse(confirmedAt ?? "");
+  if (!Number.isFinite(confirmedTime)) return false;
+
+  return Math.abs(Date.now() - confirmedTime) <= EMAIL_CONFIRMATION_WINDOW_MS;
+}
+
+function noticeMessage(notice: AuthNotice) {
+  if (notice === "email-confirmed") {
+    return "E-mail confirmado! Agora entre com seu e-mail e senha para acessar.";
+  }
+  if (notice === "expired-link") {
+    return "Esse link de confirmação expirou ou já foi usado. Crie a conta novamente para receber um novo link.";
+  }
+  return "Não foi possível validar esse link. Solicite um novo link de confirmação.";
+}
 
 function AuthPage() {
   const { session, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"login" | "signup">("login");
+  const [notice, setNotice] = useState<AuthNotice | null>(null);
 
   useEffect(() => {
-    if (!authLoading && session) {
+    const storedNotice = window.sessionStorage.getItem(AUTH_NOTICE_STORAGE_KEY);
+    if (isAuthNotice(storedNotice)) {
+      setNotice(storedNotice);
+      window.sessionStorage.removeItem(AUTH_NOTICE_STORAGE_KEY);
+      return;
+    }
+
+    const authErrorNotice = getAuthErrorNotice();
+    if (authErrorNotice) {
+      setNotice(authErrorNotice);
+      window.history.replaceState(null, "", "/auth");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (authLoading || !session) return;
+
+    const authErrorNotice = getAuthErrorNotice();
+    if (authErrorNotice) {
+      setNotice(authErrorNotice);
+      window.history.replaceState(null, "", "/auth");
+      void signOut();
+      return;
+    }
+
+    if (hasAuthCallbackSignal() && isFreshEmailConfirmation(session)) {
+      setMode("login");
+      setNotice("email-confirmed");
+      window.history.replaceState(null, "", "/auth");
+      void signOut();
+      return;
+    }
+
+    if (session) {
       navigate({ to: "/", replace: true });
     }
   }, [session, authLoading, navigate]);
@@ -53,6 +139,12 @@ function AuthPage() {
               : "Entre para acompanhar o orçamento da sua família."}
           </p>
         </div>
+
+        {notice && (
+          <div className="mb-4 rounded-xl border border-primary/30 bg-primary/10 p-4 text-sm text-foreground">
+            {noticeMessage(notice)}
+          </div>
+        )}
 
         <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
           <Tabs value={mode} onValueChange={(v) => setMode(v as "login" | "signup")}>
