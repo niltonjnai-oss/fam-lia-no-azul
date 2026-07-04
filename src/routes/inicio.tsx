@@ -10,6 +10,9 @@ import {
   Star,
 } from "lucide-react";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import step1Img from "@/assets/step-1-renda.jpg";
+import step2Img from "@/assets/step-2-gastos.jpg";
+import step3Img from "@/assets/step-3-respire.jpg";
 
 export const Route = createFileRoute("/inicio")({
   head: () => ({
@@ -60,9 +63,9 @@ const benefits = [
 ];
 
 const steps = [
-  { n: "01", title: "Conte sua renda", desc: "Em 1 minuto, cadastre as entradas do mês." },
-  { n: "02", title: "Registre os gastos", desc: "Categorize cada saída com dois toques." },
-  { n: "03", title: "Respire fundo", desc: "O painel mostra o caminho — e o próximo passo." },
+  { n: "01", title: "Conte sua renda", desc: "Em 1 minuto, cadastre as entradas do mês.", img: step1Img },
+  { n: "02", title: "Registre os gastos", desc: "Categorize cada saída com dois toques.", img: step2Img },
+  { n: "03", title: "Respire fundo", desc: "O painel mostra o caminho — e o próximo passo.", img: step3Img },
 ];
 
 const stats = [
@@ -316,8 +319,15 @@ function LandingPage() {
                   </h3>
                   <p className="mt-4 max-w-md text-base text-[#0F2A47]/70">{s.desc}</p>
                 </div>
-                <div className="rounded-3xl border border-white/70 bg-white/80 p-10 shadow-sm">
-                  <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-[#EAF4FC] to-[#D6EAF8]" />
+                <div className="overflow-hidden rounded-3xl border border-white/70 bg-white/80 p-3 shadow-sm">
+                  <img
+                    src={s.img}
+                    alt={s.title}
+                    width={1024}
+                    height={768}
+                    loading="lazy"
+                    className="aspect-[4/3] w-full rounded-2xl object-cover"
+                  />
                 </div>
               </div>
             ))}
