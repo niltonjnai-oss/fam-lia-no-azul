@@ -9,14 +9,59 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import type { Session } from "@supabase/supabase-js";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppLayout } from "../components/AppLayout";
-import { AuthProvider, useAuth } from "../lib/auth-context";
+import { AuthProvider, signOut, useAuth } from "../lib/auth-context";
 import { Toaster } from "../components/ui/sonner";
 import { MesProvider } from "../lib/mes-context";
+
+const AUTH_NOTICE_STORAGE_KEY = "familia_auth_notice";
+const EMAIL_CONFIRMATION_WINDOW_MS = 15 * 60 * 1000;
+
+function getHashParams() {
+  if (typeof window === "undefined") return new URLSearchParams();
+  const hash = window.location.hash.startsWith("#")
+    ? window.location.hash.slice(1)
+    : window.location.hash;
+  return new URLSearchParams(hash);
+}
+
+function hasAuthCallbackSignal() {
+  if (typeof window === "undefined") return false;
+  const params = getHashParams();
+  return (
+    window.location.href.endsWith("#") ||
+    params.has("access_token") ||
+    params.has("refresh_token") ||
+    params.get("type") === "signup"
+  );
+}
+
+function getAuthErrorNotice(pathname: string) {
+  if (pathname !== "/") return null;
+  const params = getHashParams();
+  if (!params.has("error") && !params.has("error_code")) return null;
+  return params.get("error_code") === "otp_expired" ? "expired-link" : "invalid-link";
+}
+
+function isFreshEmailConfirmation(session: Session) {
+  const provider = session.user.app_metadata?.provider;
+  if (provider && provider !== "email") return false;
+
+  const confirmedAt = session.user.email_confirmed_at ?? session.user.confirmed_at;
+  const confirmedTime = Date.parse(confirmedAt ?? "");
+  if (!Number.isFinite(confirmedTime)) return false;
+
+  return Math.abs(Date.now() - confirmedTime) <= EMAIL_CONFIRMATION_WINDOW_MS;
+}
+
+function shouldSendConfirmedEmailUserToAuth(pathname: string, session: Session | null) {
+  return pathname === "/" && Boolean(session && hasAuthCallbackSignal() && isFreshEmailConfirmation(session));
+}
 
 function NotFoundComponent() {
   return (
@@ -151,15 +196,30 @@ function AuthGate() {
   const isLanding = pathname === "/inicio";
   const isPublicRoute = isAuthRoute || isResetPassword || isLanding;
   const isOnboarding = pathname.startsWith("/onboarding");
+  const isHandlingEmailConfirmation = !loading && shouldSendConfirmedEmailUserToAuth(pathname, session);
 
   useEffect(() => {
     if (loading) return;
+
+    const authErrorNotice = getAuthErrorNotice(pathname);
+    if (!session && authErrorNotice) {
+      window.sessionStorage.setItem(AUTH_NOTICE_STORAGE_KEY, authErrorNotice);
+      navigate({ to: "/auth", replace: true });
+      return;
+    }
+
+    if (shouldSendConfirmedEmailUserToAuth(pathname, session)) {
+      window.sessionStorage.setItem(AUTH_NOTICE_STORAGE_KEY, "email-confirmed");
+      void signOut().finally(() => navigate({ to: "/auth", replace: true }));
+      return;
+    }
+
     if (!session && !isPublicRoute) {
       navigate({ to: "/inicio", replace: true });
     }
-  }, [session, loading, isPublicRoute, navigate]);
+  }, [session, loading, pathname, isPublicRoute, navigate]);
 
-  if (loading) {
+  if (loading || isHandlingEmailConfirmation) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
