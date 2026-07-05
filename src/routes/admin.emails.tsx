@@ -34,10 +34,20 @@ function AdminEmailsPage() {
   const [status, setStatus] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
 
-  if (loading) return <div className="p-8">Carregando…</div>;
-  if (!user) return <Navigate to="/auth" />;
-  if (!isAdmin)
-    return <div className="p-8 text-red-600">Acesso restrito a administradores.</div>;
+  const preview = useMemo(() => {
+    try {
+      if (template === "onboarding-dia-1") return onboardingDia1({ nome });
+      if (template === "lembrete-semanal") return lembreteSemanal({ nome });
+      return marketingGenerico({
+        titulo: titulo || "(sem título)",
+        corpoHtml: corpoHtml || "<p><em>(corpo vazio)</em></p>",
+        ctaTexto: ctaTexto || undefined,
+        ctaUrl: ctaUrl || undefined,
+      });
+    } catch {
+      return { subject: "", html: "" };
+    }
+  }, [template, nome, titulo, corpoHtml, ctaTexto, ctaUrl]);
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
@@ -79,20 +89,10 @@ function AdminEmailsPage() {
     }
   }
 
-  const preview = useMemo(() => {
-    try {
-      if (template === "onboarding-dia-1") return onboardingDia1({ nome });
-      if (template === "lembrete-semanal") return lembreteSemanal({ nome });
-      return marketingGenerico({
-        titulo: titulo || "(sem título)",
-        corpoHtml: corpoHtml || "<p><em>(corpo vazio)</em></p>",
-        ctaTexto: ctaTexto || undefined,
-        ctaUrl: ctaUrl || undefined,
-      });
-    } catch {
-      return { subject: "", html: "" };
-    }
-  }, [template, nome, titulo, corpoHtml, ctaTexto, ctaUrl]);
+  if (loading) return <div className="p-8">Carregando…</div>;
+  if (!user) return <Navigate to="/auth" />;
+  if (!isAdmin)
+    return <div className="p-8 text-red-600">Acesso restrito a administradores.</div>;
 
   return (
     <div className="mx-auto max-w-3xl p-6">
