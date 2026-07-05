@@ -199,6 +199,24 @@ function AdminEmailsPage() {
 
         {status && <div className="pt-2 text-sm">{status}</div>}
       </form>
+
+      <section className="mt-8 rounded-lg border p-6">
+        <h2 className="mb-3 text-lg font-semibold">Pré-visualização</h2>
+        <div className="mb-3 rounded bg-slate-50 px-3 py-2 text-sm">
+          <span className="font-medium text-slate-500">Assunto: </span>
+          <span>{preview.subject || <em className="text-slate-400">(vazio)</em>}</span>
+        </div>
+        <iframe
+          title="Pré-visualização do email"
+          srcDoc={preview.html}
+          sandbox=""
+          className="h-[600px] w-full rounded border bg-white"
+        />
+        <p className="mt-2 text-xs text-slate-500">
+          Renderização local — nada é enviado até você clicar em <strong>Enviar</strong>.
+        </p>
+      </section>
     </div>
   );
 }
+
