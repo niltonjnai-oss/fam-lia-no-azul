@@ -88,7 +88,9 @@ function AdminEmailsPage() {
       setStatus(`❌ ${err instanceof Error ? err.message : "Falha"}`);
     } finally {
       setSending(false);
+    }
   }
+
 
   async function handleTestToMe() {
     setTesting(true);
