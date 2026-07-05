@@ -20,6 +20,9 @@ import { Route as DividasRouteImport } from './routes/dividas'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssinaturaRouteImport } from './routes/assinatura'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
+import { Route as ApiEmailsSendRouteImport } from './routes/api/emails/send'
+import { Route as ApiPublicEmailsCronRouteImport } from './routes/api/public/emails/cron'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -76,6 +79,21 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminEmailsRoute = AdminEmailsRouteImport.update({
+  id: '/admin/emails',
+  path: '/admin/emails',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiEmailsSendRoute = ApiEmailsSendRouteImport.update({
+  id: '/api/emails/send',
+  path: '/api/emails/send',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicEmailsCronRoute = ApiPublicEmailsCronRouteImport.update({
+  id: '/api/public/emails/cron',
+  path: '/api/public/emails/cron',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +107,9 @@ export interface FileRoutesByFullPath {
   '/orcamento': typeof OrcamentoRoute
   '/reserva': typeof ReservaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/emails': typeof AdminEmailsRoute
+  '/api/emails/send': typeof ApiEmailsSendRoute
+  '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +123,9 @@ export interface FileRoutesByTo {
   '/orcamento': typeof OrcamentoRoute
   '/reserva': typeof ReservaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/emails': typeof AdminEmailsRoute
+  '/api/emails/send': typeof ApiEmailsSendRoute
+  '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +140,9 @@ export interface FileRoutesById {
   '/orcamento': typeof OrcamentoRoute
   '/reserva': typeof ReservaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/emails': typeof AdminEmailsRoute
+  '/api/emails/send': typeof ApiEmailsSendRoute
+  '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +158,9 @@ export interface FileRouteTypes {
     | '/orcamento'
     | '/reserva'
     | '/reset-password'
+    | '/admin/emails'
+    | '/api/emails/send'
+    | '/api/public/emails/cron'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +174,9 @@ export interface FileRouteTypes {
     | '/orcamento'
     | '/reserva'
     | '/reset-password'
+    | '/admin/emails'
+    | '/api/emails/send'
+    | '/api/public/emails/cron'
   id:
     | '__root__'
     | '/'
@@ -157,6 +190,9 @@ export interface FileRouteTypes {
     | '/orcamento'
     | '/reserva'
     | '/reset-password'
+    | '/admin/emails'
+    | '/api/emails/send'
+    | '/api/public/emails/cron'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,6 +207,9 @@ export interface RootRouteChildren {
   OrcamentoRoute: typeof OrcamentoRoute
   ReservaRoute: typeof ReservaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  AdminEmailsRoute: typeof AdminEmailsRoute
+  ApiEmailsSendRoute: typeof ApiEmailsSendRoute
+  ApiPublicEmailsCronRoute: typeof ApiPublicEmailsCronRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,6 +291,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/emails': {
+      id: '/admin/emails'
+      path: '/admin/emails'
+      fullPath: '/admin/emails'
+      preLoaderRoute: typeof AdminEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/emails/send': {
+      id: '/api/emails/send'
+      path: '/api/emails/send'
+      fullPath: '/api/emails/send'
+      preLoaderRoute: typeof ApiEmailsSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/emails/cron': {
+      id: '/api/public/emails/cron'
+      path: '/api/public/emails/cron'
+      fullPath: '/api/public/emails/cron'
+      preLoaderRoute: typeof ApiPublicEmailsCronRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -267,17 +327,10 @@ const rootRouteChildren: RootRouteChildren = {
   OrcamentoRoute: OrcamentoRoute,
   ReservaRoute: ReservaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  AdminEmailsRoute: AdminEmailsRoute,
+  ApiEmailsSendRoute: ApiEmailsSendRoute,
+  ApiPublicEmailsCronRoute: ApiPublicEmailsCronRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
