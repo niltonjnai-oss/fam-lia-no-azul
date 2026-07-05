@@ -88,7 +88,52 @@ function AdminEmailsPage() {
       setStatus(`❌ ${err instanceof Error ? err.message : "Falha"}`);
     } finally {
       setSending(false);
+  }
+
+  async function handleTestToMe() {
+    setTesting(true);
+    setTestStatus(null);
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      const email = sess.session?.user?.email;
+      if (!token || !email) throw new Error("Sessão expirada");
+
+      const nomeTeste = nome || email.split("@")[0];
+      let payload: Record<string, unknown>;
+      if (template === "marketing-generico") {
+        payload = {
+          template,
+          to: email,
+          titulo: titulo || "[TESTE] Assunto de exemplo",
+          corpoHtml:
+            corpoHtml ||
+            "<p>Este é um <strong>email de teste</strong> do template marketing.</p><p>Se você recebeu, o envio está funcionando ✅</p>",
+          ctaTexto: ctaTexto || "Acessar plataforma",
+          ctaUrl: ctaUrl || "https://educarbem.com.br",
+        };
+      } else {
+        payload = { template, to: email, nome: nomeTeste };
+      }
+
+      const res = await fetch("/api/emails/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok)
+        throw new Error(json.error ? JSON.stringify(json.error) : `HTTP ${res.status}`);
+      setTestStatus(`✅ Teste enviado para ${email} (id: ${json.id || "—"})`);
+    } catch (err) {
+      setTestStatus(`❌ ${err instanceof Error ? err.message : "Falha"}`);
+    } finally {
+      setTesting(false);
     }
+  }
   }
 
   if (loading) return <div className="p-8">Carregando…</div>;
