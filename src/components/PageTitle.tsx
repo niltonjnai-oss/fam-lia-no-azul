@@ -6,7 +6,7 @@ interface PageTitleProps {
 
 export function PageTitle({ children }: PageTitleProps) {
   return (
-    <h1 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">
+    <h1 className="t-h1 text-primary">
       {children}
     </h1>
   );
