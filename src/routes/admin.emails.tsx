@@ -33,6 +33,8 @@ function AdminEmailsPage() {
   const [ctaUrl, setCtaUrl] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testStatus, setTestStatus] = useState<string | null>(null);
 
   const preview = useMemo(() => {
     try {
