@@ -1,8 +1,13 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useIsAdmin } from "@/lib/use-is-admin";
+import {
+  onboardingDia1,
+  lembreteSemanal,
+  marketingGenerico,
+} from "@/lib/emails/templates";
 
 export const Route = createFileRoute("/admin/emails")({
   head: () => ({
