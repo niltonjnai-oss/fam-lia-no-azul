@@ -134,7 +134,6 @@ function AdminEmailsPage() {
       setTestStatus(`❌ ${err instanceof Error ? err.message : "Falha"}`);
     } finally {
       setTesting(false);
-    }
   }
   }
 
