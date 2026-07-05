@@ -45,7 +45,7 @@ function PrivacidadePage() {
           <p>[INSERIR CONTEÚDO COMPLETO DA POLÍTICA DE PRIVACIDADE]</p>
           <p>
             <strong>Seus direitos.</strong> Você pode solicitar acesso, correção, exclusão e
-            portabilidade dos seus dados a qualquer momento pelo e-mail [INSERIR E-MAIL].
+            portabilidade dos seus dados a qualquer momento pelo e-mail sac.familianoazul@educarbem.com.br.
           </p>
           <p>
             <strong>Compartilhamento.</strong> Não vendemos nem compartilhamos seus dados
