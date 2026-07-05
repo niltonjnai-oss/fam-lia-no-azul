@@ -669,8 +669,8 @@ function LandingPage() {
             <div className="space-y-1.5">
               <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
               <div>Família no Azul é uma marca do Grupo Romana.</div>
-              <div>CNPJ [INSERIR CNPJ]</div>
-              <div>Contato: [INSERIR E-MAIL]</div>
+              <div>CNPJ 48.570.356/0001-97</div>
+              <div>Contato: <a href="mailto:sac.familianoazul@educarbem.com.br" className="hover:text-[#0F2A47]">sac.familianoazul@educarbem.com.br</a></div>
             </div>
             <div className="flex flex-wrap gap-x-6 gap-y-2 md:justify-end">
               <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>

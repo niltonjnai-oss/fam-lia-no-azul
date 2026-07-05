@@ -32,7 +32,7 @@ function TermosPage() {
         <div className="prose prose-slate mt-8 max-w-none text-[#0F2A47]/80">
           <p>[INSERIR CONTEÚDO DOS TERMOS DE USO]</p>
           <p>
-            O Família no Azul é uma marca do Grupo Romana (CNPJ [INSERIR CNPJ]). Ao usar o serviço,
+            O Família no Azul é uma marca do Grupo Romana (CNPJ 48.570.356/0001-97). Ao usar o serviço,
             você concorda com estes Termos.
           </p>
         </div>
