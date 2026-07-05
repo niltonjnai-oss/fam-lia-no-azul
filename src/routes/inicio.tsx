@@ -192,8 +192,7 @@ function LandingPage() {
           Orçamento familiar humano
         </span>
         <h1
-          className="mx-auto mt-8 max-w-4xl text-5xl leading-[1.02] tracking-tight md:text-7xl lg:text-[88px]"
-          style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+          className="font-display mx-auto mt-8 max-w-4xl text-5xl leading-[1.02] tracking-tight md:text-7xl lg:text-[88px]"
         >
           A calma de saber{" "}
           <em className="font-normal italic" style={{ color: ORANGE }}>
@@ -287,12 +286,11 @@ function LandingPage() {
       <section className="border-y border-white/60 bg-white/40 backdrop-blur">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+            <span className="t-eyebrow">
               Por que funciona
             </span>
             <h2
-              className="mt-3 text-3xl tracking-tight md:text-4xl"
-              style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+              className="font-display mt-3 text-3xl tracking-tight md:text-4xl"
             >
               Simples de manter, <em className="italic" style={{ color: ORANGE }}>feito pra durar.</em>
             </h2>
@@ -301,8 +299,7 @@ function LandingPage() {
             {pillars.map((p) => (
               <div key={p.title} className="text-center">
                 <div
-                  className="text-5xl font-semibold tracking-tight md:text-6xl"
-                  style={{ fontFamily: "'Fraunces', Georgia, serif", color: NAVY }}
+                  className="font-display text-5xl font-semibold tracking-tight md:text-6xl" style={{ color: NAVY }}
                 >
                   {p.value}
                 </div>
@@ -319,12 +316,11 @@ function LandingPage() {
       {/* BENEFÍCIOS */}
       <section id="beneficios" className="mx-auto max-w-6xl px-6 py-28">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+          <span className="t-eyebrow">
             Benefícios
           </span>
           <h2
-            className="mt-3 text-4xl tracking-tight md:text-5xl"
-            style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+            className="font-display mt-3 text-4xl tracking-tight md:text-5xl"
           >
             Tudo que uma família precisa,<br />
             <em className="italic" style={{ color: ORANGE }}>nada que ela não precise.</em>
@@ -353,12 +349,11 @@ function LandingPage() {
       <section id="como-funciona" className="border-t border-white/60 bg-white/30 backdrop-blur">
         <div className="mx-auto max-w-6xl px-6 py-28">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+            <span className="t-eyebrow">
               Como funciona
             </span>
             <h2
-              className="mt-3 text-4xl tracking-tight md:text-5xl"
-              style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+              className="font-display mt-3 text-4xl tracking-tight md:text-5xl"
             >
               Três passos até <em className="italic" style={{ color: ORANGE }}>respirar aliviado.</em>
             </h2>
@@ -379,8 +374,7 @@ function LandingPage() {
                     {s.n}
                   </div>
                   <h3
-                    className="mt-4 text-3xl tracking-tight md:text-4xl"
-                    style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+                    className="font-display mt-4 text-3xl tracking-tight md:text-4xl"
                   >
                     {s.title}
                   </h3>
@@ -405,12 +399,11 @@ function LandingPage() {
       {/* POR DENTRO DO APP */}
       <section id="app" className="mx-auto max-w-6xl px-6 py-28">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+          <span className="t-eyebrow">
             Por dentro do app
           </span>
           <h2
-            className="mt-3 text-4xl tracking-tight md:text-5xl"
-            style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+            className="font-display mt-3 text-4xl tracking-tight md:text-5xl"
           >
             Tudo o que importa, <em className="italic" style={{ color: ORANGE }}>numa tela só.</em>
           </h2>
@@ -425,8 +418,7 @@ function LandingPage() {
             >
               <div>
                 <h3
-                  className="text-3xl tracking-tight md:text-4xl"
-                  style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+                  className="font-display text-3xl tracking-tight md:text-4xl"
                 >
                   {screen.title}
                 </h3>
@@ -458,12 +450,11 @@ function LandingPage() {
       <section id="depoimentos" className="border-t border-white/60 bg-white/30 backdrop-blur">
         <div className="mx-auto max-w-6xl px-6 py-28">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+            <span className="t-eyebrow">
               De família pra família
             </span>
             <h2
-              className="mt-3 text-4xl tracking-tight md:text-5xl"
-              style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+              className="font-display mt-3 text-4xl tracking-tight md:text-5xl"
             >
               Por que criamos o <em className="italic" style={{ color: ORANGE }}>Família no Azul.</em>
             </h2>
@@ -471,8 +462,7 @@ function LandingPage() {
           <div className="mx-auto mt-14 max-w-3xl rounded-[2rem] border border-white/70 bg-white/90 p-10 shadow-xl md:p-16">
             <Heart className="h-8 w-8" style={{ color: ORANGE }} />
             <p
-              className="mt-6 text-2xl leading-snug tracking-tight md:text-3xl"
-              style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+              className="font-display mt-6 text-2xl leading-snug tracking-tight md:text-3xl"
             >
               A gente sabe como é terminar o mês sem saber pra onde o dinheiro foi. O Família no Azul
               nasceu pra tornar o controle financeiro leve, simples e possível — sem planilha
@@ -497,12 +487,11 @@ function LandingPage() {
               </div>
             </div>
             <div className="text-center md:text-left">
-              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+              <span className="t-eyebrow">
                 Sem risco
               </span>
               <h2
-                className="mt-2 text-3xl tracking-tight md:text-4xl"
-                style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+                className="font-display mt-2 text-3xl tracking-tight md:text-4xl"
               >
                 Experimente. Se não for pra sua família,{" "}
                 <em className="italic" style={{ color: ORANGE }}>é por nossa conta.</em>
@@ -520,12 +509,11 @@ function LandingPage() {
       <section id="planos" className="border-t border-white/60 bg-white/30 backdrop-blur">
         <div className="mx-auto max-w-6xl px-6 py-28">
           <div className="mx-auto max-w-2xl text-center">
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+            <span className="t-eyebrow">
               Plano
             </span>
             <h2
-              className="mt-3 text-4xl tracking-tight md:text-5xl"
-              style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+              className="font-display mt-3 text-4xl tracking-tight md:text-5xl"
             >
               Um plano <em className="italic" style={{ color: ORANGE }}>simples e acessível.</em>
             </h2>
@@ -545,8 +533,7 @@ function LandingPage() {
               <div className="text-sm font-semibold text-[#0F2A47]/70">Família no Azul</div>
               <div className="mt-4 flex items-baseline gap-1">
                 <span
-                  className="text-6xl font-bold tracking-tight"
-                  style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+                  className="font-display text-6xl font-bold tracking-tight"
                 >
                   R$ 67,90
                 </span>
@@ -597,12 +584,11 @@ function LandingPage() {
       {/* FAQ */}
       <section id="faq" className="mx-auto max-w-4xl px-6 py-28">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+          <span className="t-eyebrow">
             Perguntas frequentes
           </span>
           <h2
-            className="mt-3 text-4xl tracking-tight md:text-5xl"
-            style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+            className="font-display mt-3 text-4xl tracking-tight md:text-5xl"
           >
             Ainda com dúvida? <em className="italic" style={{ color: ORANGE }}>A gente responde.</em>
           </h2>
@@ -630,8 +616,7 @@ function LandingPage() {
           style={{ backgroundImage: `linear-gradient(135deg, ${NAVY} 0%, #1E4A78 100%)` }}
         >
           <h2
-            className="mx-auto max-w-3xl text-4xl leading-tight tracking-tight md:text-6xl"
-            style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+            className="font-display mx-auto max-w-3xl text-4xl leading-tight tracking-tight md:text-6xl"
           >
             Comece hoje.<br />
             <em className="italic" style={{ color: ORANGE }}>A família agradece amanhã.</em>
