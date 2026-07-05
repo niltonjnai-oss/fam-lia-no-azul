@@ -247,6 +247,23 @@ function AdminEmailsPage() {
         {status && <div className="pt-2 text-sm">{status}</div>}
       </form>
 
+      <section className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-6">
+        <h2 className="mb-2 text-lg font-semibold">Enviar teste para mim</h2>
+        <p className="mb-3 text-sm text-slate-600">
+          Dispara o template <strong>{template}</strong> para o email da sua conta
+          admin, usando os campos preenchidos acima (ou valores de exemplo).
+        </p>
+        <button
+          type="button"
+          onClick={handleTestToMe}
+          disabled={testing}
+          className="rounded bg-blue-700 px-4 py-2 font-medium text-white disabled:opacity-50"
+        >
+          {testing ? "Enviando teste…" : "🧪 Enviar teste para mim"}
+        </button>
+        {testStatus && <div className="pt-3 text-sm">{testStatus}</div>}
+      </section>
+
       <section className="mt-8 rounded-lg border p-6">
         <h2 className="mb-3 text-lg font-semibold">Pré-visualização</h2>
         <div className="mb-3 rounded bg-slate-50 px-3 py-2 text-sm">
