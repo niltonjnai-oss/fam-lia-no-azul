@@ -79,8 +79,23 @@ function AdminEmailsPage() {
     }
   }
 
+  const preview = useMemo(() => {
+    try {
+      if (template === "onboarding-dia-1") return onboardingDia1({ nome });
+      if (template === "lembrete-semanal") return lembreteSemanal({ nome });
+      return marketingGenerico({
+        titulo: titulo || "(sem título)",
+        corpoHtml: corpoHtml || "<p><em>(corpo vazio)</em></p>",
+        ctaTexto: ctaTexto || undefined,
+        ctaUrl: ctaUrl || undefined,
+      });
+    } catch {
+      return { subject: "", html: "" };
+    }
+  }, [template, nome, titulo, corpoHtml, ctaTexto, ctaUrl]);
+
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="mx-auto max-w-3xl p-6">
       <h1 className="mb-2 text-2xl font-bold">Envio de Emails</h1>
       <p className="mb-6 text-sm text-slate-600">
         Emails de auth (confirmação, reset) continuam no Supabase. Aqui só marketing,
@@ -88,6 +103,7 @@ function AdminEmailsPage() {
       </p>
 
       <form onSubmit={handleSend} className="space-y-4 rounded-lg border p-6">
+
         <label className="block">
           <span className="mb-1 block text-sm font-medium">Template</span>
           <select
