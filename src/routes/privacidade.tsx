@@ -37,7 +37,8 @@ function PrivacidadePage() {
         </p>
         <div className="prose prose-slate mt-8 max-w-none text-[#0F2A47]/80">
           <p>
-            O Família no Azul, marca do Grupo Romana (CNPJ [INSERIR CNPJ]), trata seus dados
+            O Família no Azul, marca do Grupo Romana (CNPJ 48.570.356/0001-97), trata seus dados
+
             pessoais em conformidade com a Lei Geral de Proteção de Dados (LGPD — Lei nº
             13.709/2018).
           </p>
