@@ -1,8 +1,13 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useIsAdmin } from "@/lib/use-is-admin";
+import {
+  onboardingDia1,
+  lembreteSemanal,
+  marketingGenerico,
+} from "@/lib/emails/templates";
 
 export const Route = createFileRoute("/admin/emails")({
   head: () => ({
@@ -74,8 +79,23 @@ function AdminEmailsPage() {
     }
   }
 
+  const preview = useMemo(() => {
+    try {
+      if (template === "onboarding-dia-1") return onboardingDia1({ nome });
+      if (template === "lembrete-semanal") return lembreteSemanal({ nome });
+      return marketingGenerico({
+        titulo: titulo || "(sem título)",
+        corpoHtml: corpoHtml || "<p><em>(corpo vazio)</em></p>",
+        ctaTexto: ctaTexto || undefined,
+        ctaUrl: ctaUrl || undefined,
+      });
+    } catch {
+      return { subject: "", html: "" };
+    }
+  }, [template, nome, titulo, corpoHtml, ctaTexto, ctaUrl]);
+
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="mx-auto max-w-3xl p-6">
       <h1 className="mb-2 text-2xl font-bold">Envio de Emails</h1>
       <p className="mb-6 text-sm text-slate-600">
         Emails de auth (confirmação, reset) continuam no Supabase. Aqui só marketing,
@@ -83,6 +103,7 @@ function AdminEmailsPage() {
       </p>
 
       <form onSubmit={handleSend} className="space-y-4 rounded-lg border p-6">
+
         <label className="block">
           <span className="mb-1 block text-sm font-medium">Template</span>
           <select
@@ -178,6 +199,24 @@ function AdminEmailsPage() {
 
         {status && <div className="pt-2 text-sm">{status}</div>}
       </form>
+
+      <section className="mt-8 rounded-lg border p-6">
+        <h2 className="mb-3 text-lg font-semibold">Pré-visualização</h2>
+        <div className="mb-3 rounded bg-slate-50 px-3 py-2 text-sm">
+          <span className="font-medium text-slate-500">Assunto: </span>
+          <span>{preview.subject || <em className="text-slate-400">(vazio)</em>}</span>
+        </div>
+        <iframe
+          title="Pré-visualização do email"
+          srcDoc={preview.html}
+          sandbox=""
+          className="h-[600px] w-full rounded border bg-white"
+        />
+        <p className="mt-2 text-xs text-slate-500">
+          Renderização local — nada é enviado até você clicar em <strong>Enviar</strong>.
+        </p>
+      </section>
     </div>
   );
 }
+
