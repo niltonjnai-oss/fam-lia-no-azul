@@ -7,12 +7,20 @@ import {
   ShieldCheck,
   CreditCard,
   Check,
-  Star,
+  Lock,
+  BadgeCheck,
+  Heart,
 } from "lucide-react";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
 import step1Img from "@/assets/step-1-renda.jpg";
 import step2Img from "@/assets/step-2-gastos.jpg";
 import step3Img from "@/assets/step-3-respire.jpg";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export const Route = createFileRoute("/inicio")({
   head: () => ({
@@ -21,12 +29,13 @@ export const Route = createFileRoute("/inicio")({
       {
         name: "description",
         content:
-          "O jeito simples e humano de organizar o orçamento familiar. Método 50-30-20, reserva de emergência e controle de dívidas em um só lugar.",
+          "O jeito mais leve de cuidar do dinheiro da família: método 50-30-20 automático, reserva de emergência e dívidas sob controle.",
       },
       { property: "og:title", content: "Família no Azul — Organize as finanças da sua família" },
       {
         property: "og:description",
-        content: "Orçamento familiar claro, sem planilhas complicadas. Comece grátis.",
+        content:
+          "O jeito mais leve de cuidar do dinheiro da família: método 50-30-20 automático, reserva de emergência e dívidas sob controle.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -38,6 +47,8 @@ export const Route = createFileRoute("/inicio")({
 const ORANGE = "#F97316";
 const ORANGE_HOVER = "#EA580C";
 const NAVY = "#0F2A47";
+
+const KIWIFY_URL = "https://pay.kiwify.com.br/4FFlpa2";
 
 const benefits = [
   {
@@ -68,30 +79,66 @@ const steps = [
   { n: "03", title: "Respire fundo", desc: "O painel mostra o caminho — e o próximo passo.", img: step3Img },
 ];
 
-const stats = [
-  { value: "R$ 6.400", label: "economizados em média no primeiro ano" },
-  { value: "87%", label: "das famílias saem do vermelho em 90 dias" },
-  { value: "3x", label: "mais consciência sobre os próprios gastos" },
+const pillars = [
+  {
+    value: "50-30-20",
+    title: "Método comprovado",
+    desc: "O método de orçamento mais conhecido do mundo, agora no automático pra sua família.",
+  },
+  {
+    value: "3 min",
+    title: "Por dia, só isso",
+    desc: "O tempo que leva pra registrar os gastos e manter tudo no azul.",
+  },
+  {
+    value: "100%",
+    title: "Privado",
+    desc: "Seus dados são só seus. A gente nunca vende nem compartilha suas informações.",
+  },
 ];
 
-const testimonials = [
+const appScreens = [
   {
-    quote:
-      "Em três meses parei de me sentir sufocada no fim do mês. O painel me mostrou onde o dinheiro estava indo — e finalmente consegui fazer minha reserva.",
-    name: "Camila R.",
-    role: "Mãe, professora — Recife",
+    title: "Painel do mês",
+    desc: "Seu saldo e pra onde o dinheiro está indo, num relance.",
+    img: step1Img,
   },
   {
-    quote:
-      "A gente já tinha tentado planilha, aplicativo caro, tudo. O Família no Azul foi o primeiro que meu marido também usou. Hoje conversamos sobre dinheiro sem brigar.",
-    name: "Juliana e Marcos",
-    role: "Casal com dois filhos — Curitiba",
+    title: "Método 50-30-20",
+    desc: "Sua renda dividida entre o essencial, o estilo de vida e o futuro.",
+    img: step2Img,
   },
   {
-    quote:
-      "Quitei R$ 12 mil de dívidas em oito meses seguindo o método. Nunca mais volto para o cheque especial.",
-    name: "Rafael S.",
-    role: "Autônomo — Belo Horizonte",
+    title: "Reserva de emergência",
+    desc: "Acompanhe sua reserva crescer, mês a mês.",
+    img: step3Img,
+  },
+];
+
+const faqs = [
+  {
+    q: "Preciso entender de finanças ou montar planilha?",
+    a: "Não. O Família no Azul foi feito pra quem nunca conseguiu manter uma planilha. Você registra os gastos em segundos e o app organiza o resto pelo método 50-30-20.",
+  },
+  {
+    q: "Funciona no celular e no computador?",
+    a: "Sim. É um app web: abre no navegador do celular, tablet ou computador, sem precisar instalar nada.",
+  },
+  {
+    q: "Como recebo meu acesso depois de assinar?",
+    a: "Assim que o pagamento é aprovado, você recebe um e-mail com o convite pra criar sua senha e entrar. Costuma chegar em poucos minutos.",
+  },
+  {
+    q: "E se eu não gostar?",
+    a: "Você tem 7 dias de garantia. Se achar que não é pra sua família, devolvemos 100% do valor, sem perguntas.",
+  },
+  {
+    q: "Meus dados financeiros estão seguros?",
+    a: "Sim. Cada família só enxerga os próprios dados, e a gente nunca vende nem compartilha suas informações. Tratamos tudo conforme a LGPD.",
+  },
+  {
+    q: "Quais as formas de pagamento?",
+    a: "O pagamento é processado com segurança pela Kiwify, que aceita cartão de crédito, Pix e boleto.",
   },
 ];
 
@@ -111,8 +158,9 @@ function LandingPage() {
         <nav className="hidden items-center gap-8 text-sm font-medium text-[#0F2A47]/70 md:flex">
           <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
           <a href="#como-funciona" className="hover:text-[#0F2A47]">Como funciona</a>
-          <a href="#depoimentos" className="hover:text-[#0F2A47]">Depoimentos</a>
+          <a href="#app" className="hover:text-[#0F2A47]">Por dentro</a>
           <a href="#planos" className="hover:text-[#0F2A47]">Planos</a>
+          <a href="#faq" className="hover:text-[#0F2A47]">FAQ</a>
         </nav>
         <div className="flex items-center gap-3">
           <Link
@@ -122,7 +170,7 @@ function LandingPage() {
             Entrar
           </Link>
           <a
-            href="https://pay.kiwify.com.br/4FFlpa2"
+            href={KIWIFY_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors"
@@ -135,7 +183,7 @@ function LandingPage() {
         </div>
       </header>
 
-      {/* HERO — YNAB style: massive centered headline */}
+      {/* HERO */}
       <section className="mx-auto max-w-5xl px-6 pt-16 pb-24 text-center md:pt-24 md:pb-32">
         <span
           className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white"
@@ -158,7 +206,7 @@ function LandingPage() {
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <a
-            href="https://pay.kiwify.com.br/4FFlpa2"
+            href={KIWIFY_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
@@ -179,6 +227,22 @@ function LandingPage() {
         <div className="mt-8 flex items-center justify-center gap-2 text-xs text-[#0F2A47]/60">
           <ShieldCheck className="h-4 w-4" />
           Seus dados ficam com você. Sem venda, sem propaganda.
+        </div>
+
+        {/* Faixa de confiança */}
+        <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center justify-center gap-3 text-xs text-[#0F2A47]/70 sm:flex-row sm:gap-8">
+          <div className="flex items-center gap-2">
+            <Lock className="h-4 w-4" style={{ color: ORANGE }} />
+            <span>Dados protegidos (LGPD)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <BadgeCheck className="h-4 w-4" style={{ color: ORANGE }} />
+            <span>Garantia de 7 dias</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CreditCard className="h-4 w-4" style={{ color: ORANGE }} />
+            <span>Pagamento seguro via Kiwify</span>
+          </div>
         </div>
 
         {/* Painel mockup abaixo do hero */}
@@ -219,30 +283,33 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* STATS — YNAB style big numbers */}
+      {/* POR QUE FUNCIONA (substitui os "resultados") */}
       <section className="border-y border-white/60 bg-white/40 backdrop-blur">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="mx-auto max-w-2xl text-center">
             <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
-              Resultados reais
+              Por que funciona
             </span>
             <h2
               className="mt-3 text-3xl tracking-tight md:text-4xl"
               style={{ fontFamily: "'Fraunces', Georgia, serif" }}
             >
-              Quem organiza, <em className="italic" style={{ color: ORANGE }}>vive diferente.</em>
+              Simples de manter, <em className="italic" style={{ color: ORANGE }}>feito pra durar.</em>
             </h2>
           </div>
           <div className="mt-14 grid gap-10 md:grid-cols-3">
-            {stats.map((s) => (
-              <div key={s.label} className="text-center">
+            {pillars.map((p) => (
+              <div key={p.title} className="text-center">
                 <div
-                  className="text-6xl font-semibold tracking-tight md:text-7xl"
+                  className="text-5xl font-semibold tracking-tight md:text-6xl"
                   style={{ fontFamily: "'Fraunces', Georgia, serif", color: NAVY }}
                 >
-                  {s.value}
+                  {p.value}
                 </div>
-                <p className="mx-auto mt-4 max-w-xs text-sm text-[#0F2A47]/70">{s.label}</p>
+                <div className="mt-3 text-sm font-semibold uppercase tracking-wider text-[#0F2A47]/70">
+                  {p.title}
+                </div>
+                <p className="mx-auto mt-3 max-w-xs text-sm text-[#0F2A47]/70">{p.desc}</p>
               </div>
             ))}
           </div>
@@ -282,7 +349,7 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* COMO FUNCIONA — YNAB style: alternating rows */}
+      {/* COMO FUNCIONA */}
       <section id="como-funciona" className="border-t border-white/60 bg-white/30 backdrop-blur">
         <div className="mx-auto max-w-6xl px-6 py-28">
           <div className="mx-auto max-w-2xl text-center">
@@ -335,76 +402,117 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* DEPOIMENTOS — YNAB style: destaque grande */}
-      <section id="depoimentos" className="mx-auto max-w-6xl px-6 py-28">
+      {/* POR DENTRO DO APP */}
+      <section id="app" className="mx-auto max-w-6xl px-6 py-28">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
-            Depoimentos
+            Por dentro do app
           </span>
           <h2
             className="mt-3 text-4xl tracking-tight md:text-5xl"
             style={{ fontFamily: "'Fraunces', Georgia, serif" }}
           >
-            Famílias que voltaram <em className="italic" style={{ color: ORANGE }}>para o azul.</em>
+            Tudo o que importa, <em className="italic" style={{ color: ORANGE }}>numa tela só.</em>
           </h2>
         </div>
-
-        {/* Depoimento em destaque */}
-        <div className="mx-auto mt-16 max-w-4xl rounded-[2rem] border border-white/70 bg-white/90 p-10 shadow-xl md:p-16">
-          <div className="flex gap-1" style={{ color: ORANGE }}>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className="h-5 w-5 fill-current" />
-            ))}
-          </div>
-          <blockquote
-            className="mt-6 text-2xl leading-snug tracking-tight md:text-3xl"
-            style={{ fontFamily: "'Fraunces', Georgia, serif" }}
-          >
-            "{testimonials[0].quote}"
-          </blockquote>
-          <div className="mt-8 flex items-center gap-4">
+        <div className="mt-16 space-y-16">
+          {appScreens.map((screen, i) => (
             <div
-              className="grid h-12 w-12 place-items-center rounded-full text-white font-semibold"
-              style={{ backgroundColor: NAVY }}
+              key={screen.title}
+              className={`grid gap-10 md:grid-cols-2 md:items-center ${
+                i % 2 === 1 ? "md:[&>div:first-child]:order-2" : ""
+              }`}
             >
-              {testimonials[0].name.charAt(0)}
-            </div>
-            <div>
-              <div className="font-semibold">{testimonials[0].name}</div>
-              <div className="text-sm text-[#0F2A47]/60">{testimonials[0].role}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Grid secundário */}
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          {testimonials.slice(1).map((t) => (
-            <div
-              key={t.name}
-              className="rounded-2xl border border-white/70 bg-white/80 p-8 shadow-sm"
-            >
-              <div className="flex gap-1" style={{ color: ORANGE }}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-current" />
-                ))}
-              </div>
-              <blockquote className="mt-4 text-lg leading-relaxed text-[#0F2A47]/85">
-                "{t.quote}"
-              </blockquote>
-              <div className="mt-6 flex items-center gap-3">
-                <div
-                  className="grid h-10 w-10 place-items-center rounded-full text-white text-sm font-semibold"
-                  style={{ backgroundColor: NAVY }}
+              <div>
+                <h3
+                  className="text-3xl tracking-tight md:text-4xl"
+                  style={{ fontFamily: "'Fraunces', Georgia, serif" }}
                 >
-                  {t.name.charAt(0)}
+                  {screen.title}
+                </h3>
+                <p className="mt-4 max-w-md text-base text-[#0F2A47]/70">{screen.desc}</p>
+                <p className="mt-3 text-xs text-[#0F2A47]/50 italic">
+                  [SUBIR PRINT REAL — {screen.title}]
+                </p>
+              </div>
+              {/* Moldura de navegador sutil */}
+              <div className="overflow-hidden rounded-2xl border border-white/70 bg-white shadow-lg">
+                <div className="flex items-center gap-1.5 border-b border-[#0F2A47]/5 bg-[#F5F9FC] px-4 py-2.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#28C840]" />
                 </div>
-                <div>
-                  <div className="text-sm font-semibold">{t.name}</div>
-                  <div className="text-xs text-[#0F2A47]/60">{t.role}</div>
-                </div>
+                <img
+                  src={screen.img}
+                  alt={`Print — ${screen.title}`}
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover"
+                />
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* CARTA DO FUNDADOR (substitui depoimentos até haver relatos reais) */}
+      <section id="depoimentos" className="border-t border-white/60 bg-white/30 backdrop-blur">
+        <div className="mx-auto max-w-6xl px-6 py-28">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+              De família pra família
+            </span>
+            <h2
+              className="mt-3 text-4xl tracking-tight md:text-5xl"
+              style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+            >
+              Por que criamos o <em className="italic" style={{ color: ORANGE }}>Família no Azul.</em>
+            </h2>
+          </div>
+          <div className="mx-auto mt-14 max-w-3xl rounded-[2rem] border border-white/70 bg-white/90 p-10 shadow-xl md:p-16">
+            <Heart className="h-8 w-8" style={{ color: ORANGE }} />
+            <p
+              className="mt-6 text-2xl leading-snug tracking-tight md:text-3xl"
+              style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+            >
+              A gente sabe como é terminar o mês sem saber pra onde o dinheiro foi. O Família no Azul
+              nasceu pra tornar o controle financeiro leve, simples e possível — sem planilha
+              complicada e sem julgamento. É o app que a gente queria ter tido em casa.
+            </p>
+            <div className="mt-8 text-sm italic text-[#0F2A47]/60">— Equipe Família no Azul</div>
+          </div>
+        </div>
+      </section>
+
+      {/* GARANTIA */}
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <div className="mx-auto max-w-4xl rounded-[2rem] border border-white/70 bg-white/85 p-10 shadow-xl md:p-14">
+          <div className="grid gap-8 md:grid-cols-[auto_1fr] md:items-center md:gap-10">
+            <div
+              className="mx-auto grid h-32 w-32 place-items-center rounded-full border-4 text-center leading-tight md:mx-0"
+              style={{ borderColor: ORANGE, color: NAVY, fontFamily: "'Fraunces', Georgia, serif" }}
+            >
+              <div>
+                <div className="text-3xl font-semibold" style={{ color: ORANGE }}>7</div>
+                <div className="text-[10px] font-semibold uppercase tracking-widest">Dias de garantia</div>
+              </div>
+            </div>
+            <div className="text-center md:text-left">
+              <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+                Sem risco
+              </span>
+              <h2
+                className="mt-2 text-3xl tracking-tight md:text-4xl"
+                style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+              >
+                Experimente. Se não for pra sua família,{" "}
+                <em className="italic" style={{ color: ORANGE }}>é por nossa conta.</em>
+              </h2>
+              <p className="mt-4 text-base text-[#0F2A47]/70">
+                Você tem 7 dias pra testar o Família no Azul com calma. Se sentir que não é pra
+                você, devolvemos 100% do valor — sem perguntas e sem burocracia.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -467,7 +575,7 @@ function LandingPage() {
               </ul>
 
               <a
-                href="https://pay.kiwify.com.br/4FFlpa2"
+                href={KIWIFY_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
@@ -478,11 +586,40 @@ function LandingPage() {
                 Assinar agora
                 <ArrowRight className="h-4 w-4" />
               </a>
-              <p className="mt-3 text-center text-xs text-[#0F2A47]/50">
-                Pagamento seguro via Kiwify
+              <p className="mt-3 text-center text-xs text-[#0F2A47]/60">
+                Pagamento seguro via Kiwify · Seus dados protegidos conforme a LGPD · Cancele quando quiser
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="mx-auto max-w-4xl px-6 py-28">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: ORANGE }}>
+            Perguntas frequentes
+          </span>
+          <h2
+            className="mt-3 text-4xl tracking-tight md:text-5xl"
+            style={{ fontFamily: "'Fraunces', Georgia, serif" }}
+          >
+            Ainda com dúvida? <em className="italic" style={{ color: ORANGE }}>A gente responde.</em>
+          </h2>
+        </div>
+        <div className="mt-12 rounded-3xl border border-white/70 bg-white/85 p-4 shadow-sm md:p-8">
+          <Accordion type="single" collapsible className="w-full">
+            {faqs.map((f, i) => (
+              <AccordionItem key={i} value={`faq-${i}`} className="border-[#0F2A47]/10">
+                <AccordionTrigger className="text-left text-base font-semibold text-[#0F2A47] hover:no-underline md:text-lg">
+                  {f.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-sm leading-relaxed text-[#0F2A47]/75 md:text-base">
+                  {f.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </section>
 
@@ -504,7 +641,7 @@ function LandingPage() {
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <a
-              href="https://pay.kiwify.com.br/4FFlpa2"
+              href={KIWIFY_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white shadow-md transition-colors"
@@ -527,13 +664,22 @@ function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-white/60">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-xs text-[#0F2A47]/60">
-          <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
-          <div className="flex items-center gap-6">
-            <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
-            <a href="#como-funciona" className="hover:text-[#0F2A47]">Como funciona</a>
-            <a href="#depoimentos" className="hover:text-[#0F2A47]">Depoimentos</a>
-            <Link to="/auth" className="hover:text-[#0F2A47]">Entrar</Link>
+        <div className="mx-auto max-w-6xl px-6 py-10 text-xs text-[#0F2A47]/70">
+          <div className="grid gap-6 md:grid-cols-2 md:items-start">
+            <div className="space-y-1.5">
+              <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
+              <div>Família no Azul é uma marca do Grupo Romana.</div>
+              <div>CNPJ [INSERIR CNPJ]</div>
+              <div>Contato: [INSERIR E-MAIL]</div>
+            </div>
+            <div className="flex flex-wrap gap-x-6 gap-y-2 md:justify-end">
+              <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
+              <a href="#planos" className="hover:text-[#0F2A47]">Planos</a>
+              <a href="#faq" className="hover:text-[#0F2A47]">FAQ</a>
+              <Link to="/termos" className="hover:text-[#0F2A47]">Termos de Uso</Link>
+              <Link to="/privacidade" className="hover:text-[#0F2A47]">Política de Privacidade</Link>
+              <Link to="/auth" className="hover:text-[#0F2A47]">Entrar</Link>
+            </div>
           </div>
         </div>
       </footer>
