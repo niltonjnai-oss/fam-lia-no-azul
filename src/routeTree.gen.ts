@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermosRouteImport } from './routes/termos'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ReservaRouteImport } from './routes/reserva'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as OrcamentoRouteImport } from './routes/orcamento'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MetodoRouteImport } from './routes/metodo'
@@ -24,6 +26,11 @@ import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as ApiEmailsSendRouteImport } from './routes/api/emails/send'
 import { Route as ApiPublicEmailsCronRouteImport } from './routes/api/public/emails/cron'
 
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -32,6 +39,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ReservaRoute = ReservaRouteImport.update({
   id: '/reserva',
   path: '/reserva',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrcamentoRoute = OrcamentoRouteImport.update({
@@ -105,8 +117,10 @@ export interface FileRoutesByFullPath {
   '/metodo': typeof MetodoRoute
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reserva': typeof ReservaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/termos': typeof TermosRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
@@ -121,8 +135,10 @@ export interface FileRoutesByTo {
   '/metodo': typeof MetodoRoute
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reserva': typeof ReservaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/termos': typeof TermosRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
@@ -138,8 +154,10 @@ export interface FileRoutesById {
   '/metodo': typeof MetodoRoute
   '/onboarding': typeof OnboardingRoute
   '/orcamento': typeof OrcamentoRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reserva': typeof ReservaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/termos': typeof TermosRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
@@ -156,8 +174,10 @@ export interface FileRouteTypes {
     | '/metodo'
     | '/onboarding'
     | '/orcamento'
+    | '/privacidade'
     | '/reserva'
     | '/reset-password'
+    | '/termos'
     | '/admin/emails'
     | '/api/emails/send'
     | '/api/public/emails/cron'
@@ -172,8 +192,10 @@ export interface FileRouteTypes {
     | '/metodo'
     | '/onboarding'
     | '/orcamento'
+    | '/privacidade'
     | '/reserva'
     | '/reset-password'
+    | '/termos'
     | '/admin/emails'
     | '/api/emails/send'
     | '/api/public/emails/cron'
@@ -188,8 +210,10 @@ export interface FileRouteTypes {
     | '/metodo'
     | '/onboarding'
     | '/orcamento'
+    | '/privacidade'
     | '/reserva'
     | '/reset-password'
+    | '/termos'
     | '/admin/emails'
     | '/api/emails/send'
     | '/api/public/emails/cron'
@@ -205,8 +229,10 @@ export interface RootRouteChildren {
   MetodoRoute: typeof MetodoRoute
   OnboardingRoute: typeof OnboardingRoute
   OrcamentoRoute: typeof OrcamentoRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   ReservaRoute: typeof ReservaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  TermosRoute: typeof TermosRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
   ApiEmailsSendRoute: typeof ApiEmailsSendRoute
   ApiPublicEmailsCronRoute: typeof ApiPublicEmailsCronRoute
@@ -214,6 +240,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -226,6 +259,13 @@ declare module '@tanstack/react-router' {
       path: '/reserva'
       fullPath: '/reserva'
       preLoaderRoute: typeof ReservaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/orcamento': {
@@ -325,8 +365,10 @@ const rootRouteChildren: RootRouteChildren = {
   MetodoRoute: MetodoRoute,
   OnboardingRoute: OnboardingRoute,
   OrcamentoRoute: OrcamentoRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   ReservaRoute: ReservaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  TermosRoute: TermosRoute,
   AdminEmailsRoute: AdminEmailsRoute,
   ApiEmailsSendRoute: ApiEmailsSendRoute,
   ApiPublicEmailsCronRoute: ApiPublicEmailsCronRoute,

@@ -196,7 +196,8 @@ function AuthGate() {
   const isAuthRoute = pathname.startsWith("/auth");
   const isResetPassword = pathname.startsWith("/reset-password");
   const isLanding = pathname === "/inicio";
-  const isPublicRoute = isAuthRoute || isResetPassword || isLanding;
+  const isLegal = pathname === "/termos" || pathname === "/privacidade";
+  const isPublicRoute = isAuthRoute || isResetPassword || isLanding || isLegal;
   const isOnboarding = pathname.startsWith("/onboarding");
   const authErrorNotice = !loading ? getAuthErrorNotice(pathname) : null;
   const isHandlingEmailConfirmation = !loading && shouldSendConfirmedEmailUserToAuth(pathname, session);
