@@ -374,8 +374,26 @@ function LandingPage() {
           </div>
         </div>
 
-        {/* Painel mockup abaixo do hero */}
+        {/* Painel mockup abaixo do hero, com foto ambiente atrás/à direita (desktop) */}
         <div className="relative mx-auto mt-16 max-w-3xl">
+          {/* Foto do casal — só desktop, com overlay do gradiente azul */}
+          <div className="pointer-events-none absolute -right-40 -top-10 hidden h-[520px] w-[560px] overflow-hidden rounded-[2rem] md:block lg:-right-56">
+            <img
+              src={heroPhoto.url}
+              alt="Casal brasileiro em casa, aliviado, olhando junto para o celular"
+              loading="eager"
+              width={1600}
+              height={1200}
+              className="h-full w-full object-cover"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(230,242,251,0.65) 0%, rgba(184,220,243,0.75) 60%, rgba(15,42,71,0.35) 100%)",
+              }}
+            />
+          </div>
           <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-white/60 to-[#B8DCF3]/60 blur-3xl" />
           <div className="relative overflow-hidden rounded-[2rem] border border-white/60 bg-white/95 p-8 text-left shadow-2xl backdrop-blur">
             <div className="flex items-center justify-between text-xs text-[#0F2A47]/60">
