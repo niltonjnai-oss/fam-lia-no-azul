@@ -114,12 +114,12 @@ const pillars = [
   {
     value: "50-30-20",
     title: "Método comprovado",
-    desc: "O jeito de dividir a renda mais usado no mundo: essencial, vida e futuro. Aqui, no automático.",
+    desc: "Divida sua renda entre necessidades, qualidade de vida e futuro. O app faz isso automaticamente.",
   },
   {
     value: "3 min",
     title: "Por dia. Só isso.",
-    desc: "Registrou o gasto, fechou o app, seguiu a vida. Feito pra quem não tem tempo, não pra quem ama planilha.",
+    desc: "Registrou o gasto, fechou o app e pronto. Organizar as finanças nunca foi tão simples.",
   },
   {
     value: "100%",
