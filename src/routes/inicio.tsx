@@ -18,6 +18,7 @@ import step3Photo from "@/assets/lp/img-04-step3.webp.asset.json";
 import familiaLineart from "@/assets/lp/img-05-familia-lineart.png.asset.json";
 import jantarPhoto from "@/assets/lp/img-06-jantar.webp.asset.json";
 import ogImage from "@/assets/lp/img-07-og.webp.asset.json";
+import { assetUrl } from "@/lib/asset-url";
 import {
   Accordion,
   AccordionContent,
@@ -41,9 +42,9 @@ export const Route = createFileRoute("/inicio")({
           "Método 50-30-20 no automático, reserva de emergência e dívidas sob controle. 3 minutos por dia, sua família volta pro azul.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: ogImage.url },
+      { property: "og:image", content: assetUrl(ogImage) },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: ogImage.url },
+      { name: "twitter:image", content: assetUrl(ogImage) },
     ],
   }),
   component: LandingPage,
@@ -57,6 +58,10 @@ const KIWIFY_URL = "https://pay.kiwify.com.br/4FFlpa2";
 
 const CTA_PRIMARY = "Quero ver meu dinheiro no azul";
 const CTA_ASSINAR = "Assinar por R$ 67,90/ano";
+const logoHorizontalUrl = assetUrl(logoHorizontal);
+const heroPhotoUrl = assetUrl(heroPhoto);
+const familiaLineartUrl = assetUrl(familiaLineart);
+const jantarPhotoUrl = assetUrl(jantarPhoto);
 
 // Data dinâmica do mockup (pt-BR), ex.: "julho 2026"
 const MES_ATUAL = new Date()
@@ -91,21 +96,21 @@ const steps = [
     n: "01",
     title: "Conte sua renda",
     desc: "Um minuto. Salário, bico, pensão: tudo que entra no mês.",
-    image: step1Photo.url,
+    image: assetUrl(step1Photo),
     alt: "Mãos de uma mulher registrando a renda mensal em um aplicativo de finanças no celular",
   },
   {
     n: "02",
     title: "Registre os gastos",
     desc: "Dois toques por gasto. Mercado, escola, aquele delivery de sexta (sem julgamento).",
-    image: step2Photo.url,
+    image: assetUrl(step2Photo),
     alt: "Mãe brasileira registrando um gasto de supermercado no celular durante as compras",
   },
   {
     n: "03",
     title: "Respire fundo",
     desc: "O painel mostra onde você está e qual o próximo passo. Só isso já muda o clima lá em casa.",
-    image: step3Photo.url,
+    image: assetUrl(step3Photo),
     alt: "Pai sorrindo aliviado enquanto olha para o painel financeiro no celular em casa",
   },
 ];
@@ -285,7 +290,7 @@ function LandingPage() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <Link to="/inicio" className="flex items-center">
-          <img src={logoHorizontal.url} alt="Família no Azul" className="h-10 w-auto" />
+          <img src={logoHorizontalUrl} alt="Família no Azul" className="h-10 w-auto" />
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium text-[#0F2A47]/70 md:flex">
           <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
@@ -378,7 +383,7 @@ function LandingPage() {
           {/* Foto do casal — só desktop, com overlay do gradiente azul */}
           <div className="pointer-events-none absolute -right-40 -top-10 hidden h-[520px] w-[560px] overflow-hidden rounded-[2rem] md:block lg:-right-56">
             <img
-              src={heroPhoto.url}
+              src={heroPhotoUrl}
               alt="Casal brasileiro em casa, aliviado, olhando junto para o celular"
               loading="eager"
               width={1600}
@@ -599,7 +604,7 @@ function LandingPage() {
               </div>
               <div className="order-1 flex justify-center md:order-2 md:justify-end">
                 <img
-                  src={familiaLineart.url}
+                  src={familiaLineartUrl}
                   alt="Ilustração em traço fino de uma família de mãos dadas com um coração acima"
                   loading="lazy"
                   width={800}
@@ -753,7 +758,7 @@ function LandingPage() {
         >
           {/* Foto de fundo */}
           <img
-            src={jantarPhoto.url}
+            src={jantarPhotoUrl}
             alt="Família brasileira jantando junto em casa, sorrindo à luz do fim de tarde"
             loading="lazy"
             width={1920}

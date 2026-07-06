@@ -16,6 +16,7 @@ import { useIsAdmin } from "@/lib/use-is-admin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import { assetUrl } from "@/lib/asset-url";
 
 type NavItem = {
   to: string;
@@ -33,6 +34,8 @@ const navItems: NavItem[] = [
   { to: "/indicacao", label: "Indique", icon: Gift },
 ];
 
+const logoHorizontalUrl = assetUrl(logoHorizontal);
+
 export function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user } = useAuth();
@@ -45,7 +48,7 @@ export function AppLayout() {
         <div className="mb-8 px-2">
           <Link to="/" className="block">
             <img
-              src={logoHorizontal.url}
+              src={logoHorizontalUrl}
               alt="Família no Azul"
               className="h-10 w-auto"
             />
@@ -111,7 +114,7 @@ export function AppLayout() {
         <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-3 lg:hidden">
           <div className="flex items-center gap-2">
             <img
-              src={logoHorizontal.url}
+              src={logoHorizontalUrl}
               alt="Família no Azul"
               className="h-7 w-auto"
             />

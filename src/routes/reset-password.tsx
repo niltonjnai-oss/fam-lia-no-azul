@@ -8,11 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import logoVertical from "@/assets/familia_no_azul_vertical.png.asset.json";
+import { assetUrl } from "@/lib/asset-url";
 
 export const Route = createFileRoute("/reset-password")({
   ssr: false,
   component: ResetPasswordPage,
 });
+
+const logoVerticalUrl = assetUrl(logoVertical);
 
 function ResetPasswordPage() {
   const navigate = useNavigate();
@@ -80,7 +83,7 @@ function ResetPasswordPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-md">
         <div className="mb-6 flex flex-col items-center text-center">
-          <img src={logoVertical.url} alt="Família no Azul" className="mb-3 h-24 w-auto" />
+          <img src={logoVerticalUrl} alt="Família no Azul" className="mb-3 h-24 w-auto" />
           <h1 className="text-xl font-semibold text-foreground">{title}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
         </div>

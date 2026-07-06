@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { assetUrl } from "@/lib/asset-url";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/auth")({
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const AUTH_NOTICE_STORAGE_KEY = "familia_auth_notice";
 const EMAIL_CONFIRMATION_WINDOW_MS = 15 * 60 * 1000;
+const logoVerticalUrl = assetUrl(logoVertical);
 type AuthNotice = "email-confirmed" | "expired-link" | "invalid-link";
 
 function isAuthNotice(value: string | null): value is AuthNotice {
@@ -132,7 +134,7 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-md">
         <div className="mb-6 flex flex-col items-center text-center">
-          <img src={logoVertical.url} alt="Família no Azul" className="mb-3 h-32 w-auto" />
+          <img src={logoVerticalUrl} alt="Família no Azul" className="mb-3 h-32 w-auto" />
           <p className="mt-1 text-sm text-muted-foreground">
             {mode === "signup"
               ? "Comece a sua virada — crie a conta da sua família."
