@@ -123,7 +123,7 @@ const pillars = [
   },
   {
     value: "3 min",
-    title: "Por dia. Só isso.",
+    title: "Minutos por dia",
     desc: "Registrou o gasto, fechou o app e pronto. Organizar as finanças nunca foi tão simples.",
   },
   {
@@ -440,7 +440,7 @@ function LandingPage() {
           <div className="mx-auto max-w-2xl text-center">
             <span className="t-eyebrow">Por que funciona</span>
             <h2 className="font-display mt-3 text-3xl tracking-tight md:text-4xl">
-              Simples de manter, <em className="italic text-[#0F2A47]/80">feito pra durar.</em>
+              Funciona, <em className="italic text-[#0F2A47]/80">e não dá trabalho.</em>
             </h2>
           </div>
           <div className="mt-14 grid gap-10 md:grid-cols-3">
