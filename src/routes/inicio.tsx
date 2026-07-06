@@ -9,7 +9,7 @@ import {
   Check,
   Lock,
   BadgeCheck,
-  Heart,
+
 } from "lucide-react";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
 import heroPhoto from "@/assets/lp/img-01-hero.webp.asset.json";
