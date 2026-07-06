@@ -119,7 +119,7 @@ const pillars = [
   {
     value: "3 min",
     title: "Por dia. Só isso.",
-    desc: "Registrou o gasto, fechou o app, seguiu a vida. Feito pra quem não tem tempo, não pra quem ama planilha.",
+    desc: "Registrou o gasto, fechou o app e pronto. Organizar as finanças nunca foi tão simples.",
   },
   {
     value: "100%",
