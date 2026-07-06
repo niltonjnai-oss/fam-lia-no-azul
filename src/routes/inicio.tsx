@@ -748,16 +748,34 @@ function LandingPage() {
       {/* CTA final */}
       <section className="mx-auto max-w-6xl px-6 pb-24 pt-4 md:pb-32">
         <div
-          className="overflow-hidden rounded-[2rem] p-12 text-center text-white md:p-20"
-          style={{ backgroundImage: `linear-gradient(135deg, ${NAVY} 0%, #1E4A78 100%)` }}
+          className="relative overflow-hidden rounded-[2rem] p-12 text-center text-white md:p-20"
+          style={{ backgroundColor: NAVY }}
         >
-          <h2 className="font-display mx-auto max-w-3xl text-4xl leading-tight tracking-tight md:text-6xl">
-            Este mês <em className="italic" style={{ color: ORANGE }}>ainda dá tempo.</em>
-          </h2>
-          <p className="mx-auto mt-6 max-w-xl text-base text-white/75">
-            Cadastre a renda hoje, registre os gastos da semana e chegue no dia 30 sabendo — talvez
-            pela primeira vez — pra onde foi cada real.
-          </p>
+          {/* Foto de fundo */}
+          <img
+            src={jantarPhoto.url}
+            alt="Família brasileira jantando junto em casa, sorrindo à luz do fim de tarde"
+            loading="lazy"
+            width={1920}
+            height={1088}
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            style={{ objectPosition: "70% center" }}
+          />
+          {/* Overlay navy para manter contraste AA */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background: `linear-gradient(135deg, rgba(15,42,71,0.92) 0%, rgba(30,74,120,0.78) 60%, rgba(15,42,71,0.55) 100%)`,
+            }}
+          />
+          <div className="relative">
+            <h2 className="font-display mx-auto max-w-3xl text-4xl leading-tight tracking-tight md:text-6xl">
+              Este mês <em className="italic" style={{ color: ORANGE }}>ainda dá tempo.</em>
+            </h2>
+            <p className="mx-auto mt-6 max-w-xl text-base text-white/85">
+              Cadastre a renda hoje, registre os gastos da semana e chegue no dia 30 sabendo — talvez
+              pela primeira vez — pra onde foi cada real.
+            </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <a
               href={KIWIFY_URL}
