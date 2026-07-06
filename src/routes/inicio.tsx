@@ -586,15 +586,28 @@ function LandingPage() {
             </h2>
           </div>
           <div className="mx-auto mt-14 max-w-3xl rounded-[2rem] border border-white/70 bg-white/90 p-10 shadow-xl md:p-16">
-            <Heart className="h-8 w-8 text-[#0F2A47]/40" />
-            <p className="font-display mt-6 text-2xl leading-snug tracking-tight md:text-3xl">
-              A gente sabe como é terminar o mês sem saber pra onde o dinheiro foi. Já passamos pelo
-              caderninho, pela planilha que durou três semanas, pelo aplicativo complicado demais.
-              O Família no Azul é o app que a gente queria ter tido em casa: leve, simples e sem
-              julgamento.
-            </p>
-            <div className="mt-8 text-sm italic text-[#0F2A47]/60">
-              — Equipe Família no Azul, Grupo Romana
+            <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-start md:gap-10">
+              <div className="order-2 md:order-1">
+                <p className="font-display text-2xl leading-snug tracking-tight md:text-3xl">
+                  A gente sabe como é terminar o mês sem saber pra onde o dinheiro foi. Já passamos pelo
+                  caderninho, pela planilha que durou três semanas, pelo aplicativo complicado demais.
+                  O Família no Azul é o app que a gente queria ter tido em casa: leve, simples e sem
+                  julgamento.
+                </p>
+                <div className="mt-8 text-sm italic text-[#0F2A47]/60">
+                  — Equipe Família no Azul, Grupo Romana
+                </div>
+              </div>
+              <div className="order-1 flex justify-center md:order-2 md:justify-end">
+                <img
+                  src={familiaLineart.url}
+                  alt="Ilustração em traço fino de uma família de mãos dadas com um coração acima"
+                  loading="lazy"
+                  width={800}
+                  height={800}
+                  className="w-full max-w-[160px] opacity-90 md:max-w-[220px]"
+                />
+              </div>
             </div>
           </div>
           {/* Bloco de depoimentos reais — ativar quando houver relatos verificados
