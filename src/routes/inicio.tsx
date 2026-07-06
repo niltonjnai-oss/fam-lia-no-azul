@@ -514,15 +514,25 @@ function LandingPage() {
             {steps.map((s) => (
               <div
                 key={s.n}
-                className="rounded-3xl border border-white/70 bg-white/80 p-8 shadow-sm"
+                className="overflow-hidden rounded-3xl border border-white/70 bg-white/80 shadow-sm"
               >
-                <div
-                  className="font-display text-6xl leading-none text-[#0F2A47]/20"
-                >
-                  {s.n}
+                <div className="aspect-[4/3] overflow-hidden border-b border-white/70">
+                  <img
+                    src={s.image}
+                    alt={s.alt}
+                    loading="lazy"
+                    width={1280}
+                    height={960}
+                    className="h-full w-full object-cover"
+                  />
                 </div>
-                <h3 className="font-display mt-4 text-2xl tracking-tight">{s.title}</h3>
-                <p className="mt-3 text-sm text-[#0F2A47]/70">{s.desc}</p>
+                <div className="p-8">
+                  <div className="font-display text-6xl leading-none text-[#0F2A47]/20">
+                    {s.n}
+                  </div>
+                  <h3 className="font-display mt-4 text-2xl tracking-tight">{s.title}</h3>
+                  <p className="mt-3 text-sm text-[#0F2A47]/70">{s.desc}</p>
+                </div>
               </div>
             ))}
           </div>
