@@ -12,6 +12,13 @@ import {
   Heart,
 } from "lucide-react";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import heroPhoto from "@/assets/lp/img-01-hero.webp.asset.json";
+import step1Photo from "@/assets/lp/img-02-step1.webp.asset.json";
+import step2Photo from "@/assets/lp/img-03-step2.webp.asset.json";
+import step3Photo from "@/assets/lp/img-04-step3.webp.asset.json";
+import familiaLineart from "@/assets/lp/img-05-familia-lineart.png.asset.json";
+import jantarPhoto from "@/assets/lp/img-06-jantar.webp.asset.json";
+import ogImage from "@/assets/lp/img-07-og.webp.asset.json";
 import {
   Accordion,
   AccordionContent,
