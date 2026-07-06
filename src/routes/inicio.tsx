@@ -71,23 +71,23 @@ const MES_ATUAL = new Date()
 const benefits = [
   {
     icon: Wallet,
-    title: "Orçamento vivo",
-    desc: "Renda, gastos e saldo do mês num relance. A planilha que você abandonava em fevereiro, aposentada de vez.",
+    title: "Veja pra onde vai o dinheiro",
+    desc: "Renda, gastos e saldo do mês numa tela só — sem planilha pra manter.",
   },
   {
     icon: TrendingUp,
-    title: "Método 50-30-20",
-    desc: "Você não decide 'quanto dá pra gastar' no chute. O app já mostra: tanto pro essencial, tanto pra viver, tanto pro futuro.",
+    title: "Saiba quanto pode gastar sem culpa",
+    desc: "O app divide sua renda automaticamente: essencial, vida e futuro. Você não decide no chute.",
   },
   {
     icon: PiggyBank,
-    title: "Reserva de emergência",
-    desc: "Aquele colchão que você sempre adiou. Aqui você vê ele crescer mês a mês — e isso vicia (do jeito bom).",
+    title: "Monte sua reserva sem sofrer",
+    desc: "O app mostra quanto guardar por mês e você acompanha o valor crescer.",
   },
   {
     icon: CreditCard,
-    title: "Dívidas sob controle",
-    desc: "Priorize, negocie, quite. Uma por uma. Cada parcela quitada aparece no painel — e a família vê o azul chegando.",
+    title: "Saia das dívidas com um plano",
+    desc: "Organize o que deve, defina a ordem de pagamento e veja quitar uma por uma.",
   },
 ];
 
