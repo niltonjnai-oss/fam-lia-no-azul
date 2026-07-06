@@ -92,16 +92,22 @@ const steps = [
     n: "01",
     title: "Conte sua renda",
     desc: "Um minuto. Salário, bico, pensão: tudo que entra no mês.",
+    image: step1Photo.url,
+    alt: "Mãos de uma mulher registrando a renda mensal em um aplicativo de finanças no celular",
   },
   {
     n: "02",
     title: "Registre os gastos",
     desc: "Dois toques por gasto. Mercado, escola, aquele delivery de sexta (sem julgamento).",
+    image: step2Photo.url,
+    alt: "Mãe brasileira registrando um gasto de supermercado no celular durante as compras",
   },
   {
     n: "03",
     title: "Respire fundo",
     desc: "O painel mostra onde você está e qual o próximo passo. Só isso já muda o clima lá em casa.",
+    image: step3Photo.url,
+    alt: "Pai sorrindo aliviado enquanto olha para o painel financeiro no celular em casa",
   },
 ];
 
