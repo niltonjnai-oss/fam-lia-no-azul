@@ -440,7 +440,7 @@ function LandingPage() {
           <div className="mx-auto max-w-2xl text-center">
             <span className="t-eyebrow">Por que funciona</span>
             <h2 className="font-display mt-3 text-3xl tracking-tight md:text-4xl">
-              Funciona, <em className="italic text-[#0F2A47]/80">e não dá trabalho.</em>
+              Funciona, <em className="italic text-orange-500">e não dá trabalho.</em>
             </h2>
           </div>
           <div className="mt-14 grid gap-10 md:grid-cols-3">
