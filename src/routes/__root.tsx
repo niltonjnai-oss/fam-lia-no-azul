@@ -178,7 +178,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <SupabaseConfigBanner />
+      
       <AuthProvider>
         <MesProvider>
           <AuthGate />
