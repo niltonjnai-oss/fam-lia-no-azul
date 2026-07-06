@@ -9,9 +9,15 @@ import {
   Check,
   Lock,
   BadgeCheck,
-  Heart,
 } from "lucide-react";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import heroPhoto from "@/assets/lp/img-01-hero.webp.asset.json";
+import step1Photo from "@/assets/lp/img-02-step1.webp.asset.json";
+import step2Photo from "@/assets/lp/img-03-step2.webp.asset.json";
+import step3Photo from "@/assets/lp/img-04-step3.webp.asset.json";
+import familiaLineart from "@/assets/lp/img-05-familia-lineart.png.asset.json";
+import jantarPhoto from "@/assets/lp/img-06-jantar.webp.asset.json";
+import ogImage from "@/assets/lp/img-07-og.webp.asset.json";
 import {
   Accordion,
   AccordionContent,
@@ -35,7 +41,9 @@ export const Route = createFileRoute("/inicio")({
           "Método 50-30-20 no automático, reserva de emergência e dívidas sob controle. 3 minutos por dia, sua família volta pro azul.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: ogImage.url },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: ogImage.url },
     ],
   }),
   component: LandingPage,
@@ -83,16 +91,22 @@ const steps = [
     n: "01",
     title: "Conte sua renda",
     desc: "Um minuto. Salário, bico, pensão: tudo que entra no mês.",
+    image: step1Photo.url,
+    alt: "Mãos de uma mulher registrando a renda mensal em um aplicativo de finanças no celular",
   },
   {
     n: "02",
     title: "Registre os gastos",
     desc: "Dois toques por gasto. Mercado, escola, aquele delivery de sexta (sem julgamento).",
+    image: step2Photo.url,
+    alt: "Mãe brasileira registrando um gasto de supermercado no celular durante as compras",
   },
   {
     n: "03",
     title: "Respire fundo",
     desc: "O painel mostra onde você está e qual o próximo passo. Só isso já muda o clima lá em casa.",
+    image: step3Photo.url,
+    alt: "Pai sorrindo aliviado enquanto olha para o painel financeiro no celular em casa",
   },
 ];
 
@@ -359,8 +373,26 @@ function LandingPage() {
           </div>
         </div>
 
-        {/* Painel mockup abaixo do hero */}
+        {/* Painel mockup abaixo do hero, com foto ambiente atrás/à direita (desktop) */}
         <div className="relative mx-auto mt-16 max-w-3xl">
+          {/* Foto do casal — só desktop, com overlay do gradiente azul */}
+          <div className="pointer-events-none absolute -right-40 -top-10 hidden h-[520px] w-[560px] overflow-hidden rounded-[2rem] md:block lg:-right-56">
+            <img
+              src={heroPhoto.url}
+              alt="Casal brasileiro em casa, aliviado, olhando junto para o celular"
+              loading="eager"
+              width={1600}
+              height={1200}
+              className="h-full w-full object-cover"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(230,242,251,0.65) 0%, rgba(184,220,243,0.75) 60%, rgba(15,42,71,0.35) 100%)",
+              }}
+            />
+          </div>
           <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-white/60 to-[#B8DCF3]/60 blur-3xl" />
           <div className="relative overflow-hidden rounded-[2rem] border border-white/60 bg-white/95 p-8 text-left shadow-2xl backdrop-blur">
             <div className="flex items-center justify-between text-xs text-[#0F2A47]/60">
@@ -481,15 +513,25 @@ function LandingPage() {
             {steps.map((s) => (
               <div
                 key={s.n}
-                className="rounded-3xl border border-white/70 bg-white/80 p-8 shadow-sm"
+                className="overflow-hidden rounded-3xl border border-white/70 bg-white/80 shadow-sm"
               >
-                <div
-                  className="font-display text-6xl leading-none text-[#0F2A47]/20"
-                >
-                  {s.n}
+                <div className="aspect-[4/3] overflow-hidden border-b border-white/70">
+                  <img
+                    src={s.image}
+                    alt={s.alt}
+                    loading="lazy"
+                    width={1280}
+                    height={960}
+                    className="h-full w-full object-cover"
+                  />
                 </div>
-                <h3 className="font-display mt-4 text-2xl tracking-tight">{s.title}</h3>
-                <p className="mt-3 text-sm text-[#0F2A47]/70">{s.desc}</p>
+                <div className="p-8">
+                  <div className="font-display text-6xl leading-none text-[#0F2A47]/20">
+                    {s.n}
+                  </div>
+                  <h3 className="font-display mt-4 text-2xl tracking-tight">{s.title}</h3>
+                  <p className="mt-3 text-sm text-[#0F2A47]/70">{s.desc}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -543,15 +585,28 @@ function LandingPage() {
             </h2>
           </div>
           <div className="mx-auto mt-14 max-w-3xl rounded-[2rem] border border-white/70 bg-white/90 p-10 shadow-xl md:p-16">
-            <Heart className="h-8 w-8 text-[#0F2A47]/40" />
-            <p className="font-display mt-6 text-2xl leading-snug tracking-tight md:text-3xl">
-              A gente sabe como é terminar o mês sem saber pra onde o dinheiro foi. Já passamos pelo
-              caderninho, pela planilha que durou três semanas, pelo aplicativo complicado demais.
-              O Família no Azul é o app que a gente queria ter tido em casa: leve, simples e sem
-              julgamento.
-            </p>
-            <div className="mt-8 text-sm italic text-[#0F2A47]/60">
-              — Equipe Família no Azul, Grupo Romana
+            <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-start md:gap-10">
+              <div className="order-2 md:order-1">
+                <p className="font-display text-2xl leading-snug tracking-tight md:text-3xl">
+                  A gente sabe como é terminar o mês sem saber pra onde o dinheiro foi. Já passamos pelo
+                  caderninho, pela planilha que durou três semanas, pelo aplicativo complicado demais.
+                  O Família no Azul é o app que a gente queria ter tido em casa: leve, simples e sem
+                  julgamento.
+                </p>
+                <div className="mt-8 text-sm italic text-[#0F2A47]/60">
+                  — Equipe Família no Azul, Grupo Romana
+                </div>
+              </div>
+              <div className="order-1 flex justify-center md:order-2 md:justify-end">
+                <img
+                  src={familiaLineart.url}
+                  alt="Ilustração em traço fino de uma família de mãos dadas com um coração acima"
+                  loading="lazy"
+                  width={800}
+                  height={800}
+                  className="w-full max-w-[160px] opacity-90 md:max-w-[220px]"
+                />
+              </div>
             </div>
           </div>
           {/* Bloco de depoimentos reais — ativar quando houver relatos verificados
@@ -693,16 +748,34 @@ function LandingPage() {
       {/* CTA final */}
       <section className="mx-auto max-w-6xl px-6 pb-24 pt-4 md:pb-32">
         <div
-          className="overflow-hidden rounded-[2rem] p-12 text-center text-white md:p-20"
-          style={{ backgroundImage: `linear-gradient(135deg, ${NAVY} 0%, #1E4A78 100%)` }}
+          className="relative overflow-hidden rounded-[2rem] p-12 text-center text-white md:p-20"
+          style={{ backgroundColor: NAVY }}
         >
-          <h2 className="font-display mx-auto max-w-3xl text-4xl leading-tight tracking-tight md:text-6xl">
-            Este mês <em className="italic" style={{ color: ORANGE }}>ainda dá tempo.</em>
-          </h2>
-          <p className="mx-auto mt-6 max-w-xl text-base text-white/75">
-            Cadastre a renda hoje, registre os gastos da semana e chegue no dia 30 sabendo — talvez
-            pela primeira vez — pra onde foi cada real.
-          </p>
+          {/* Foto de fundo */}
+          <img
+            src={jantarPhoto.url}
+            alt="Família brasileira jantando junto em casa, sorrindo à luz do fim de tarde"
+            loading="lazy"
+            width={1920}
+            height={1088}
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            style={{ objectPosition: "70% center" }}
+          />
+          {/* Overlay navy para manter contraste AA */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background: `linear-gradient(135deg, rgba(15,42,71,0.92) 0%, rgba(30,74,120,0.78) 60%, rgba(15,42,71,0.55) 100%)`,
+            }}
+          />
+          <div className="relative">
+            <h2 className="font-display mx-auto max-w-3xl text-4xl leading-tight tracking-tight md:text-6xl">
+              Este mês <em className="italic" style={{ color: ORANGE }}>ainda dá tempo.</em>
+            </h2>
+            <p className="mx-auto mt-6 max-w-xl text-base text-white/85">
+              Cadastre a renda hoje, registre os gastos da semana e chegue no dia 30 sabendo — talvez
+              pela primeira vez — pra onde foi cada real.
+            </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <a
               href={KIWIFY_URL}
@@ -722,6 +795,7 @@ function LandingPage() {
             >
               Já tenho conta
             </Link>
+          </div>
           </div>
         </div>
       </section>
