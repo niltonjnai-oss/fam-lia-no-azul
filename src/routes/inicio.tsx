@@ -71,23 +71,23 @@ const MES_ATUAL = new Date()
 const benefits = [
   {
     icon: Wallet,
-    title: "Orçamento vivo",
-    desc: "Renda, gastos e saldo do mês num relance. A planilha que você abandonava em fevereiro, aposentada de vez.",
+    title: "Veja pra onde vai o dinheiro",
+    desc: "Renda, gastos e saldo do mês numa tela só — sem planilha pra manter.",
   },
   {
     icon: TrendingUp,
-    title: "Método 50-30-20",
-    desc: "Você não decide 'quanto dá pra gastar' no chute. O app já mostra: tanto pro essencial, tanto pra viver, tanto pro futuro.",
+    title: "Saiba quanto pode gastar sem culpa",
+    desc: "O app divide sua renda automaticamente: essencial, vida e futuro. Você não decide no chute.",
   },
   {
     icon: PiggyBank,
-    title: "Reserva de emergência",
-    desc: "Aquele colchão que você sempre adiou. Aqui você vê ele crescer mês a mês — e isso vicia (do jeito bom).",
+    title: "Monte sua reserva sem sofrer",
+    desc: "O app mostra quanto guardar por mês e você acompanha o valor crescer.",
   },
   {
     icon: CreditCard,
-    title: "Dívidas sob controle",
-    desc: "Priorize, negocie, quite. Uma por uma. Cada parcela quitada aparece no painel — e a família vê o azul chegando.",
+    title: "Saia das dívidas com um plano",
+    desc: "Organize o que deve, defina a ordem de pagamento e veja quitar uma por uma.",
   },
 ];
 
@@ -467,9 +467,7 @@ function LandingPage() {
         <div className="mx-auto max-w-2xl text-center">
           <span className="t-eyebrow">Benefícios</span>
           <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
-            Tudo que uma família precisa,
-            <br />
-            <em className="italic text-[#0F2A47]/80">nada que ela não precise.</em>
+            Quatro coisas que o Família no Azul resolve pra você.
           </h2>
         </div>
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
