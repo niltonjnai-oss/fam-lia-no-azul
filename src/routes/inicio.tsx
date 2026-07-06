@@ -467,7 +467,7 @@ function LandingPage() {
         <div className="mx-auto max-w-2xl text-center">
           <span className="t-eyebrow">Benefícios</span>
           <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
-            Quatro coisas que o Família no Azul <span className="text-orange-500">resolve pra você.</span>
+            Quatro coisas que o App Família no Azul <span className="italic text-orange-500">resolve pra você.</span>
           </h2>
         </div>
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
