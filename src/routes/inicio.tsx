@@ -290,7 +290,7 @@ function LandingPage() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <Link to="/inicio" className="flex items-center">
-          <img src={logoHorizontal.url} alt="Família no Azul" className="h-10 w-auto" />
+          <img src={logoHorizontalUrl} alt="Família no Azul" className="h-10 w-auto" />
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium text-[#0F2A47]/70 md:flex">
           <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
@@ -383,7 +383,7 @@ function LandingPage() {
           {/* Foto do casal — só desktop, com overlay do gradiente azul */}
           <div className="pointer-events-none absolute -right-40 -top-10 hidden h-[520px] w-[560px] overflow-hidden rounded-[2rem] md:block lg:-right-56">
             <img
-              src={heroPhoto.url}
+              src={heroPhotoUrl}
               alt="Casal brasileiro em casa, aliviado, olhando junto para o celular"
               loading="eager"
               width={1600}
@@ -604,7 +604,7 @@ function LandingPage() {
               </div>
               <div className="order-1 flex justify-center md:order-2 md:justify-end">
                 <img
-                  src={familiaLineart.url}
+                  src={familiaLineartUrl}
                   alt="Ilustração em traço fino de uma família de mãos dadas com um coração acima"
                   loading="lazy"
                   width={800}
@@ -758,7 +758,7 @@ function LandingPage() {
         >
           {/* Foto de fundo */}
           <img
-            src={jantarPhoto.url}
+            src={jantarPhotoUrl}
             alt="Família brasileira jantando junto em casa, sorrindo à luz do fim de tarde"
             loading="lazy"
             width={1920}
