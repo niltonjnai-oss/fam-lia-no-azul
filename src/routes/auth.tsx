@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { Mail, Lock, Loader2, Eye, EyeOff, User, Check, X, AlertCircle, LifeBuoy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-const logoVertical = { url: "/brand/familia-vertical.png" };
+import logoVertical from "@/assets/familia_no_azul_vertical.png.asset.json";
 import { signOut, useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
