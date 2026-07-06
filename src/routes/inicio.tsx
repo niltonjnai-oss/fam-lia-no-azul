@@ -796,6 +796,7 @@ function LandingPage() {
               Já tenho conta
             </Link>
           </div>
+          </div>
         </div>
       </section>
 
