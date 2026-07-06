@@ -124,7 +124,7 @@ const pillars = [
   {
     value: "100%",
     title: "Privado",
-    desc: "Cada família enxerga só os próprios dados. Nunca vendemos nem compartilhamos nada. LGPD na letra.",
+    desc: "Somente você e sua família têm acesso às suas informações.",
   },
 ];
 
