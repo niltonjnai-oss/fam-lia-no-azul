@@ -24,6 +24,7 @@ import { Route as AssinaturaRouteImport } from './routes/assinatura'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as ApiEmailsSendRouteImport } from './routes/api/emails/send'
+import { Route as ApiPublicKiwifyWebhookRouteImport } from './routes/api/public/kiwify/webhook'
 import { Route as ApiPublicEmailsCronRouteImport } from './routes/api/public/emails/cron'
 
 const TermosRoute = TermosRouteImport.update({
@@ -101,6 +102,11 @@ const ApiEmailsSendRoute = ApiEmailsSendRouteImport.update({
   path: '/api/emails/send',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicKiwifyWebhookRoute = ApiPublicKiwifyWebhookRouteImport.update({
+  id: '/api/public/kiwify/webhook',
+  path: '/api/public/kiwify/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicEmailsCronRoute = ApiPublicEmailsCronRouteImport.update({
   id: '/api/public/emails/cron',
   path: '/api/public/emails/cron',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/admin/emails': typeof AdminEmailsRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
+  '/api/public/kiwify/webhook': typeof ApiPublicKiwifyWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/admin/emails': typeof AdminEmailsRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
+  '/api/public/kiwify/webhook': typeof ApiPublicKiwifyWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/admin/emails': typeof AdminEmailsRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
+  '/api/public/kiwify/webhook': typeof ApiPublicKiwifyWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/admin/emails'
     | '/api/emails/send'
     | '/api/public/emails/cron'
+    | '/api/public/kiwify/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/admin/emails'
     | '/api/emails/send'
     | '/api/public/emails/cron'
+    | '/api/public/kiwify/webhook'
   id:
     | '__root__'
     | '/'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/admin/emails'
     | '/api/emails/send'
     | '/api/public/emails/cron'
+    | '/api/public/kiwify/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -236,6 +248,7 @@ export interface RootRouteChildren {
   AdminEmailsRoute: typeof AdminEmailsRoute
   ApiEmailsSendRoute: typeof ApiEmailsSendRoute
   ApiPublicEmailsCronRoute: typeof ApiPublicEmailsCronRoute
+  ApiPublicKiwifyWebhookRoute: typeof ApiPublicKiwifyWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -345,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiEmailsSendRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/kiwify/webhook': {
+      id: '/api/public/kiwify/webhook'
+      path: '/api/public/kiwify/webhook'
+      fullPath: '/api/public/kiwify/webhook'
+      preLoaderRoute: typeof ApiPublicKiwifyWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/emails/cron': {
       id: '/api/public/emails/cron'
       path: '/api/public/emails/cron'
@@ -372,17 +392,8 @@ const rootRouteChildren: RootRouteChildren = {
   AdminEmailsRoute: AdminEmailsRoute,
   ApiEmailsSendRoute: ApiEmailsSendRoute,
   ApiPublicEmailsCronRoute: ApiPublicEmailsCronRoute,
+  ApiPublicKiwifyWebhookRoute: ApiPublicKiwifyWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
