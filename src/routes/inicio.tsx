@@ -358,10 +358,6 @@ function LandingPage() {
             Me mostra como funciona
           </a>
         </div>
-        <div className="mt-8 flex items-center justify-center gap-2 text-xs text-[#0F2A47]/60">
-          <ShieldCheck className="h-4 w-4" />
-          Seus dados são só seus. A gente não vende, não compartilha, não enche seu e-mail.
-        </div>
 
         {/* Faixa de confiança */}
         <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center justify-center gap-3 text-xs text-[#0F2A47]/70 sm:flex-row sm:gap-8">
