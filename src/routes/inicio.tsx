@@ -322,9 +322,6 @@ function LandingPage() {
 
       {/* HERO */}
       <section className="mx-auto max-w-5xl px-6 pt-16 pb-24 text-center md:pt-24 md:pb-32">
-        <span className="inline-flex items-center rounded-full border border-[#0F2A47]/15 bg-white/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#0F2A47]">
-          Pra famílias de verdade, com boleto de verdade
-        </span>
         <h1 className="font-display mx-auto mt-8 max-w-4xl text-4xl leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
           Termine o mês sabendo pra onde foi cada real.
           <br />
