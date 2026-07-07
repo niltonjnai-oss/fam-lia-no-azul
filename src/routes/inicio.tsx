@@ -620,15 +620,12 @@ function LandingPage() {
       <section className="mx-auto max-w-6xl px-6 py-20">
         <div className="mx-auto max-w-4xl rounded-[2rem] border border-white/70 bg-white/85 p-10 shadow-xl md:p-14">
           <div className="grid gap-8 md:grid-cols-[auto_1fr] md:items-center md:gap-10">
-            <div
-              className="mx-auto grid h-32 w-32 place-items-center rounded-full border-4 text-center leading-tight md:mx-0"
-              style={{ borderColor: NAVY, color: NAVY, fontFamily: "'Fraunces', Georgia, serif" }}
-            >
-              <div>
-                <div className="text-4xl font-semibold">7</div>
-                <div className="text-[10px] font-semibold uppercase tracking-widest">Dias de garantia</div>
-              </div>
-            </div>
+            <img
+              src={assetUrl(seloGarantia.url)}
+              alt="Selo de 7 dias de garantia"
+              className="mx-auto h-40 w-40 md:mx-0"
+              loading="lazy"
+            />
             <div className="text-center md:text-left">
               <span className="t-eyebrow">Sem risco</span>
               <h2 className="font-display mt-2 text-3xl tracking-tight md:text-4xl">
