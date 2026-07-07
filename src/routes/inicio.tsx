@@ -72,7 +72,7 @@ const benefits = [
   {
     icon: Wallet,
     title: "Veja pra onde vai o dinheiro",
-    desc: "Renda, gastos e saldo do mês numa tela só — sem planilha pra manter.",
+    desc: "Renda, gastos e saldo do mês numa tela só - sem planilha pra manter.",
   },
   {
     icon: TrendingUp,
