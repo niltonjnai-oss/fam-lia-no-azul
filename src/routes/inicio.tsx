@@ -621,7 +621,7 @@ function LandingPage() {
         <div className="mx-auto max-w-4xl rounded-[2rem] border border-white/70 bg-white/85 p-10 shadow-xl md:p-14">
           <div className="grid gap-8 md:grid-cols-[auto_1fr] md:items-center md:gap-10">
             <img
-              src={assetUrl(seloGarantia.url)}
+              src={assetUrl(seloGarantia)}
               alt="Selo de 7 dias de garantia"
               className="mx-auto h-40 w-40 md:mx-0"
               loading="lazy"
