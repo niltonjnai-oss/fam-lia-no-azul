@@ -333,9 +333,10 @@ function LandingPage() {
           </em>
         </h1>
         <p className="mx-auto mt-8 max-w-2xl text-base text-[#0F2A47]/75 md:text-xl">
-          Todo dia 28 bate aquela sensação: "o dinheiro entrou... e sumiu". O Família no Azul
-          divide sua renda no método 50-30-20 automaticamente — 3 minutos por dia e sua família
-          volta pro azul.
+          Todo dia 28 bate aquela sensação:{" "}
+          <em className="italic font-bold text-orange-500 not-italic-quotes">"o dinheiro entrou... e sumiu".</em>{" "}
+          O Família no Azul divide sua renda no método 50-30-20 automaticamente -{" "}
+          <em className="italic font-bold text-orange-500">3 minutos por dia e sua família volta pro azul.</em>
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <a
