@@ -363,7 +363,7 @@ function LandingPage() {
         <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center justify-center gap-3 text-xs text-[#0F2A47]/70 sm:flex-row sm:gap-8">
           <div className="flex items-center gap-2">
             <Lock className="h-4 w-4 text-[#0F2A47]/60" />
-            <span>Dados protegidos (LGPD)</span>
+            <span>Dados protegidos</span>
           </div>
           <div className="flex items-center gap-2">
             <BadgeCheck className="h-4 w-4 text-[#0F2A47]/60" />
@@ -371,7 +371,7 @@ function LandingPage() {
           </div>
           <div className="flex items-center gap-2">
             <CreditCard className="h-4 w-4 text-[#0F2A47]/60" />
-            <span>Pagamento seguro via Kiwify</span>
+            <span>Pagamento seguro</span>
           </div>
         </div>
 
