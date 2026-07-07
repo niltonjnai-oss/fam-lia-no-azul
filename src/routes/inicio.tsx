@@ -656,7 +656,7 @@ function LandingPage() {
               Um ano inteiro no azul <em className="italic text-[#0F2A47]/80">por menos que uma pizza.</em>
             </h2>
             <p className="mt-4 text-base text-[#0F2A47]/70">
-              R$ 67,90 pelo ano todo — dá R$ 5,66 por mês. Sem mensalidade, sem surpresa na fatura.
+              R$ 67,90 pelo ano todo - dá R$ 5,66 por mês. Sem surpresa na fatura.
             </p>
           </div>
 
