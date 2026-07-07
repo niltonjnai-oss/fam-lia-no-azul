@@ -18,6 +18,7 @@ import step3Photo from "@/assets/lp/img-04-step3.jpg.asset.json";
 import familiaLineart from "@/assets/lp/img-05-familia.png.asset.json";
 import jantarPhoto from "@/assets/lp/img-06-jantar.webp.asset.json";
 import ogImage from "@/assets/lp/img-07-og.webp.asset.json";
+import seloGarantia from "@/assets/lp/selo-garantia.png.asset.json";
 import { assetUrl } from "@/lib/asset-url";
 import {
   Accordion,
