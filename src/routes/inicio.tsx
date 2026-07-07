@@ -372,57 +372,54 @@ function LandingPage() {
           </div>
         </div>
 
-        {/* Painel mockup abaixo do hero, com foto ambiente atrás/à direita (desktop) */}
-        <div className="relative mx-auto mt-16 max-w-3xl">
-          {/* Foto do casal — só desktop, com overlay do gradiente azul */}
-          <div className="pointer-events-none absolute -right-40 -top-10 hidden h-[520px] w-[560px] overflow-hidden rounded-[2rem] md:block lg:-right-56">
+        {/* Foto ambiente + painel mockup lado a lado (desktop) / empilhados (mobile) */}
+        <div className="mx-auto mt-16 grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-10">
+          {/* Foto da família */}
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/60 shadow-2xl">
             <img
               src={heroPhotoUrl}
-              alt="Casal brasileiro em casa, aliviado, olhando junto para o celular"
+              alt="Família brasileira em casa olhando junto para o celular, aliviada"
               loading="eager"
               width={1600}
-              height={1200}
+              height={900}
               className="h-full w-full object-cover"
             />
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(135deg, rgba(230,242,251,0.65) 0%, rgba(184,220,243,0.75) 60%, rgba(15,42,71,0.35) 100%)",
-              }}
-            />
           </div>
-          <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-white/60 to-[#B8DCF3]/60 blur-3xl" />
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/60 bg-white/95 p-8 text-left shadow-2xl backdrop-blur">
-            <div className="flex items-center justify-between text-xs text-[#0F2A47]/60">
-              <span>{MES_ATUAL}</span>
-              <span className="rounded-full bg-[#E8F3EA] px-2.5 py-0.5 text-[10px] font-semibold text-[#2F7A3E]">
-                No azul
-              </span>
-            </div>
-            <div className="mt-5">
-              <div className="text-xs text-[#0F2A47]/60">Saldo do mês</div>
-              <div className="mt-1 text-5xl font-semibold tracking-tight tabular-nums">R$ 2.480,00</div>
-            </div>
-            <div className="mt-8 space-y-4">
-              {[
-                { label: "Essencial", pct: 46, color: NAVY },
-                { label: "Estilo de vida", pct: 24, color: "#5B7C99" },
-                { label: "Reserva & Dívidas", pct: 22, color: "#2F7A3E" },
-              ].map((r) => (
-                <div key={r.label}>
-                  <div className="mb-1 flex justify-between text-xs">
-                    <span className="text-[#0F2A47]/70">{r.label}</span>
-                    <span className="font-medium tabular-nums">{r.pct}%</span>
+
+          {/* Painel mockup */}
+          <div className="relative">
+            <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-white/60 to-[#B8DCF3]/60 blur-3xl" />
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/60 bg-white/95 p-8 text-left shadow-2xl backdrop-blur">
+              <div className="flex items-center justify-between text-xs text-[#0F2A47]/60">
+                <span>{MES_ATUAL}</span>
+                <span className="rounded-full bg-[#E8F3EA] px-2.5 py-0.5 text-[10px] font-semibold text-[#2F7A3E]">
+                  No azul
+                </span>
+              </div>
+              <div className="mt-5">
+                <div className="text-xs text-[#0F2A47]/60">Saldo do mês</div>
+                <div className="mt-1 text-5xl font-semibold tracking-tight tabular-nums">R$ 2.480,00</div>
+              </div>
+              <div className="mt-8 space-y-4">
+                {[
+                  { label: "Essencial", pct: 46, color: NAVY },
+                  { label: "Estilo de vida", pct: 24, color: "#5B7C99" },
+                  { label: "Reserva & Dívidas", pct: 22, color: "#2F7A3E" },
+                ].map((r) => (
+                  <div key={r.label}>
+                    <div className="mb-1 flex justify-between text-xs">
+                      <span className="text-[#0F2A47]/70">{r.label}</span>
+                      <span className="font-medium tabular-nums">{r.pct}%</span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-[#0F2A47]/5">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${r.pct}%`, backgroundColor: r.color }}
+                      />
+                    </div>
                   </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-[#0F2A47]/5">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${r.pct}%`, backgroundColor: r.color }}
-                    />
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
