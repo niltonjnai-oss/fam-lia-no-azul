@@ -578,7 +578,7 @@ function LandingPage() {
           <div className="mx-auto max-w-2xl text-center">
             <span className="t-eyebrow">De família pra família</span>
             <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
-              Por que criamos o <em className="italic text-[#0F2A47]/80">Família no Azul.</em>
+              Por que criamos o <em className="italic text-orange-500">Família no Azul.</em>
             </h2>
           </div>
           <div className="mx-auto mt-14 max-w-4xl rounded-[2rem] border border-white/70 bg-white/90 p-8 shadow-xl md:p-12">
@@ -653,7 +653,7 @@ function LandingPage() {
           <div className="mx-auto max-w-2xl text-center">
             <span className="t-eyebrow">Plano</span>
             <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
-              Um ano inteiro no azul <em className="italic text-[#0F2A47]/80">por menos que uma pizza.</em>
+              Um ano inteiro no azul <em className="italic text-orange-500">por menos que uma pizza.</em>
             </h2>
             <p className="mt-4 text-base text-[#0F2A47]/70">
               R$ 67,90 pelo ano todo - dá R$ 5,66 por mês. Sem surpresa na fatura.
