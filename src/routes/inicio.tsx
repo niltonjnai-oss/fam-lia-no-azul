@@ -581,28 +581,28 @@ function LandingPage() {
               Por que criamos o <em className="italic text-[#0F2A47]/80">Família no Azul.</em>
             </h2>
           </div>
-          <div className="mx-auto mt-14 max-w-3xl rounded-[2rem] border border-white/70 bg-white/90 p-10 shadow-xl md:p-16">
-            <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-start md:gap-10">
-              <div className="order-2 md:order-1">
-                <p className="font-display text-2xl leading-snug tracking-tight md:text-3xl">
+          <div className="mx-auto mt-14 max-w-4xl rounded-[2rem] border border-white/70 bg-white/90 p-8 shadow-xl md:p-12">
+            <div className="grid gap-10 md:grid-cols-[auto_1fr] md:items-center md:gap-12">
+              <div className="order-1 flex justify-center md:justify-start">
+                <img
+                  src={familiaLineartUrl}
+                  alt="Ilustração 3D de uma família sorrindo com um coração laranja acima"
+                  loading="lazy"
+                  width={720}
+                  height={960}
+                  className="w-full max-w-[220px] md:max-w-[280px]"
+                />
+              </div>
+              <div className="order-2">
+                <p className="font-display text-xl leading-snug tracking-tight md:text-2xl">
                   A gente sabe como é terminar o mês sem saber pra onde o dinheiro foi. Já passamos pelo
                   caderninho, pela planilha que durou três semanas, pelo aplicativo complicado demais.
                   O Família no Azul é o app que a gente queria ter tido em casa: leve, simples e sem
                   julgamento.
                 </p>
-                <div className="mt-8 text-sm italic text-[#0F2A47]/60">
+                <div className="mt-6 text-sm italic text-[#0F2A47]/60">
                   — Equipe Família no Azul, Grupo Romana
                 </div>
-              </div>
-              <div className="order-1 flex justify-center md:order-2 md:justify-end">
-                <img
-                  src={familiaLineartUrl}
-                  alt="Ilustração em traço fino de uma família de mãos dadas com um coração acima"
-                  loading="lazy"
-                  width={800}
-                  height={800}
-                  className="w-full max-w-[160px] opacity-90 md:max-w-[220px]"
-                />
               </div>
             </div>
           </div>
