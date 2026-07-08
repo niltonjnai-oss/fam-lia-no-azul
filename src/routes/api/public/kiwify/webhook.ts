@@ -16,17 +16,22 @@
 // logs), confira o payload real e ajuste os helpers abaixo se os nomes de campo forem
 // diferentes do que assumimos aqui.
 //
-// Tabelas Supabase esperadas — crie com supabase/sql/kiwify_webhook.sql (ainda não
-// existiam no schema do projeto):
-//   - assinaturas: 1 linha por cliente (email), com o status de acesso atual.
-//   - pagamentos: 1 linha por evento de pagamento recebido (auditoria + idempotência).
+// PERSISTÊNCIA — grava em public.kiwify_pedidos, a MESMA tabela que o restante do app
+// já lê:
+//   - verificar_compra_kiwify (Auth Hook "before user created") libera o cadastro quando
+//     existe linha com email_cliente = <email> e evento in ('compra_aprovada',
+//     'subscription_renewed').
+//   - get_minha_assinatura (tela "Sua assinatura") lê os pedidos do usuário.
+// Por isso o evento é normalizado para os valores canônicos que o gate reconhece
+// (ver EVENTO_TO_PEDIDO), independentemente de a Kiwify mandar o nome em inglês ou só
+// o status do pedido.
 
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { timingSafeEqual } from "crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-// ---------- Segurança (mantido do arquivo original) ----------
+// ---------- Segurança ----------
 
 function safeEqual(a: string, b: string) {
   const ba = Buffer.from(a);
@@ -116,6 +121,18 @@ const EVENT_ALIASES: Record<string, EventoInterno> = {
   carrinho_abandonado: "ignorado",
 };
 
+// Valor gravado em kiwify_pedidos.evento por tipo interno. Os dois primeiros são os que
+// o gate de cadastro (verificar_compra_kiwify) reconhece como "compra válida".
+const EVENTO_TO_PEDIDO: Record<Exclude<EventoInterno, "ignorado">, string> = {
+  pagamento_aprovado: "compra_aprovada",
+  assinatura_renovada: "subscription_renewed",
+  pagamento_recusado: "compra_recusada",
+  pagamento_reembolsado: "compra_reembolsada",
+  chargeback: "chargeback",
+  assinatura_atrasada: "subscription_late",
+  assinatura_cancelada: "subscription_canceled",
+};
+
 function pick(...values: unknown[]): string | undefined {
   for (const v of values) {
     if (typeof v === "string" && v.trim()) return v.trim();
@@ -195,105 +212,11 @@ function extractPayload(body: Record<string, unknown>): KiwifyPayload {
   };
 }
 
-// ---------- Regras de acesso ----------
-
-const DURACAO_PADRAO_DIAS = 365; // plano anual único hoje — ver src/routes/assinatura.tsx
-
-function addDays(date: Date, days: number): string {
-  const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d.toISOString();
-}
-
-async function findUserIdByEmail(admin: SupabaseClient, email: string): Promise<string | null> {
-  // supabase-js não tem um "getUserByEmail" direto; pagina o admin.listUsers até achar.
-  // Para bases grandes de usuários, prefira uma tabela `profiles` (email, user_id)
-  // sincronizada por trigger em auth.users — mais barato que paginar a cada webhook.
-  try {
-    for (let page = 1; page <= 5; page++) {
-      const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 200 });
-      if (error || !data) return null;
-      const found = data.users.find((u) => u.email?.toLowerCase() === email.toLowerCase());
-      if (found) return found.id;
-      if (data.users.length < 200) break;
-    }
-  } catch {
-    return null;
-  }
-  return null;
-}
-
-async function aplicarEventoNaAssinatura(
-  admin: SupabaseClient,
-  evento: EventoInterno,
-  payload: KiwifyPayload,
-): Promise<void> {
-  if (evento === "pagamento_recusado") {
-    // Nunca chegou a ter acesso — o registro em `pagamentos` já é suficiente.
-    return;
-  }
-
-  const email = payload.customerEmail!;
-  const userId = await findUserIdByEmail(admin, email);
-  const agora = new Date();
-
-  const base = {
-    email,
-    user_id: userId,
-    nome: payload.customerName ?? null,
-    produto_id: payload.productId ?? null,
-    produto_nome: payload.productName ?? null,
-    plano: payload.plano ?? null,
-    kiwify_order_id: payload.orderId ?? null,
-    kiwify_subscription_id: payload.subscriptionId ?? null,
-    atualizado_em: agora.toISOString(),
-  };
-
-  if (evento === "pagamento_aprovado") {
-    const { error } = await admin.from("assinaturas").upsert(
-      {
-        ...base,
-        status: "ativa",
-        data_inicio: agora.toISOString(),
-        data_expiracao: addDays(agora, DURACAO_PADRAO_DIAS),
-      },
-      { onConflict: "email" },
-    );
-    if (error) throw new Error(`assinaturas (aprovado): ${error.message}`);
-    return;
-  }
-
-  if (evento === "assinatura_renovada") {
-    const expiracao = payload.nextPaymentAt
-      ? new Date(payload.nextPaymentAt).toISOString()
-      : addDays(agora, DURACAO_PADRAO_DIAS);
-    const { error } = await admin
-      .from("assinaturas")
-      .upsert({ ...base, status: "ativa", data_expiracao: expiracao }, { onConflict: "email" });
-    if (error) throw new Error(`assinaturas (renovada): ${error.message}`);
-    return;
-  }
-
-  if (evento === "assinatura_atrasada") {
-    const { error } = await admin
-      .from("assinaturas")
-      .upsert({ ...base, status: "atrasada" }, { onConflict: "email" });
-    if (error) throw new Error(`assinaturas (atrasada): ${error.message}`);
-    return;
-  }
-
-  // assinatura_cancelada, pagamento_reembolsado, chargeback: revoga o acesso.
-  const { error } = await admin
-    .from("assinaturas")
-    .upsert({ ...base, status: "cancelada" }, { onConflict: "email" });
-  if (error) throw new Error(`assinaturas (cancelada): ${error.message}`);
-}
-
 export const Route = createFileRoute("/api/public/kiwify/webhook")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        // Aceita os dois nomes: seu .env usa KIWIFY_WEBHOOK_TOKEN, o comentário no topo
+        // Aceita os dois nomes: o .env usa KIWIFY_WEBHOOK_TOKEN, o comentário no topo
         // deste arquivo (e outros exemplos) usam KIWIFY_WEBHOOK_SECRET.
         const secret = process.env.KIWIFY_WEBHOOK_SECRET ?? process.env.KIWIFY_WEBHOOK_TOKEN;
         if (!secret) return new Response("Not configured", { status: 500 });
@@ -325,11 +248,11 @@ export const Route = createFileRoute("/api/public/kiwify/webhook")({
           return Response.json({ ok: true, event: eventoRaw, handled: false });
         }
 
-        if (!payload.customerEmail && !payload.orderId) {
-          // Sem como identificar cliente/pedido: loga e responde 200 para a Kiwify não
-          // ficar reenviando um evento que nunca vai casar com ninguém.
-          console.error("[kiwify-webhook] payload sem email/order_id", { eventoRaw, body });
-          return Response.json({ ok: true, event: eventoRaw, warning: "missing_identifiers" });
+        if (!payload.customerEmail) {
+          // Sem e-mail não há como o gate de cadastro casar o pedido com o usuário.
+          // Loga e responde 200 para a Kiwify não ficar reenviando indefinidamente.
+          console.error("[kiwify-webhook] payload sem email do cliente", { eventoRaw, body });
+          return Response.json({ ok: true, event: eventoRaw, warning: "missing_email" });
         }
 
         let admin: SupabaseClient;
@@ -343,45 +266,36 @@ export const Route = createFileRoute("/api/public/kiwify/webhook")({
           );
         }
 
+        // Grava o pedido em kiwify_pedidos com o evento normalizado. O upsert por
+        // (order_id, evento) faz reenvios da Kiwify virarem no-op em vez de duplicar
+        // linhas (requer o índice único kiwify_pedidos_order_evento_uniq — ver
+        // supabase/sql/kiwify_pedidos_idempotencia.sql).
+        const eventoPedido = EVENTO_TO_PEDIDO[evento];
         try {
-          // 1) Registra o evento de pagamento (auditoria + idempotência). O unique
-          //    constraint (kiwify_order_id, evento) faz reenvios da Kiwify virarem
-          //    upsert em vez de linha duplicada.
-          if (payload.orderId) {
-            const { error: pagamentoError } = await admin.from("pagamentos").upsert(
-              {
-                kiwify_order_id: payload.orderId,
-                kiwify_subscription_id: payload.subscriptionId ?? null,
-                evento: eventoRaw,
-                evento_tipo: evento,
-                email: payload.customerEmail ?? null,
-                produto_id: payload.productId ?? null,
-                produto_nome: payload.productName ?? null,
-                valor_centavos: payload.amountCents ?? null,
-                moeda: payload.currency ?? null,
-                payload_bruto: body,
-              },
-              { onConflict: "kiwify_order_id,evento" },
-            );
-            if (pagamentoError) throw new Error(`pagamentos: ${pagamentoError.message}`);
-          }
-
-          // 2) Atualiza (ou cria) a assinatura do cliente e libera/revoga o acesso.
-          if (payload.customerEmail) {
-            await aplicarEventoNaAssinatura(admin, evento, payload);
-          }
+          const { error } = await admin.from("kiwify_pedidos").upsert(
+            {
+              order_id: payload.orderId ?? null,
+              evento: eventoPedido,
+              email_cliente: payload.customerEmail,
+              nome_cliente: payload.customerName ?? null,
+              produto_id: payload.productId ?? null,
+              produto_nome: payload.productName ?? null,
+              valor_centavos: payload.amountCents ?? null,
+              payload: body,
+            },
+            { onConflict: "order_id,evento" },
+          );
+          if (error) throw new Error(`kiwify_pedidos: ${error.message}`);
         } catch (e) {
-          console.error("[kiwify-webhook] falha ao processar evento", { eventoRaw, error: e });
-          // 500 faz a Kiwify reenviar o webhook mais tarde — correto para falhas
-          // transitórias (rede, banco fora do ar). Se o problema for dado malformado
-          // recorrente, prefira responder 200 + log para não entrar em loop de reenvio.
+          console.error("[kiwify-webhook] falha ao gravar pedido", { eventoRaw, error: e });
+          // 500 faz a Kiwify reenviar mais tarde — correto para falhas transitórias.
           return Response.json(
             { error: e instanceof Error ? e.message : "processing failed" },
             { status: 500 },
           );
         }
 
-        return Response.json({ ok: true, event: eventoRaw });
+        return Response.json({ ok: true, event: eventoRaw, evento_gravado: eventoPedido });
       },
     },
   },
