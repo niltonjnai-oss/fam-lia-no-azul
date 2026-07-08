@@ -3,7 +3,8 @@
 // aceita os dois nomes) e aponte a Kiwify para:
 //   https://SEU-DOMINIO/api/public/kiwify/webhook
 //
-// A Kiwify envia o header X-Kiwify-Secret com o segredo configurado no dashboard.
+// A Kiwify assina o webhook com HMAC-SHA1 do corpo (chave = token do dashboard) e envia
+// o resultado no parâmetro ?signature= da URL. Ver verifyKiwifySignature abaixo.
 //
 // IMPORTANTE sobre o payload:
 // A Kiwify não publica um schema fixo de webhook. O corpo varia por evento, mas
@@ -28,7 +29,7 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { timingSafeEqual } from "crypto";
+import { createHmac, timingSafeEqual } from "crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 // ---------- Segurança ----------
@@ -38,6 +39,14 @@ function safeEqual(a: string, b: string) {
   const bb = Buffer.from(b);
   if (ba.length !== bb.length) return false;
   return timingSafeEqual(ba, bb);
+}
+
+// A Kiwify assina cada webhook com HMAC-SHA1 do corpo cru, usando o token como chave,
+// e envia o resultado (hex) no parâmetro ?signature= da URL. Validamos recalculando o
+// mesmo HMAC sobre o corpo recebido e comparando em tempo constante.
+function verifyKiwifySignature(rawBody: string, signature: string, token: string): boolean {
+  const expected = createHmac("sha1", token).update(rawBody, "utf8").digest("hex");
+  return safeEqual(expected, signature);
 }
 
 // ---------- Cliente admin (service role) ----------
@@ -216,19 +225,28 @@ export const Route = createFileRoute("/api/public/kiwify/webhook")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        // Aceita os dois nomes: o .env usa KIWIFY_WEBHOOK_TOKEN, o comentário no topo
-        // deste arquivo (e outros exemplos) usam KIWIFY_WEBHOOK_SECRET.
+        // Aceita os dois nomes: o .env usa KIWIFY_WEBHOOK_TOKEN, alguns exemplos usam
+        // KIWIFY_WEBHOOK_SECRET. Este valor é a chave que a Kiwify usa para assinar.
         const secret = process.env.KIWIFY_WEBHOOK_SECRET ?? process.env.KIWIFY_WEBHOOK_TOKEN;
         if (!secret) return new Response("Not configured", { status: 500 });
 
-        const provided = request.headers.get("x-kiwify-secret") ?? "";
-        if (!safeEqual(provided, secret)) {
+        // Lê o corpo cru ANTES de parsear — a Kiwify assina exatamente os bytes enviados.
+        const rawText = await request.text();
+
+        // Autenticação: HMAC-SHA1 no parâmetro ?signature= (como a Kiwify manda de fato).
+        // Mantém o header x-kiwify-secret como alternativa para testes manuais.
+        const url = new URL(request.url);
+        const signature = url.searchParams.get("signature") ?? "";
+        const headerSecret = request.headers.get("x-kiwify-secret") ?? "";
+        const okSignature = signature !== "" && verifyKiwifySignature(rawText, signature, secret);
+        const okHeader = headerSecret !== "" && safeEqual(headerSecret, secret);
+        if (!okSignature && !okHeader) {
           return new Response("Unauthorized", { status: 401 });
         }
 
         let rawBody: unknown;
         try {
-          rawBody = await request.json();
+          rawBody = JSON.parse(rawText);
         } catch {
           return new Response("Invalid JSON", { status: 400 });
         }
