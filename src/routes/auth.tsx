@@ -471,9 +471,9 @@ function SignupForm({ onGoogle, onSwitchToLogin }: { onGoogle: () => void; onSwi
           />
           <span className="text-muted-foreground">
             Li e aceito os{" "}
-            <a href="#" className="text-primary underline underline-offset-2">Termos de Uso</a>{" "}
+            <a href="/termos" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">Termos de Uso</a>{" "}
             e a{" "}
-            <a href="#" className="text-primary underline underline-offset-2">Política de Privacidade</a>.
+            <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">Política de Privacidade</a>.
           </span>
         </label>
 

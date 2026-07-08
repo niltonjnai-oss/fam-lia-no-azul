@@ -167,7 +167,6 @@ function Empty({ texto = "Sem dados ainda neste mês." }: { texto?: string }) {
 
 export function PainelExtras({ mes, prefs }: { mes: string; prefs: Record<CardKey, boolean> }) {
   const ativos = ALL_CARDS.filter((c) => prefs[c.key]);
-  if (ativos.length === 0) return null;
 
   const catsQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
   const subsQ = useQuery({ queryKey: qk.subitens, queryFn: fetchSubitens });
@@ -223,6 +222,9 @@ export function PainelExtras({ mes, prefs }: { mes: string; prefs: Record<CardKe
   const realAnt = Number(resumoAntQ.data?.total_real ?? 0);
   const deltaAbs = realAtual - realAnt;
   const deltaPct = realAnt > 0 ? (deltaAbs / realAnt) * 100 : 0;
+
+  // Todos os hooks já foram chamados acima — seguro retornar cedo aqui.
+  if (ativos.length === 0) return null;
 
   return (
     <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
