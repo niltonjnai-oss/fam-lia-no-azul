@@ -42,8 +42,12 @@ export const Route = createFileRoute("/api/emails/send")({
         if (!token) return new Response("Unauthorized", { status: 401 });
 
         const supabase = createClient(
-          process.env.SUPABASE_URL ?? process.env.APP_SUPABASE_URL ?? "",
+          process.env.SUPABASE_URL ??
+            process.env.VITE_SUPABASE_URL ??
+            process.env.APP_SUPABASE_URL ??
+            "",
           process.env.SUPABASE_PUBLISHABLE_KEY ??
+            process.env.VITE_SUPABASE_ANON_KEY ??
             process.env.APP_SUPABASE_PUBLISHABLE_KEY ??
             "",
           {
