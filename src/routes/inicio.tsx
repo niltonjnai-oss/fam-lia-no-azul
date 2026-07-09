@@ -338,9 +338,7 @@ function LandingPage() {
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <a
-            href={KIWIFY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#planos"
             className="inline-flex min-h-[48px] items-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
             style={{ backgroundColor: ORANGE }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
@@ -481,9 +479,7 @@ function LandingPage() {
         </div>
         <div className="mt-12 text-center">
           <a
-            href={KIWIFY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#planos"
             className="inline-flex min-h-[48px] items-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
             style={{ backgroundColor: ORANGE }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
@@ -705,8 +701,7 @@ function LandingPage() {
                 <ArrowRight className="h-4 w-4" />
               </a>
               <p className="mt-3 text-center text-xs text-[#0F2A47]/60">
-                Pagamento único e seguro via Kiwify · 7 dias de garantia total · Sem renovação
-                automática surpresa
+                Pagamento único e seguro · 7 dias de garantia total · Sem renovação automática
               </p>
             </div>
           </div>

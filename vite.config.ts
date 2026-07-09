@@ -16,6 +16,7 @@ const SUPABASE_PUBLISHABLE_KEY =
   process.env.VITE_SUPABASE_ANON_KEY ??
   process.env.APP_SUPABASE_PUBLISHABLE_KEY ??
   "";
+const META_PIXEL_ID = process.env.VITE_META_PIXEL_ID ?? "";
 
 export default defineConfig({
   tanstackStart: {
@@ -29,6 +30,7 @@ export default defineConfig({
       "import.meta.env.APP_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(SUPABASE_PUBLISHABLE_KEY),
       "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(SUPABASE_URL),
       "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(SUPABASE_PUBLISHABLE_KEY),
+      "import.meta.env.VITE_META_PIXEL_ID": JSON.stringify(META_PIXEL_ID),
     },
   },
 });
