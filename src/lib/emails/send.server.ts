@@ -1,7 +1,9 @@
-// Wrapper server-only para envio via Resend através do gateway Lovable.
+// Wrapper server-only para envio via API do Resend (chamada direta).
 // Nunca importar do cliente. NÃO usado para emails de auth (Supabase cuida).
+// Requer RESEND_API_KEY (sua conta Resend) e um domínio verificado no Resend
+// que corresponda ao remetente EMAIL_FROM.
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
+const RESEND_API_URL = "https://api.resend.com/emails";
 
 export const EMAIL_FROM =
   process.env.EMAIL_FROM ??
@@ -21,17 +23,14 @@ export type SendEmailResult = {
 };
 
 export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult> {
-  const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
-  if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurado");
   if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY não configurado");
 
-  const res = await fetch(`${GATEWAY_URL}/emails`, {
+  const res = await fetch(RESEND_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${LOVABLE_API_KEY}`,
-      "X-Connection-Api-Key": RESEND_API_KEY,
+      Authorization: `Bearer ${RESEND_API_KEY}`,
     },
     body: JSON.stringify({
       from: EMAIL_FROM,
@@ -46,7 +45,7 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
 
   const body = await res.text();
   if (!res.ok) {
-    throw new Error(`Resend gateway ${res.status}: ${body}`);
+    throw new Error(`Resend ${res.status}: ${body}`);
   }
   try {
     const parsed = JSON.parse(body) as { id?: string };
