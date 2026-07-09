@@ -59,7 +59,7 @@ export function AppLayout() {
           </Link>
         </div>
         <nav className="flex flex-col gap-1">
-          {navItems.map((item) => {
+          {visibleNav.map((item) => {
             const active = pathname === item.to;
             const Icon = item.icon;
             return (
@@ -152,7 +152,7 @@ export function AppLayout() {
         aria-label="Navegação principal"
       >
         <ul className="mx-auto flex max-w-xl items-stretch justify-between px-2">
-          {navItems.map((item) => {
+          {visibleNav.map((item) => {
             const active = pathname === item.to;
             const Icon = item.icon;
             return (
