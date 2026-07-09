@@ -7,6 +7,7 @@ import {
   PiggyBank,
   Sparkles,
   Gift,
+  Mail,
   LogOut,
 } from "lucide-react";
 import type { ComponentType } from "react";
