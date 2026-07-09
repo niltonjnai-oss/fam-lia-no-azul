@@ -7,6 +7,7 @@ import {
   PiggyBank,
   Sparkles,
   Gift,
+  Mail,
   LogOut,
 } from "lucide-react";
 import type { ComponentType } from "react";
@@ -40,6 +41,9 @@ export function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user } = useAuth();
   const isAdmin = useIsAdmin();
+  const visibleNav = isAdmin
+    ? [...navItems, { to: "/admin/emails", label: "Emails", icon: Mail } as NavItem]
+    : navItems;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -55,7 +59,7 @@ export function AppLayout() {
           </Link>
         </div>
         <nav className="flex flex-col gap-1">
-          {navItems.map((item) => {
+          {visibleNav.map((item) => {
             const active = pathname === item.to;
             const Icon = item.icon;
             return (
@@ -148,7 +152,7 @@ export function AppLayout() {
         aria-label="Navegação principal"
       >
         <ul className="mx-auto flex max-w-xl items-stretch justify-between px-2">
-          {navItems.map((item) => {
+          {visibleNav.map((item) => {
             const active = pathname === item.to;
             const Icon = item.icon;
             return (
