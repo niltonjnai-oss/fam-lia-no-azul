@@ -132,6 +132,24 @@ export interface TransacaoDia {
   mes_ref: string;
 }
 
+// ---------- Assinatura (kiwify_pedidos via get_minha_assinatura) ----------
+
+export interface MinhaAssinatura {
+  plano: string;
+  data_compra: string;
+  data_vencimento: string;
+  ativa: boolean;
+}
+
+/** Lê a assinatura real do usuário logado (RPC security definer que consulta
+ *  kiwify_pedidos pelo email). Retorna null se não houver compra registrada. */
+export async function fetchMinhaAssinatura(): Promise<MinhaAssinatura | null> {
+  const { data, error } = await supabase.rpc("get_minha_assinatura");
+  if (error) throw new Error(error.message);
+  const rows = (data ?? []) as MinhaAssinatura[];
+  return rows[0] ?? null;
+}
+
 export async function fetchTransacoesDoDia(data: string): Promise<TransacaoDia[]> {
   const { data: rows, error } = await supabase
     .from("transacao")

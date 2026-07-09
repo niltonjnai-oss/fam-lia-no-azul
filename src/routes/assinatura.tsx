@@ -1,13 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Sparkles, ArrowUpRight, CalendarClock, ShieldCheck, RefreshCw } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Sparkles,
+  ArrowUpRight,
+  CalendarClock,
+  ShieldCheck,
+  RefreshCw,
+  LifeBuoy,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { PageTitle } from "@/components/PageTitle";
+import { Skeleton } from "@/components/ui/skeleton";
+import { fetchMinhaAssinatura } from "@/lib/db";
 import {
-  assinaturaAppMock,
   diasRestantes,
   progressoAno,
-  statusAssinatura,
   formatDataBR,
   type StatusAssinaturaApp,
 } from "@/lib/mockAssinaturaApp";
@@ -54,13 +62,10 @@ const STATUS_STYLES: Record<
 };
 
 function AssinaturaPage() {
-  const assinatura = assinaturaAppMock;
-  const dias = diasRestantes(assinatura.dataVencimento);
-  const progresso = Math.round(
-    progressoAno(assinatura.dataCompra, assinatura.dataVencimento) * 100,
-  );
-  const status = statusAssinatura(assinatura.dataVencimento);
-  const st = STATUS_STYLES[status];
+  const { data: assinatura, isLoading } = useQuery({
+    queryKey: ["minha_assinatura"],
+    queryFn: fetchMinhaAssinatura,
+  });
 
   return (
     <div className="space-y-6">
@@ -71,6 +76,75 @@ function AssinaturaPage() {
         </p>
       </div>
 
+      {isLoading ? (
+        <section className="rounded-2xl border border-border bg-card p-5 shadow-soft sm:p-6">
+          <Skeleton className="h-10 w-40" />
+          <Skeleton className="mt-5 h-12 w-56" />
+          <Skeleton className="mt-5 h-2 w-full" />
+        </section>
+      ) : assinatura ? (
+        <CardAssinatura
+          plano={assinatura.plano}
+          dataCompra={assinatura.data_compra}
+          dataVencimento={assinatura.data_vencimento}
+          ativa={assinatura.ativa}
+        />
+      ) : (
+        <SemCompra />
+      )}
+
+      <ComoFunciona />
+    </div>
+  );
+}
+
+function SemCompra() {
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5 shadow-soft sm:p-6">
+      <div className="flex items-start gap-3">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-warning/15">
+          <LifeBuoy className="h-5 w-5 text-warning-foreground" />
+        </span>
+        <div>
+          <h2 className="text-sm font-semibold">Não encontramos sua compra</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Sua conta existe, mas não localizamos um pedido aprovado vinculado a este e-mail.
+            Se você comprou com outro e-mail ou acha que isso é um engano, fale com o suporte.
+          </p>
+          <Button asChild variant="outline" size="sm" className="mt-4">
+            <a href="mailto:suporte@familianoazul.com.br" className="inline-flex items-center gap-1.5">
+              Falar com o suporte
+            </a>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CardAssinatura({
+  plano,
+  dataCompra,
+  dataVencimento,
+  ativa,
+}: {
+  plano: string;
+  dataCompra: string;
+  dataVencimento: string;
+  ativa: boolean;
+}) {
+  const dias = diasRestantes(dataVencimento);
+  const progresso = Math.round(progressoAno(dataCompra, dataVencimento) * 100);
+  // "ativa" vem do banco e já considera reembolso/cancelamento pós-compra.
+  const status: StatusAssinaturaApp = !ativa
+    ? "expirada"
+    : dias <= 30
+      ? "expirando"
+      : "ativa";
+  const st = STATUS_STYLES[status];
+
+  return (
+    <>
       <section className="rounded-2xl border border-border bg-card p-5 shadow-soft sm:p-6">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
@@ -78,7 +152,7 @@ function AssinaturaPage() {
               <Sparkles className={`h-5 w-5 ${st.icon}`} />
             </span>
             <div>
-              <h2 className="text-sm font-semibold leading-tight">Plano {assinatura.plano}</h2>
+              <h2 className="text-sm font-semibold leading-tight">Plano {plano}</h2>
               <p className="text-xs text-muted-foreground">Família no Azul</p>
             </div>
           </div>
@@ -97,7 +171,7 @@ function AssinaturaPage() {
             </span>
           </div>
           <p className="tabular mt-2 text-xs text-muted-foreground">
-            Vence em {formatDataBR(assinatura.dataVencimento)}
+            Vence em {formatDataBR(dataVencimento)}
           </p>
         </div>
 
@@ -114,7 +188,7 @@ function AssinaturaPage() {
           />
         </div>
         <div className="tabular mt-1 flex justify-between text-[11px] text-muted-foreground">
-          <span>Compra em {formatDataBR(assinatura.dataCompra)}</span>
+          <span>Compra em {formatDataBR(dataCompra)}</span>
           <span>{progresso}% do ano</span>
         </div>
 
@@ -130,9 +204,14 @@ function AssinaturaPage() {
           </a>
         </Button>
       </section>
+    </>
+  );
+}
 
-      <section className="rounded-2xl border border-border bg-card p-5 shadow-soft sm:p-6">
-        <h2 className="text-sm font-semibold">Como funciona</h2>
+function ComoFunciona() {
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5 shadow-soft sm:p-6">
+      <h2 className="text-sm font-semibold">Como funciona</h2>
         <ul className="mt-4 space-y-4 text-sm text-muted-foreground">
           <li className="flex gap-3">
             <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
@@ -173,7 +252,6 @@ function AssinaturaPage() {
             </div>
           </li>
         </ul>
-      </section>
-    </div>
+    </section>
   );
 }
