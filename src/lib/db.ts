@@ -273,7 +273,7 @@ export async function upsertLancamento(args: {
 }): Promise<void> {
   const { error } = await supabase
     .from("lancamento")
-    .upsert(args, { onConflict: "subitem_id,mes_ref" });
+    .upsert(args, { onConflict: "subitem_id,mes_ref,user_id" });
   if (error) throw new Error(error.message);
 }
 
