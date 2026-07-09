@@ -41,6 +41,9 @@ export function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user } = useAuth();
   const isAdmin = useIsAdmin();
+  const visibleNav = isAdmin
+    ? [...navItems, { to: "/admin/emails", label: "Emails", icon: Mail } as NavItem]
+    : navItems;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
