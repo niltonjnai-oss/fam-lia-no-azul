@@ -10,7 +10,7 @@ import {
   lembreteSemanal,
   marketingGenerico,
 } from "@/lib/emails/templates";
-import { sendEmail } from "@/lib/emails/send.server";
+import { sendEmail, sendEmailToMany } from "@/lib/emails/send.server";
 
 const schema = z.discriminatedUnion("template", [
   z.object({
@@ -97,8 +97,19 @@ export const Route = createFileRoute("/api/emails/send")({
             ctaTexto: input.ctaTexto,
             ctaUrl: input.ctaUrl,
           });
-          const r = await sendEmail({ to: input.to, ...t });
-          return Response.json({ ok: true, id: r.id });
+          const destinatarios = Array.isArray(input.to) ? input.to : [input.to];
+          if (destinatarios.length === 1) {
+            const r = await sendEmail({ to: destinatarios[0], ...t });
+            return Response.json({ ok: true, id: r.id, enviados: 1 });
+          }
+          // Vários destinatários: batch do Resend — cada um recebe o próprio
+          // email, sem ver os endereços dos demais.
+          const r = await sendEmailToMany(destinatarios, t);
+          return Response.json({
+            ok: true,
+            id: r.ids[0] ?? "",
+            enviados: r.ids.length,
+          });
         } catch (e) {
           return Response.json(
             { error: e instanceof Error ? e.message : "send failed" },
