@@ -18,6 +18,7 @@ import { AppLayout } from "../components/AppLayout";
 import { AuthProvider, signOut, useAuth } from "../lib/auth-context";
 import { Toaster } from "../components/ui/sonner";
 import { MesProvider } from "../lib/mes-context";
+import { MetaPixel } from "../components/MetaPixel";
 
 
 const AUTH_NOTICE_STORAGE_KEY = "familia_auth_notice";
@@ -178,13 +179,13 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      
       <AuthProvider>
         <MesProvider>
           <AuthGate />
         </MesProvider>
         <Toaster />
       </AuthProvider>
+      <MetaPixel />
     </QueryClientProvider>
   );
 }
