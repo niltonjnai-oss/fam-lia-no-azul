@@ -47,6 +47,7 @@ export const Route = createFileRoute("/api/emails/send")({
             process.env.APP_SUPABASE_URL ??
             "",
           process.env.SUPABASE_PUBLISHABLE_KEY ??
+            process.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
             process.env.VITE_SUPABASE_ANON_KEY ??
             process.env.APP_SUPABASE_PUBLISHABLE_KEY ??
             "",
