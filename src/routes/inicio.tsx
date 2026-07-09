@@ -701,8 +701,7 @@ function LandingPage() {
                 <ArrowRight className="h-4 w-4" />
               </a>
               <p className="mt-3 text-center text-xs text-[#0F2A47]/60">
-                Pagamento único e seguro via Kiwify · 7 dias de garantia total · Sem renovação
-                automática surpresa
+                Pagamento único e seguro · 7 dias de garantia total · Sem renovação automática
               </p>
             </div>
           </div>
