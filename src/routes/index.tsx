@@ -290,7 +290,7 @@ function LandingPage() {
     >
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <Link to="/inicio" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <img src={logoHorizontalUrl} alt="Família no Azul" className="h-10 w-auto" />
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium text-[#0F2A47]/70 md:flex">
@@ -301,23 +301,21 @@ function LandingPage() {
           <a href="#faq" className="hover:text-[#0F2A47]">FAQ</a>
         </nav>
         <div className="flex items-center gap-3">
-          <Link
-            to="/auth"
+          <a
+            href="#planos"
             className="hidden text-sm font-medium text-[#0F2A47] hover:opacity-70 sm:block"
           >
-            Entrar
-          </Link>
-          <a
-            href={KIWIFY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            Assinar
+          </a>
+          <Link
+            to="/auth"
             className="min-h-[48px] rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors inline-flex items-center"
             style={{ backgroundColor: ORANGE }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
           >
-            Assinar
-          </a>
+            Entrar
+          </Link>
         </div>
       </header>
 

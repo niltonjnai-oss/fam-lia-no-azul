@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { Mail, Lock, Loader2, Eye, EyeOff, User, Check, X, AlertCircle, LifeBuoy } from "lucide-react";
+import { Mail, Lock, Loader2, Eye, EyeOff, User, Check, X, AlertCircle, LifeBuoy, ShoppingCart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoVertical from "@/assets/familia_no_azul_vertical.png.asset.json";
 import { signOut, useAuth } from "@/lib/auth-context";
@@ -21,6 +21,9 @@ export const Route = createFileRoute("/auth")({
 });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Checkout da Kiwify (mesmo link da LP) — oferecido quando o cadastro é
+// bloqueado por falta de compra aprovada.
+const KIWIFY_URL = "https://pay.kiwify.com.br/4FFlpa2";
 const AUTH_NOTICE_STORAGE_KEY = "familia_auth_notice";
 const EMAIL_CONFIRMATION_WINDOW_MS = 15 * 60 * 1000;
 const logoVerticalUrl = assetUrl(logoVertical);
@@ -306,7 +309,19 @@ function SignupForm({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
             <div className="space-y-2 text-sm">
               <p className="font-medium text-foreground">Ainda não achamos sua compra</p>
               <p className="text-muted-foreground">{blockMessage}</p>
+              <p className="text-xs text-muted-foreground">
+                Comprou com outro e-mail? Refaça o cadastro usando aquele e-mail. Ainda não
+                assinou? Garanta seu acesso agora:
+              </p>
               <div className="flex flex-wrap gap-2 pt-1">
+                <a
+                  href={KIWIFY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  <ShoppingCart className="h-3.5 w-3.5" /> Assinar o Família no Azul
+                </a>
                 <a
                   href="mailto:suporte@familianoazul.com.br"
                   className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-background px-3 text-xs font-medium hover:bg-accent"
@@ -474,6 +489,17 @@ function SignupForm({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
         <button type="button" onClick={onSwitchToLogin} className="font-medium text-primary hover:underline">
           Entrar
         </button>
+      </p>
+      <p className="mt-2 text-center text-xs text-muted-foreground">
+        Ainda não assinou?{" "}
+        <a
+          href={KIWIFY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-primary hover:underline"
+        >
+          Garanta seu acesso
+        </a>
       </p>
     </>
   );
