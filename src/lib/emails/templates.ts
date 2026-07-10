@@ -40,11 +40,9 @@ function shell({ title, bodyHtml }: { title: string; bodyHtml: string }) {
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:${BRAND.cardBg};border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,0.08);">
 
-        <!-- Header degradê com logotipo -->
-        <tr><td align="center" style="background-color:${BRAND.primary};background-image:${BRAND.gradient};padding:36px 24px;">
-          <div style="font-size:26px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;line-height:1.2;">
-            Fam&iacute;lia<br/>no Azul
-          </div>
+        <!-- Header degradê com logomarca (versão para fundo escuro) -->
+        <tr><td align="center" style="background-color:${BRAND.primary};background-image:${BRAND.gradient};padding:28px 24px;">
+          <img src="${BRAND.url}/brand/familia-vertical-dark.png" width="150" alt="${BRAND.name}" style="display:block;width:150px;max-width:60%;height:auto;border:0;" />
         </td></tr>
 
         <!-- Corpo -->
@@ -84,7 +82,7 @@ export function boasVindas({ nome, emailCompra }: { nome?: string; emailCompra?:
     html: shell({
       title: "Seu acesso está liberado",
       bodyHtml: `
-        <h1 style="margin:0 0 16px;font-size:24px;line-height:1.3;color:${BRAND.text};">${saudacao} acesso est&aacute; liberado 🎉</h1>
+        <h1 style="margin:0 0 16px;font-size:24px;line-height:1.3;color:${BRAND.primaryDark};">${saudacao} acesso est&aacute; liberado 🎉</h1>
         <p style="margin:0 0 16px;">Sua compra foi aprovada! Agora falta s&oacute; um passo: <strong>criar sua conta de acesso</strong> e come&ccedil;ar a planejar a vida financeira da sua fam&iacute;lia.</p>
         <p style="margin:0 0 8px;">${linhaEmail}</p>
         ${botao("Criar minha conta e entrar", `${BRAND.url}/auth`)}
@@ -101,7 +99,7 @@ export function onboardingDia1({ nome }: { nome?: string }) {
     html: shell({
       title: "Bem-vindo(a)",
       bodyHtml: `
-        <h1 style="margin:0 0 16px;font-size:24px;line-height:1.3;">${saudacao}</h1>
+        <h1 style="margin:0 0 16px;font-size:24px;line-height:1.3;color:${BRAND.primaryDark};">${saudacao}</h1>
         <p style="margin:0 0 16px;">Que bom ter voc&ecirc; aqui. O <strong>${BRAND.name}</strong> foi feito para tirar sua fam&iacute;lia do vermelho — sem planilha, sem briga, sem susto.</p>
         <p style="margin:0 0 8px;"><strong>Seu primeiro passo:</strong> montar o or&ccedil;amento da fam&iacute;lia. Leva menos de 10 minutos e j&aacute; muda a forma como voc&ecirc; enxerga o m&ecirc;s.</p>
         ${botao("Montar meu orçamento", `${BRAND.url}/orcamento`)}
@@ -118,7 +116,7 @@ export function lembreteSemanal({ nome }: { nome?: string }) {
     html: shell({
       title: "Lembrete semanal",
       bodyHtml: `
-        <h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;">${saudacao}</h1>
+        <h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:${BRAND.primaryDark};">${saudacao}</h1>
         <p style="margin:0 0 8px;">Semana nova come&ccedil;ando — bora colocar o or&ccedil;amento em dia? <strong>5 minutos agora</strong> evitam surpresa no fim do m&ecirc;s.</p>
         ${botao("Atualizar meu orçamento", `${BRAND.url}/orcamento`)}
         <p style="margin:0;text-align:center;font-size:13px;color:${BRAND.muted};">Fam&iacute;lia que acompanha junto, sai do vermelho junto. 💙</p>
@@ -144,7 +142,7 @@ export function marketingGenerico({
     html: shell({
       title: titulo,
       bodyHtml: `
-        <h1 style="margin:0 0 16px;font-size:24px;line-height:1.3;">${titulo}</h1>
+        <h1 style="margin:0 0 16px;font-size:24px;line-height:1.3;color:${BRAND.primaryDark};">${titulo}</h1>
         ${corpoHtml}
         ${cta}
       `,
