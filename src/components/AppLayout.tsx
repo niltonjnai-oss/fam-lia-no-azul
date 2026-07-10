@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
 import { assetUrl } from "@/lib/asset-url";
+import { InstalarAppButton } from "@/components/InstalarAppButton";
 
 type NavItem = {
   to: string;
@@ -82,6 +83,7 @@ export function AppLayout() {
           })}
         </nav>
         <div className="mt-auto space-y-3">
+          <InstalarAppButton />
           {user && (
             <div className="rounded-xl border border-border bg-card p-3 text-xs">
               <div className="flex items-center gap-2">

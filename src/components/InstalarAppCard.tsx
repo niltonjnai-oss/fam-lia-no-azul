@@ -1,61 +1,38 @@
-// Card do Painel convidando a instalar o app (PWA).
-// - Chrome/Android/desktop: usa o evento beforeinstallprompt para instalar com 1 clique.
-// - iPhone/iPad (Safari): mostra o passo a passo (a Apple não expõe prompt).
-// - Some quando o app já está instalado (display-mode standalone) ou se o
-//   usuário dispensar (persistido em localStorage).
+// Card do Painel convidando a instalar o app (PWA). Complementa o botão fixo
+// da sidebar (InstalarAppButton) — no mobile a sidebar não existe, então o
+// card é o convite principal. Dispensável (localStorage); some quando o app
+// já está instalado.
 
 import { useEffect, useState } from "react";
-import { MonitorSmartphone, Share, X } from "lucide-react";
+import { MonitorSmartphone, X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+import {
+  getInstallPrompt,
+  promptInstall,
+  onInstallPromptChange,
+  isStandalone,
+  isIOS,
+} from "@/lib/pwa-install";
+import { GuiaInstalacaoDialog } from "@/components/InstalarAppButton";
 
 const DISMISS_KEY = "fna_instalar_app_dispensado";
 
-type BeforeInstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-};
-
-function isStandalone(): boolean {
-  if (typeof window === "undefined") return true;
-  return (
-    window.matchMedia("(display-mode: standalone)").matches ||
-    // Safari iOS
-    (window.navigator as Navigator & { standalone?: boolean }).standalone === true
-  );
-}
-
-function isIOS(): boolean {
-  if (typeof navigator === "undefined") return false;
-  return /iphone|ipad|ipod/i.test(navigator.userAgent);
-}
-
 export function InstalarAppCard() {
   const [dispensado, setDispensado] = useState(true); // evita flash no SSR
-  const [promptEvent, setPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
-  const [instalado, setInstalado] = useState(false);
+  const [temPrompt, setTemPrompt] = useState(false);
+  const [guiaAberto, setGuiaAberto] = useState(false);
 
   useEffect(() => {
-    setDispensado(
-      isStandalone() || window.localStorage.getItem(DISMISS_KEY) === "1",
-    );
-    const onPrompt = (e: Event) => {
-      e.preventDefault();
-      setPromptEvent(e as BeforeInstallPromptEvent);
-    };
-    const onInstalled = () => setInstalado(true);
-    window.addEventListener("beforeinstallprompt", onPrompt);
-    window.addEventListener("appinstalled", onInstalled);
-    return () => {
-      window.removeEventListener("beforeinstallprompt", onPrompt);
-      window.removeEventListener("appinstalled", onInstalled);
-    };
+    setDispensado(isStandalone() || window.localStorage.getItem(DISMISS_KEY) === "1");
+    setTemPrompt(getInstallPrompt() != null);
+    return onInstallPromptChange(() => {
+      setTemPrompt(getInstallPrompt() != null);
+      if (isStandalone()) setDispensado(true);
+    });
   }, []);
 
-  if (dispensado || instalado) return null;
-
-  const ios = isIOS();
-  // Sem prompt disponível e não é iOS (ex.: Firefox): não mostra nada.
-  if (!promptEvent && !ios) return null;
+  if (dispensado) return null;
 
   function dispensar() {
     window.localStorage.setItem(DISMISS_KEY, "1");
@@ -63,11 +40,12 @@ export function InstalarAppCard() {
   }
 
   async function instalar() {
-    if (!promptEvent) return;
-    await promptEvent.prompt();
-    const escolha = await promptEvent.userChoice;
-    if (escolha.outcome === "accepted") setInstalado(true);
-    setPromptEvent(null);
+    if (temPrompt) {
+      const aceitou = await promptInstall();
+      if (aceitou) setDispensado(true);
+      return;
+    }
+    setGuiaAberto(true);
   }
 
   return (
@@ -85,23 +63,17 @@ export function InstalarAppCard() {
       </div>
       <div className="min-w-0 flex-1 pr-6">
         <div className="text-sm font-semibold">Instale o app no seu aparelho</div>
-        {ios ? (
-          <div className="text-xs text-muted-foreground">
-            No Safari: toque em <Share className="inline h-3.5 w-3.5" aria-label="Compartilhar" />{" "}
-            <strong>Compartilhar</strong> e depois em <strong>&ldquo;Adicionar à Tela de Início&rdquo;</strong>.
-            Sem loja de aplicativos, sempre atualizado.
-          </div>
-        ) : (
-          <div className="text-xs text-muted-foreground">
-            Direto do navegador, sem loja de aplicativos. Acesso em 1 toque, como app nativo.
-          </div>
-        )}
+        <div className="text-xs text-muted-foreground">
+          {isIOS()
+            ? "Ícone na tela de início, acesso em 1 toque — sem loja de aplicativos."
+            : "Direto do navegador, sem loja de aplicativos. Acesso em 1 toque, como app nativo."}
+        </div>
+        <p className="mt-0.5 text-[11px] text-muted-foreground">Android · iOS · Desktop</p>
       </div>
-      {!ios && promptEvent && (
-        <Button size="sm" onClick={instalar}>
-          Instalar app
-        </Button>
-      )}
+      <Button size="sm" onClick={instalar}>
+        Instalar App
+      </Button>
+      <GuiaInstalacaoDialog open={guiaAberto} onOpenChange={setGuiaAberto} />
     </section>
   );
 }
