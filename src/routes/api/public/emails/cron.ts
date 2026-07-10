@@ -18,6 +18,7 @@ import {
   onboardingDia1,
   lembreteSemanal,
   resumoMensal,
+  contasVencendo,
 } from "@/lib/emails/templates";
 import { sendEmail } from "@/lib/emails/send.server";
 
@@ -37,6 +38,21 @@ const schema = z.discriminatedUnion("template", [
     estouros: z.number().int().min(0),
     categoriaTop: z.string().optional(),
     categoriaTopValor: z.number().optional(),
+  }),
+  z.object({
+    template: z.literal("contas-vencendo"),
+    to: z.string().email(),
+    nome: z.string().optional(),
+    contas: z
+      .array(
+        z.object({
+          nome: z.string(),
+          valor: z.number(),
+          quando: z.string(),
+        }),
+      )
+      .min(1)
+      .max(50),
   }),
 ]);
 
@@ -72,7 +88,9 @@ export const Route = createFileRoute("/api/public/emails/cron")({
         const input = parsed.data;
         try {
           const t =
-            input.template === "resumo-mensal"
+            input.template === "contas-vencendo"
+              ? contasVencendo({ nome: input.nome, contas: input.contas })
+              : input.template === "resumo-mensal"
               ? resumoMensal({
                   nome: input.nome,
                   mesRef: input.mesRef,

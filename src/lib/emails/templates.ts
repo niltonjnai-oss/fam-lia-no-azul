@@ -227,11 +227,50 @@ export function resumoMensal({
   };
 }
 
+/** Alerta de contas vencendo (hoje e/ou em 2 dias). Disparado pelo pg_cron
+ *  diário (ver supabase/sql/contas_recorrentes.sql). */
+export function contasVencendo({
+  nome,
+  contas,
+}: {
+  nome?: string;
+  contas: { nome: string; valor: number; quando: string }[];
+}) {
+  const saudacao = nome ? `Oi, ${nome.split(" ")[0]}!` : "Oi!";
+  const total = contas.reduce((a, c) => a + c.valor, 0);
+  const linhas = contas
+    .map(
+      (c) =>
+        `<tr><td style="padding:10px 0;border-top:1px solid ${BRAND.border};">${c.nome} <span style="color:${BRAND.muted};font-size:13px;">(vence ${c.quando})</span></td><td align="right" style="padding:10px 0;border-top:1px solid ${BRAND.border};font-weight:700;">${fmtBRL(c.valor)}</td></tr>`,
+    )
+    .join("");
+  const plural = contas.length > 1;
+  return {
+    subject: plural
+      ? `${contas.length} contas vencendo — não deixe virar juros ⏰`
+      : `${contas[0]?.nome ?? "Conta"} vencendo ${contas[0]?.quando ?? "em breve"} ⏰`,
+    html: shell({
+      title: "Contas vencendo",
+      bodyHtml: `
+        <h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:${BRAND.primaryDark};">${saudacao} ${plural ? "Contas chegando no vencimento" : "Conta chegando no vencimento"} ⏰</h1>
+        <p style="margin:0 0 8px;">Pagar em dia evita juros e multa — dinheiro que fica com a sua fam&iacute;lia.</p>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:15px;margin:8px 0;">
+          ${linhas}
+          <tr><td style="padding:10px 0;border-top:2px solid ${BRAND.primaryDark};font-weight:700;">Total</td><td align="right" style="padding:10px 0;border-top:2px solid ${BRAND.primaryDark};font-weight:700;">${fmtBRL(total)}</td></tr>
+        </table>
+        ${botao("Ver minhas contas", `${BRAND.url}/contas`)}
+        <p style="margin:0;text-align:center;font-size:13px;color:${BRAND.muted};">Pagou? &Oacute;timo — &eacute; s&oacute; ignorar este aviso. 💙</p>
+      `,
+    }),
+  };
+}
+
 export const TEMPLATES = {
   "boas-vindas": boasVindas,
   "onboarding-dia-1": onboardingDia1,
   "lembrete-semanal": lembreteSemanal,
   "resumo-mensal": resumoMensal,
+  "contas-vencendo": contasVencendo,
   "marketing-generico": marketingGenerico,
 } as const;
 

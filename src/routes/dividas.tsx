@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   CreditCard,
@@ -11,7 +11,9 @@ import {
   Trash2,
   AlertTriangle,
   CheckCircle2,
+  Flag,
 } from "lucide-react";
+import { simularQuitacao, formatMesAno } from "@/lib/quitacao";
 
 import {
   Dialog,
@@ -55,7 +57,7 @@ function DividasPage() {
   const dividasQ = useQuery({ queryKey: qk.dividas, queryFn: fetchDividas });
   const [openSim, setOpenSim] = useState(false);
 
-  const todas = dividasQ.data ?? [];
+  const todas = useMemo(() => dividasQ.data ?? [], [dividasQ.data]);
   const ativas = todas.filter((d) => d.status === "Ativa");
   const totalAtivo = ativas.reduce((a, d) => a + Number(d.valor_total), 0);
   const parcelaMensal = ativas.reduce((a, d) => a + Number(d.parcela_mensal), 0);
@@ -64,6 +66,8 @@ function DividasPage() {
         Number(d.taxa_juros_mensal) > Number(max.taxa_juros_mensal) ? d : max,
       )
     : null;
+
+  const simulacao = useMemo(() => simularQuitacao(todas), [todas]);
 
   return (
     <div className="space-y-5">
@@ -106,6 +110,44 @@ function DividasPage() {
         </div>
       </section>
 
+      {!dividasQ.isLoading && ativas.length > 0 && (
+        <section className="rounded-2xl border border-primary/30 bg-primary/5 p-5 shadow-soft">
+          <div className="flex items-center gap-3">
+            <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">
+              <Flag className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold">Plano de Liberdade</div>
+              {simulacao.plano ? (
+                <div className="text-xs text-muted-foreground">
+                  No ritmo atual ({formatBRL(simulacao.plano.pagamentoMensal)}/mês), sua família
+                  fica <strong className="text-foreground">livre de dívidas em {formatMesAno(simulacao.plano.dataLiberdade)}</strong>{" "}
+                  ({simulacao.plano.meses} {simulacao.plano.meses === 1 ? "mês" : "meses"}) — pagando{" "}
+                  {formatBRL(simulacao.plano.totalJurosPagos)} de juros no caminho.
+                </div>
+              ) : (
+                <div className="text-xs font-medium text-danger">
+                  No ritmo atual, as parcelas não vencem os juros — as dívidas não zeram.
+                  Use o simulador abaixo para ver o efeito de um aporte extra, ou renegocie as taxas.
+                </div>
+              )}
+            </div>
+          </div>
+          {simulacao.plano && simulacao.plano.ordem.length > 1 && (
+            <ol className="mt-3 space-y-1 border-t border-primary/20 pt-3 text-xs text-muted-foreground">
+              {simulacao.plano.ordem.map((d, i) => (
+                <li key={d.id} className="flex items-center justify-between gap-2">
+                  <span>
+                    <span className="font-semibold text-foreground">{i + 1}º</span> {d.nome}
+                  </span>
+                  <span className="tabular">quita em {formatMesAno(d.dataQuitacao)}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+      )}
+
       {dividasQ.isLoading ? (
         <div className="space-y-3">
           {[1, 2].map((i) => (
@@ -138,14 +180,82 @@ function DividasPage() {
           <DialogHeader>
             <DialogTitle>Simulador de quitação</DialogTitle>
             <DialogDescription>
-              Em breve: simule aportes extras e veja o impacto no prazo final.
+              Quanto sua família consegue pagar a mais por mês? Veja o efeito no prazo.
             </DialogDescription>
           </DialogHeader>
-          <div className="rounded-xl border border-dashed border-border p-6 text-center text-xs text-muted-foreground">
-            Esta visualização ainda não calcula valores reais.
-          </div>
+          <SimuladorAporte dividas={todas} />
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+function SimuladorAporte({ dividas }: { dividas: Divida[] }) {
+  const [aporte, setAporte] = useState("200");
+  const extra = Number(aporte) || 0;
+
+  const base = useMemo(() => simularQuitacao(dividas), [dividas]);
+  const comAporte = useMemo(() => simularQuitacao(dividas, extra), [dividas, extra]);
+
+  const ativas = dividas.filter((d) => d.status === "Ativa");
+  if (ativas.length === 0) {
+    return (
+      <div className="rounded-xl border border-dashed border-border p-6 text-center text-xs text-muted-foreground">
+        Sem dívidas ativas para simular. 🎉
+      </div>
+    );
+  }
+
+  const mesesGanhos =
+    base.plano && comAporte.plano ? base.plano.meses - comAporte.plano.meses : null;
+  const jurosEconomizados =
+    base.plano && comAporte.plano
+      ? base.plano.totalJurosPagos - comAporte.plano.totalJurosPagos
+      : null;
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <Label>Aporte extra por mês (R$)</Label>
+        <Input
+          inputMode="decimal"
+          value={aporte}
+          onChange={(e) => setAporte(e.target.value)}
+          placeholder="200"
+        />
+      </div>
+
+      {comAporte.plano ? (
+        <div className="rounded-xl border border-success/30 bg-success/10 p-4 text-sm">
+          <div className="font-semibold text-foreground">
+            Livre de dívidas em {formatMesAno(comAporte.plano.dataLiberdade)} (
+            {comAporte.plano.meses} {comAporte.plano.meses === 1 ? "mês" : "meses"})
+          </div>
+          {mesesGanhos !== null && mesesGanhos > 0 && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              <strong className="text-success">{mesesGanhos} {mesesGanhos === 1 ? "mês" : "meses"} antes</strong>{" "}
+              do ritmo atual{jurosEconomizados !== null && jurosEconomizados > 0.005 && (
+                <> — e {formatBRL(jurosEconomizados)} a menos em juros</>
+              )}. Esse é o poder do aporte extra. 💙
+            </p>
+          )}
+          {mesesGanhos !== null && mesesGanhos <= 0 && extra > 0 && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              O prazo não mudou — o aporte é pequeno diante das dívidas. Experimente um valor maior.
+            </p>
+          )}
+          {!base.plano && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Sem o aporte, as dívidas não zeravam. Com {formatBRL(extra)}/mês, elas zeram. 💪
+            </p>
+          )}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-danger/30 bg-danger/10 p-4 text-xs font-medium text-danger">
+          Mesmo com esse aporte, os juros ainda vencem o pagamento mensal. Aumente o valor ou
+          priorize renegociar as taxas mais altas.
+        </div>
+      )}
     </div>
   );
 }

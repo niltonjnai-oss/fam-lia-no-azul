@@ -132,6 +132,49 @@ export interface TransacaoDia {
   mes_ref: string;
 }
 
+// ---------- Contas recorrentes (vencimentos mensais com alerta) ----------
+
+export interface ContaRecorrente {
+  id: string;
+  nome: string;
+  valor: number;
+  dia_vencimento: number;
+  ativo: boolean;
+}
+
+export async function fetchContasRecorrentes(): Promise<ContaRecorrente[]> {
+  const { data, error } = await supabase
+    .from("conta_recorrente")
+    .select("id, nome, valor, dia_vencimento, ativo")
+    .order("dia_vencimento", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as ContaRecorrente[];
+}
+
+export async function inserirContaRecorrente(args: {
+  nome: string;
+  valor: number;
+  dia_vencimento: number;
+}): Promise<void> {
+  const { error } = await supabase
+    .from("conta_recorrente")
+    .insert({ ...args, ativo: true });
+  if (error) throw new Error(error.message);
+}
+
+export async function atualizarContaRecorrente(
+  id: string,
+  patch: Partial<Pick<ContaRecorrente, "nome" | "valor" | "dia_vencimento" | "ativo">>,
+): Promise<void> {
+  const { error } = await supabase.from("conta_recorrente").update(patch).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function excluirContaRecorrente(id: string): Promise<void> {
+  const { error } = await supabase.from("conta_recorrente").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
 // ---------- Dias no Azul (streak de registro diário) ----------
 
 /** Datas (YYYY-MM-DD) com pelo menos uma transação nos últimos `dias` dias.

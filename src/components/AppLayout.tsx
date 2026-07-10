@@ -9,6 +9,7 @@ import {
   Gift,
   Mail,
   LogOut,
+  CalendarClock,
 } from "lucide-react";
 import type { ComponentType } from "react";
 
@@ -30,6 +31,7 @@ const navItems: NavItem[] = [
   { to: "/orcamento", label: "Orçamento", icon: Wallet },
   { to: "/metodo", label: "50-30-20", icon: PieChart },
   { to: "/dividas", label: "Dívidas", icon: CreditCard },
+  { to: "/contas", label: "Contas", icon: CalendarClock },
   { to: "/reserva", label: "Reserva", icon: PiggyBank },
   { to: "/assinatura", label: "Assinatura", icon: Sparkles },
   { to: "/indicacao", label: "Indique", icon: Gift },
