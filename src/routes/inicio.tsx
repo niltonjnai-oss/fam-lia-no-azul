@@ -159,7 +159,7 @@ const faqs = [
   },
   {
     q: "Funciona no celular e no computador?",
-    a: "Sim. É um app web: abre no navegador do celular, tablet ou computador, sem precisar instalar nada.",
+    a: "Sim — celular, tablet e computador, Android e iPhone. E você pode instalar como aplicativo direto do navegador (sem loja de apps): ele fica com ícone na tela inicial e abre em 1 toque, sempre atualizado.",
   },
   {
     q: "Quantas pessoas da família podem usar?",

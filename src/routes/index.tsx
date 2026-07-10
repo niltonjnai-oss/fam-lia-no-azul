@@ -41,6 +41,7 @@ import {
 } from "@/components/PainelExtras";
 import { LancamentoRapido } from "@/components/LancamentoRapido";
 import { ProjecaoMes, DiasNoAzul } from "@/components/PainelInsights";
+import { InstalarAppCard } from "@/components/InstalarAppCard";
 import { DespesasFixasDisponivel } from "@/components/DespesasFixasDisponivel";
 
 import { PageTitle } from "@/components/PageTitle";
@@ -179,6 +180,8 @@ function PainelPage() {
       </header>
 
       <MesSelector />
+
+      <InstalarAppCard />
 
       {orcamentoVazio && (
         <Link

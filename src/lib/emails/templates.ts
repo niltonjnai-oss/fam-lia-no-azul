@@ -86,7 +86,14 @@ export function boasVindas({ nome, emailCompra }: { nome?: string; emailCompra?:
         <p style="margin:0 0 16px;">Sua compra foi aprovada! Agora falta s&oacute; um passo: <strong>criar sua conta de acesso</strong> e come&ccedil;ar a planejar a vida financeira da sua fam&iacute;lia.</p>
         <p style="margin:0 0 8px;">${linhaEmail}</p>
         ${botao("Criar minha conta e entrar", `${BRAND.url}/auth`)}
-        <p style="margin:0;text-align:center;font-size:13px;color:${BRAND.muted};">Leva menos de 1 minuto. Seus dados ficam protegidos — cada fam&iacute;lia s&oacute; enxerga o que &eacute; seu.</p>
+        <p style="margin:0 0 20px;text-align:center;font-size:13px;color:${BRAND.muted};">Leva menos de 1 minuto. Seus dados ficam protegidos — cada fam&iacute;lia s&oacute; enxerga o que &eacute; seu.</p>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BRAND.footerBg};border:1px solid ${BRAND.border};border-radius:12px;">
+          <tr><td style="padding:16px 20px;font-size:13px;line-height:1.6;color:${BRAND.muted};">
+            📱 <strong style="color:${BRAND.text};">Use como app no celular, tablet e computador</strong> — direto do navegador, sem loja de aplicativos.<br/>
+            <strong>Android:</strong> menu <strong>&#8942;</strong> do Chrome &rarr; &ldquo;Instalar aplicativo&rdquo;. &nbsp;
+            <strong>iPhone:</strong> bot&atilde;o Compartilhar do Safari &rarr; &ldquo;Adicionar &agrave; Tela de In&iacute;cio&rdquo;.
+          </td></tr>
+        </table>
       `,
     }),
   };
