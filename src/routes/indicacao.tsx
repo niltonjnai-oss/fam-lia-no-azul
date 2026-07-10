@@ -6,7 +6,12 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageTitle } from "@/components/PageTitle";
-import { indicacaoMock, linkIndicacao } from "@/lib/mockAssinaturaApp";
+
+// Cupom real criado na Kiwify (10%, ativo). O parâmetro ?coupon= pré-aplica o
+// desconto no checkout — quem abre o link não precisa digitar nada.
+const CUPOM = "AZUL10";
+const DESCONTO = "10% OFF";
+const LINK_INDICACAO = `https://pay.kiwify.com.br/4FFlpa2?coupon=${CUPOM}`;
 
 export const Route = createFileRoute("/indicacao")({
   head: () => ({
@@ -23,8 +28,8 @@ export const Route = createFileRoute("/indicacao")({
 });
 
 function IndicacaoPage() {
-  const link = linkIndicacao();
-  const mensagem = `Estou usando o Família no Azul para organizar as finanças da minha casa. Use meu link e ganhe ${indicacaoMock.desconto}: ${link}`;
+  const link = LINK_INDICACAO;
+  const mensagem = `Estou usando o Família no Azul para organizar as finanças da minha casa — sem planilha, sem briga. Use meu link que o cupom ${CUPOM} (${DESCONTO}) já entra aplicado: ${link}`;
   const [copiado, setCopiado] = useState(false);
 
   async function copiar() {
@@ -71,7 +76,7 @@ function IndicacaoPage() {
           <div>
             <h2 className="text-sm font-semibold leading-tight">Seu link de indicação</h2>
             <p className="text-xs text-muted-foreground">
-              Seus amigos ganham {indicacaoMock.desconto} na assinatura anual
+              Seus amigos ganham {DESCONTO} na assinatura anual (cupom {CUPOM} já aplicado)
             </p>
           </div>
         </div>
@@ -127,11 +132,11 @@ function IndicacaoPage() {
             </span>
             <div>
               <p className="font-medium text-foreground">
-                2. Seu amigo ganha {indicacaoMock.desconto}
+                2. Seu amigo ganha {DESCONTO}
               </p>
               <p className="mt-0.5 text-xs">
-                Ao entrar pelo seu link, o desconto é aplicado automaticamente no checkout da
-                assinatura anual. Sem cupom para digitar.
+                Ao entrar pelo seu link, o cupom {CUPOM} é aplicado automaticamente no checkout
+                da assinatura anual. Sem nada para digitar.
               </p>
             </div>
           </li>

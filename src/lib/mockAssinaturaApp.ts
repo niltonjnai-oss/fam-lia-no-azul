@@ -22,16 +22,6 @@ export const assinaturaAppMock: AssinaturaApp = {
   dataVencimento: vencimento.toISOString(),
 };
 
-export const indicacaoMock = {
-  codigo: "AZUL10",
-  linkBase: "https://familianoazul.com.br/?ref=",
-  desconto: "10% OFF",
-};
-
-export function linkIndicacao(codigo = indicacaoMock.codigo): string {
-  return `${indicacaoMock.linkBase}${codigo}`;
-}
-
 export function diasRestantes(dataVencimento: string): number {
   const ms = new Date(dataVencimento).getTime() - Date.now();
   return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
