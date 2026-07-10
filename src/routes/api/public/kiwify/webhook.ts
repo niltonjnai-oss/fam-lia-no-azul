@@ -31,6 +31,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { createHmac, timingSafeEqual } from "crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { boasVindas } from "@/lib/emails/templates";
+import { sendEmail } from "@/lib/emails/send.server";
 
 // ---------- Segurança ----------
 
@@ -289,6 +291,20 @@ export const Route = createFileRoute("/api/public/kiwify/webhook")({
         // linhas (requer o índice único kiwify_pedidos_order_evento_uniq — ver
         // supabase/sql/kiwify_pedidos_idempotencia.sql).
         const eventoPedido = EVENTO_TO_PEDIDO[evento];
+
+        // Detecta reenvio ANTES do upsert: se o pedido já foi processado, não
+        // reenviamos o email de boas-vindas.
+        let pedidoJaExistia = false;
+        if (payload.orderId) {
+          const { data: existente } = await admin
+            .from("kiwify_pedidos")
+            .select("id")
+            .eq("order_id", payload.orderId)
+            .eq("evento", eventoPedido)
+            .maybeSingle();
+          pedidoJaExistia = existente != null;
+        }
+
         try {
           const { error } = await admin.from("kiwify_pedidos").upsert(
             {
@@ -313,7 +329,33 @@ export const Route = createFileRoute("/api/public/kiwify/webhook")({
           );
         }
 
-        return Response.json({ ok: true, event: eventoRaw, evento_gravado: eventoPedido });
+        // Compra aprovada pela primeira vez: envia o email de boas-vindas com o
+        // convite para criar a conta (com o email da compra, que o gate valida).
+        // Melhor esforço: falha no email NÃO falha o webhook — a compra já está
+        // gravada e o acesso liberado; sem 500 para a Kiwify não reenviar.
+        let boasVindasEnviado = false;
+        if (evento === "pagamento_aprovado" && !pedidoJaExistia) {
+          try {
+            const t = boasVindas({
+              nome: payload.customerName,
+              emailCompra: payload.customerEmail,
+            });
+            await sendEmail({ to: payload.customerEmail, ...t });
+            boasVindasEnviado = true;
+          } catch (e) {
+            console.error("[kiwify-webhook] falha ao enviar boas-vindas", {
+              email: payload.customerEmail,
+              error: e instanceof Error ? e.message : e,
+            });
+          }
+        }
+
+        return Response.json({
+          ok: true,
+          event: eventoRaw,
+          evento_gravado: eventoPedido,
+          boas_vindas: boasVindasEnviado,
+        });
       },
     },
   },
