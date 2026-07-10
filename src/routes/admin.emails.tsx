@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { useIsAdmin } from "@/lib/use-is-admin";
 import {
+  boasVindas,
   onboardingDia1,
   lembreteSemanal,
   marketingGenerico,
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/admin/emails")({
   component: AdminEmailsPage,
 });
 
-type Template = "onboarding-dia-1" | "lembrete-semanal" | "marketing-generico";
+type Template = "boas-vindas" | "onboarding-dia-1" | "lembrete-semanal" | "marketing-generico";
 
 function AdminEmailsPage() {
   const { user, loading } = useAuth();
@@ -38,6 +39,7 @@ function AdminEmailsPage() {
 
   const preview = useMemo(() => {
     try {
+      if (template === "boas-vindas") return boasVindas({ nome, emailCompra: to || undefined });
       if (template === "onboarding-dia-1") return onboardingDia1({ nome });
       if (template === "lembrete-semanal") return lembreteSemanal({ nome });
       return marketingGenerico({
@@ -49,7 +51,7 @@ function AdminEmailsPage() {
     } catch {
       return { subject: "", html: "" };
     }
-  }, [template, nome, titulo, corpoHtml, ctaTexto, ctaUrl]);
+  }, [template, nome, to, titulo, corpoHtml, ctaTexto, ctaUrl]);
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
@@ -160,6 +162,7 @@ function AdminEmailsPage() {
             className="w-full rounded border px-3 py-2"
           >
             <option value="marketing-generico">Marketing genérico</option>
+            <option value="boas-vindas">Boas-vindas (pós-compra)</option>
             <option value="onboarding-dia-1">Onboarding dia 1</option>
             <option value="lembrete-semanal">Lembrete semanal</option>
           </select>

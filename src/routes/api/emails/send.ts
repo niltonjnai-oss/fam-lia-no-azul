@@ -6,6 +6,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import {
+  boasVindas,
   onboardingDia1,
   lembreteSemanal,
   marketingGenerico,
@@ -13,6 +14,12 @@ import {
 import { sendEmail, sendEmailToMany } from "@/lib/emails/send.server";
 
 const schema = z.discriminatedUnion("template", [
+  z.object({
+    template: z.literal("boas-vindas"),
+    to: z.string().email(),
+    nome: z.string().optional(),
+    emailCompra: z.string().email().optional(),
+  }),
   z.object({
     template: z.literal("onboarding-dia-1"),
     to: z.string().email(),
@@ -81,6 +88,14 @@ export const Route = createFileRoute("/api/emails/send")({
 
         const input = parsed.data;
         try {
+          if (input.template === "boas-vindas") {
+            const t = boasVindas({
+              nome: input.nome,
+              emailCompra: input.emailCompra ?? input.to,
+            });
+            const r = await sendEmail({ to: input.to, ...t });
+            return Response.json({ ok: true, id: r.id });
+          }
           if (input.template === "onboarding-dia-1") {
             const t = onboardingDia1({ nome: input.nome });
             const r = await sendEmail({ to: input.to, ...t });
