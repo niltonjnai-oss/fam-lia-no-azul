@@ -76,7 +76,7 @@ function NotFoundComponent() {
         </p>
         <div className="mt-6">
           <Link
-            to="/"
+            to="/app"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Ir para o painel
@@ -114,7 +114,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             Tentar novamente
           </button>
           <a
-            href="/"
+            href="/app"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Ir para o painel
@@ -202,7 +202,8 @@ function AuthGate() {
   const navigate = useNavigate();
   const isAuthRoute = pathname.startsWith("/auth");
   const isResetPassword = pathname.startsWith("/reset-password");
-  const isLanding = pathname === "/inicio";
+  // Landing page mora na raiz; /inicio só redireciona pra lá.
+  const isLanding = pathname === "/" || pathname === "/inicio";
   const isLegal = pathname === "/termos" || pathname === "/privacidade";
   const isPublicRoute = isAuthRoute || isResetPassword || isLanding || isLegal;
   const isOnboarding = pathname.startsWith("/onboarding");
@@ -231,7 +232,13 @@ function AuthGate() {
     }
 
     if (!session && !isPublicRoute) {
-      navigate({ to: "/inicio", replace: true });
+      navigate({ to: "/", replace: true });
+      return;
+    }
+
+    // Logado na landing (raiz) sem fluxo de auth pendente: vai direto pro app.
+    if (session && pathname === "/") {
+      navigate({ to: "/app", replace: true });
     }
   }, [session, loading, pathname, isPublicRoute, navigate]);
 

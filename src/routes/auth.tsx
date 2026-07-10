@@ -115,7 +115,7 @@ function AuthPage() {
     }
 
     if (session) {
-      navigate({ to: "/", replace: true });
+      navigate({ to: "/app", replace: true });
     }
   }, [session, authLoading, navigate]);
 

@@ -28,7 +28,7 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  { to: "/", label: "Painel", icon: LayoutDashboard },
+  { to: "/app", label: "Painel", icon: LayoutDashboard },
   { to: "/orcamento", label: "Orçamento", icon: Wallet },
   { to: "/metodo", label: "50-30-20", icon: PieChart },
   { to: "/dividas", label: "Dívidas", icon: CreditCard },
@@ -53,7 +53,7 @@ export function AppLayout() {
       {/* Sidebar (desktop) */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-border bg-sidebar px-4 py-6 lg:flex lg:flex-col">
         <div className="mb-8 px-2">
-          <Link to="/" className="block">
+          <Link to="/app" className="block">
             <img
               src={logoHorizontalUrl}
               alt="Família no Azul"

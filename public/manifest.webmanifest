@@ -2,7 +2,7 @@
   "name": "Família no Azul",
   "short_name": "No Azul",
   "description": "Controle de orçamento familiar: gastos, dívidas, reserva e o método 50-30-20.",
-  "start_url": "/",
+  "start_url": "/app",
   "scope": "/",
   "display": "standalone",
   "background_color": "#F8FAFC",

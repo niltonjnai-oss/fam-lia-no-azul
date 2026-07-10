@@ -633,7 +633,7 @@ function OnboardingPage() {
           {isLast ? (
             <div className="flex w-full flex-col gap-2 sm:flex-row">
               <Link
-                to="/"
+                to="/app"
                 className="inline-flex h-12 flex-1 items-center justify-center gap-1 rounded-xl border border-border bg-background px-4 text-sm font-semibold transition-colors hover:bg-muted"
               >
                 Ver meu Painel
