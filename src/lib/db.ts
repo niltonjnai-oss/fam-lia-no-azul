@@ -132,6 +132,21 @@ export interface TransacaoDia {
   mes_ref: string;
 }
 
+// ---------- Dias no Azul (streak de registro diário) ----------
+
+/** Datas (YYYY-MM-DD) com pelo menos uma transação nos últimos `dias` dias.
+ *  Base do contador "Dias no Azul" do painel. RLS garante que só vêm as do usuário. */
+export async function fetchDiasComRegistro(dias = 60): Promise<string[]> {
+  const desde = new Date(Date.now() - dias * 86_400_000);
+  const desdeISO = `${desde.getFullYear()}-${String(desde.getMonth() + 1).padStart(2, "0")}-${String(desde.getDate()).padStart(2, "0")}`;
+  const { data, error } = await supabase
+    .from("transacao")
+    .select("data")
+    .gte("data", desdeISO);
+  if (error) throw new Error(error.message);
+  return Array.from(new Set((data ?? []).map((r) => (r as { data: string }).data)));
+}
+
 // ---------- Assinatura (kiwify_pedidos via get_minha_assinatura) ----------
 
 export interface MinhaAssinatura {

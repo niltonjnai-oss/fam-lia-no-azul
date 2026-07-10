@@ -150,10 +150,88 @@ export function marketingGenerico({
   };
 }
 
+const MESES_PT = [
+  "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+  "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
+];
+
+function labelMes(mesRef: string): string {
+  const [ano, mes] = mesRef.split("-");
+  return `${MESES_PT[Number(mes) - 1] ?? mes} de ${ano}`;
+}
+
+function fmtBRL(n: number): string {
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(n);
+}
+
+/** Resumo mensal "Seu mês em números": fechamento do mês anterior com
+ *  previsto vs realizado, estouros e categoria campeã. Disparado pelo pg_cron
+ *  no dia 1 de cada mês (ver supabase/sql/resumo_mensal_cron.sql). */
+export function resumoMensal({
+  nome,
+  mesRef,
+  totalPrevisto,
+  totalReal,
+  estouros,
+  categoriaTop,
+  categoriaTopValor,
+}: {
+  nome?: string;
+  mesRef: string;
+  totalPrevisto: number;
+  totalReal: number;
+  estouros: number;
+  categoriaTop?: string;
+  categoriaTopValor?: number;
+}) {
+  const saudacao = nome ? `Oi, ${nome.split(" ")[0]}!` : "Oi!";
+  const mes = labelMes(mesRef);
+  const diferenca = totalPrevisto - totalReal;
+  const dentro = totalPrevisto <= 0 || diferenca >= 0;
+
+  const veredicto =
+    totalPrevisto <= 0
+      ? ""
+      : dentro
+        ? `<p style="margin:0 0 16px;">Voc&ecirc; fechou o m&ecirc;s <strong style="color:#16A34A;">${fmtBRL(Math.abs(diferenca))} abaixo do previsto</strong>. Fam&iacute;lia no azul de verdade! 🎉</p>`
+        : `<p style="margin:0 0 16px;">O m&ecirc;s fechou <strong style="color:#DC2626;">${fmtBRL(Math.abs(diferenca))} acima do previsto</strong>. Acontece — o importante &eacute; ajustar o plano deste m&ecirc;s.</p>`;
+
+  const linhaEstouros =
+    estouros > 0
+      ? `<tr><td style="padding:10px 0;border-top:1px solid ${BRAND.border};color:${BRAND.muted};">Itens que estouraram o previsto</td><td align="right" style="padding:10px 0;border-top:1px solid ${BRAND.border};font-weight:700;color:#DC2626;">${estouros}</td></tr>`
+      : "";
+
+  const linhaCategoria =
+    categoriaTop && (categoriaTopValor ?? 0) > 0
+      ? `<tr><td style="padding:10px 0;border-top:1px solid ${BRAND.border};color:${BRAND.muted};">Categoria campe&atilde; de gastos</td><td align="right" style="padding:10px 0;border-top:1px solid ${BRAND.border};font-weight:700;">${categoriaTop} (${fmtBRL(categoriaTopValor ?? 0)})</td></tr>`
+      : "";
+
+  return {
+    subject: `Seu mês em números — ${mes} 📊`,
+    html: shell({
+      title: `Seu mês em números — ${mes}`,
+      bodyHtml: `
+        <h1 style="margin:0 0 16px;font-size:24px;line-height:1.3;color:${BRAND.primaryDark};">${saudacao} Seu m&ecirc;s em n&uacute;meros 📊</h1>
+        <p style="margin:0 0 16px;">Fechamos <strong>${mes}</strong>. Olha como foi o or&ccedil;amento da sua fam&iacute;lia:</p>
+        ${veredicto}
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:15px;margin:0 0 8px;">
+          <tr><td style="padding:10px 0;color:${BRAND.muted};">Or&ccedil;amento previsto</td><td align="right" style="padding:10px 0;font-weight:700;">${fmtBRL(totalPrevisto)}</td></tr>
+          <tr><td style="padding:10px 0;border-top:1px solid ${BRAND.border};color:${BRAND.muted};">Total gasto</td><td align="right" style="padding:10px 0;border-top:1px solid ${BRAND.border};font-weight:700;">${fmtBRL(totalReal)}</td></tr>
+          ${linhaEstouros}
+          ${linhaCategoria}
+        </table>
+        ${botao("Planejar o novo mês", `${BRAND.url}/orcamento`)}
+        <p style="margin:0;text-align:center;font-size:13px;color:${BRAND.muted};">M&ecirc;s novo, plano novo. Sua fam&iacute;lia no controle. 💙</p>
+      `,
+    }),
+  };
+}
+
 export const TEMPLATES = {
   "boas-vindas": boasVindas,
   "onboarding-dia-1": onboardingDia1,
   "lembrete-semanal": lembreteSemanal,
+  "resumo-mensal": resumoMensal,
   "marketing-generico": marketingGenerico,
 } as const;
 

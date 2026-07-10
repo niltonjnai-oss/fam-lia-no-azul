@@ -179,7 +179,7 @@ const faqs = [
   },
   {
     q: "Meus dados financeiros estão seguros?",
-    a: "Sim. Cada família só enxerga os próprios dados, e a gente nunca vende nem compartilha suas informações. Tratamos tudo conforme a LGPD.",
+    a: "Sim. O app apenas registra o que você digita — não conecta na sua conta bancária e nunca movimenta dinheiro. Cada família só enxerga os próprios dados, e a gente nunca vende nem compartilha suas informações. Tratamos tudo conforme a LGPD.",
   },
   {
     q: "Quais as formas de pagamento?",

@@ -40,6 +40,7 @@ import {
   usePainelPrefs,
 } from "@/components/PainelExtras";
 import { LancamentoRapido } from "@/components/LancamentoRapido";
+import { ProjecaoMes, DiasNoAzul } from "@/components/PainelInsights";
 import { DespesasFixasDisponivel } from "@/components/DespesasFixasDisponivel";
 
 import { PageTitle } from "@/components/PageTitle";
@@ -213,6 +214,21 @@ function PainelPage() {
           </div>
         ))}
       </section>
+
+      <DashboardSectionBoundary
+        fallback={<DashboardSectionError titulo="Não foi possível carregar os insights do mês." />}
+      >
+        <section className="grid gap-3 sm:grid-cols-2">
+          <ProjecaoMes
+            mes={mes}
+            totalReal={numeroSeguro(gastosQ.data?.total_real)}
+            totalPrevisto={numeroSeguro(resumoQ.data?.total_previsto)}
+            rendaTotal={rendaTotal}
+            carregando={carregando}
+          />
+          <DiasNoAzul />
+        </section>
+      </DashboardSectionBoundary>
 
       <DashboardSectionBoundary
         fallback={<DashboardSectionError titulo="Não foi possível carregar o lançamento rápido." />}

@@ -17,14 +17,28 @@ import { timingSafeEqual } from "crypto";
 import {
   onboardingDia1,
   lembreteSemanal,
+  resumoMensal,
 } from "@/lib/emails/templates";
 import { sendEmail } from "@/lib/emails/send.server";
 
-const schema = z.object({
-  template: z.enum(["onboarding-dia-1", "lembrete-semanal"]),
-  to: z.string().email(),
-  nome: z.string().optional(),
-});
+const schema = z.discriminatedUnion("template", [
+  z.object({
+    template: z.enum(["onboarding-dia-1", "lembrete-semanal"]),
+    to: z.string().email(),
+    nome: z.string().optional(),
+  }),
+  z.object({
+    template: z.literal("resumo-mensal"),
+    to: z.string().email(),
+    nome: z.string().optional(),
+    mesRef: z.string().regex(/^\d{4}-\d{2}$/),
+    totalPrevisto: z.number(),
+    totalReal: z.number(),
+    estouros: z.number().int().min(0),
+    categoriaTop: z.string().optional(),
+    categoriaTopValor: z.number().optional(),
+  }),
+]);
 
 function safeEqual(a: string, b: string) {
   const ba = Buffer.from(a);
@@ -55,13 +69,23 @@ export const Route = createFileRoute("/api/public/emails/cron")({
           return Response.json({ error: parsed.error.flatten() }, { status: 400 });
         }
 
-        const { template, to, nome } = parsed.data;
+        const input = parsed.data;
         try {
           const t =
-            template === "onboarding-dia-1"
-              ? onboardingDia1({ nome })
-              : lembreteSemanal({ nome });
-          const r = await sendEmail({ to, ...t });
+            input.template === "resumo-mensal"
+              ? resumoMensal({
+                  nome: input.nome,
+                  mesRef: input.mesRef,
+                  totalPrevisto: input.totalPrevisto,
+                  totalReal: input.totalReal,
+                  estouros: input.estouros,
+                  categoriaTop: input.categoriaTop,
+                  categoriaTopValor: input.categoriaTopValor,
+                })
+              : input.template === "onboarding-dia-1"
+                ? onboardingDia1({ nome: input.nome })
+                : lembreteSemanal({ nome: input.nome });
+          const r = await sendEmail({ to: input.to, ...t });
           return Response.json({ ok: true, id: r.id });
         } catch (e) {
           return Response.json(
