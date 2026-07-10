@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { assetUrl } from "@/lib/asset-url";
+import { InstalarAppButton } from "@/components/InstalarAppButton";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -118,18 +119,6 @@ function AuthPage() {
     }
   }, [session, authLoading, navigate]);
 
-  async function handleGoogle() {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: { redirectTo: window.location.origin },
-      });
-      if (error) throw error;
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao entrar com Google");
-    }
-  }
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-md">
@@ -156,10 +145,10 @@ function AuthPage() {
             </TabsList>
 
             <TabsContent value="login" className="mt-5">
-              <LoginForm onGoogle={handleGoogle} />
+              <LoginForm />
             </TabsContent>
             <TabsContent value="signup" className="mt-5">
-              <SignupForm onGoogle={handleGoogle} onSwitchToLogin={() => setMode("login")} />
+              <SignupForm onSwitchToLogin={() => setMode("login")} />
             </TabsContent>
           </Tabs>
         </div>
@@ -167,12 +156,16 @@ function AuthPage() {
         <p className="mt-4 text-center text-xs text-muted-foreground">
           Seus dados ficam protegidos por linha (RLS). Cada família só enxerga o que é seu.
         </p>
+
+        <div className="mt-4">
+          <InstalarAppButton />
+        </div>
       </div>
     </div>
   );
 }
 
-function LoginForm({ onGoogle }: { onGoogle: () => void }) {
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -240,13 +233,6 @@ function LoginForm({ onGoogle }: { onGoogle: () => void }) {
           Entrar
         </Button>
       </form>
-
-      <OrDivider />
-
-      <Button type="button" variant="outline" className="h-11 w-full" onClick={onGoogle}>
-        <GoogleIcon className="mr-2 h-4 w-4" />
-        Continuar com Google
-      </Button>
     </>
   );
 }
@@ -260,7 +246,7 @@ const REQUIREMENTS: Requirement[] = [
   { key: "special", label: "Um caractere especial", test: (p) => /[^A-Za-z0-9]/.test(p) },
 ];
 
-function SignupForm({ onGoogle, onSwitchToLogin }: { onGoogle: () => void; onSwitchToLogin: () => void }) {
+function SignupForm({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -483,13 +469,6 @@ function SignupForm({ onGoogle, onSwitchToLogin }: { onGoogle: () => void; onSwi
         </Button>
       </form>
 
-      <OrDivider />
-
-      <Button type="button" variant="outline" className="h-11 w-full" onClick={onGoogle}>
-        <GoogleIcon className="mr-2 h-4 w-4" />
-        Continuar com Google
-      </Button>
-
       <p className="mt-4 text-center text-sm text-muted-foreground">
         Já tem conta?{" "}
         <button type="button" onClick={onSwitchToLogin} className="font-medium text-primary hover:underline">
@@ -513,23 +492,3 @@ function passwordStrength(passed: number): {
   return { bars: 4, label: "Muito forte", color: "bg-success", textClass: "text-success" };
 }
 
-function OrDivider() {
-  return (
-    <div className="relative my-5">
-      <div className="absolute inset-0 flex items-center">
-        <span className="w-full border-t border-border" />
-      </div>
-      <div className="relative flex justify-center text-xs uppercase">
-        <span className="bg-card px-2 text-muted-foreground">ou</span>
-      </div>
-    </div>
-  );
-}
-
-function GoogleIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.4-1.7 4.1-5.5 4.1-3.3 0-6-2.7-6-6.1s2.7-6.1 6-6.1c1.9 0 3.2.8 3.9 1.5l2.7-2.6C16.9 3.3 14.7 2.4 12 2.4 6.7 2.4 2.4 6.7 2.4 12s4.3 9.6 9.6 9.6c5.6 0 9.3-3.9 9.3-9.4 0-.6-.1-1.1-.2-1.6H12z"/>
-    </svg>
-  );
-}
