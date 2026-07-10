@@ -19,6 +19,7 @@ import {
   lembreteSemanal,
   resumoMensal,
   contasVencendo,
+  renovacaoAviso,
 } from "@/lib/emails/templates";
 import { sendEmail } from "@/lib/emails/send.server";
 
@@ -54,6 +55,13 @@ const schema = z.discriminatedUnion("template", [
       .min(1)
       .max(50),
   }),
+  z.object({
+    template: z.literal("renovacao-aviso"),
+    to: z.string().email(),
+    nome: z.string().optional(),
+    diasRestantes: z.number().int().min(0),
+    dataVencimento: z.string().min(8),
+  }),
 ]);
 
 function safeEqual(a: string, b: string) {
@@ -88,7 +96,13 @@ export const Route = createFileRoute("/api/public/emails/cron")({
         const input = parsed.data;
         try {
           const t =
-            input.template === "contas-vencendo"
+            input.template === "renovacao-aviso"
+              ? renovacaoAviso({
+                  nome: input.nome,
+                  diasRestantes: input.diasRestantes,
+                  dataVencimento: input.dataVencimento,
+                })
+              : input.template === "contas-vencendo"
               ? contasVencendo({ nome: input.nome, contas: input.contas })
               : input.template === "resumo-mensal"
               ? resumoMensal({

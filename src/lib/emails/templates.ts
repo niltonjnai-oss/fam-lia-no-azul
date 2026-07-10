@@ -272,12 +272,50 @@ export function contasVencendo({
   };
 }
 
+// Checkout da Kiwify para renovação (mesmo produto; nova compra aprovada com o
+// mesmo e-mail estende o acesso por +365 dias automaticamente).
+const RENOVACAO_URL = "https://pay.kiwify.com.br/4FFlpa2";
+
+/** Aviso de renovação: sai 30 e 7 dias antes do fim dos 12 meses de acesso.
+ *  Cumpre a promessa da LP ("perto do fim, a gente te avisa por e-mail" — sem
+ *  renovação automática). Disparado pelo pg_cron diário
+ *  (ver supabase/sql/aviso_renovacao_cron.sql). */
+export function renovacaoAviso({
+  nome,
+  diasRestantes,
+  dataVencimento,
+}: {
+  nome?: string;
+  diasRestantes: number;
+  dataVencimento: string; // já formatada (DD/MM/AAAA)
+}) {
+  const saudacao = nome ? `Oi, ${nome.split(" ")[0]}!` : "Oi!";
+  const urgente = diasRestantes <= 7;
+  return {
+    subject: urgente
+      ? `Faltam ${diasRestantes} dias — seu acesso ao Família no Azul está acabando ⏳`
+      : `Seu acesso ao Família no Azul vence em ${diasRestantes} dias 💙`,
+    html: shell({
+      title: "Renovação do seu acesso",
+      bodyHtml: `
+        <h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:${BRAND.primaryDark};">${saudacao} ${urgente ? "Última chamada pro azul ⏳" : "Bora garantir mais um ano no azul? 💙"}</h1>
+        <p style="margin:0 0 16px;">Como prometido, estamos te avisando: seu acesso de 12 meses ao <strong>${BRAND.name}</strong> vence em <strong>${dataVencimento}</strong> (${diasRestantes} ${diasRestantes === 1 ? "dia" : "dias"}).</p>
+        <p style="margin:0 0 16px;">A gente <strong>não renova nada sozinho</strong> — a decisão é sua. Renovando, você mantém todo o hist&oacute;rico da fam&iacute;lia: or&ccedil;amento, d&iacute;vidas, reserva e sua sequ&ecirc;ncia de dias no azul.</p>
+        <p style="margin:0 0 8px;"><strong>Importante:</strong> renove com o <strong>mesmo e-mail</strong> desta conta — o acesso estende na hora, sem perder nada.</p>
+        ${botao("Renovar por R$ 67,90/ano", RENOVACAO_URL)}
+        <p style="margin:0;text-align:center;font-size:13px;color:${BRAND.muted};">${urgente ? "Depois do vencimento seus dados ficam guardados — mas o painel s&oacute; volta com a renova&ccedil;&atilde;o." : "Menos que uma pizza pra sua fam&iacute;lia passar o ano inteiro no controle. 💙"}</p>
+      `,
+    }),
+  };
+}
+
 export const TEMPLATES = {
   "boas-vindas": boasVindas,
   "onboarding-dia-1": onboardingDia1,
   "lembrete-semanal": lembreteSemanal,
   "resumo-mensal": resumoMensal,
   "contas-vencendo": contasVencendo,
+  "renovacao-aviso": renovacaoAviso,
   "marketing-generico": marketingGenerico,
 } as const;
 
