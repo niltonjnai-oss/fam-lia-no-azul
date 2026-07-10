@@ -3,8 +3,10 @@
 --   POST https://azul.educarbem.com.br/api/public/emails/cron
 --   header x-cron-secret = EMAIL_CRON_SECRET (mesma variável no Vercel).
 --
--- ANTES DE RODAR: troque COLOQUE_O_SECRET_AQUI pelo valor de EMAIL_CRON_SECRET
--- (está no .env local e deve estar também no Vercel).
+-- ANTES DE RODAR: troque COLOQUE_O_SECRET_AQUI (linha do vault.create_secret)
+-- pelo valor de EMAIL_CRON_SECRET (está no .env local e no Vercel).
+-- O segredo fica no Supabase Vault ("alter database set" não é permitido no
+-- Supabase; foi o erro 42501 na primeira tentativa).
 --
 -- Agenda (cron roda em UTC; Brasília = UTC-3):
 --   lembrete-semanal : segunda 12:00 UTC = 9h BRT, todos os usuários confirmados
@@ -13,9 +15,17 @@
 create extension if not exists pg_cron;
 create extension if not exists pg_net;
 
--- Segredo lido pelas funções abaixo (GUC do banco; vale para novas conexões,
--- o que inclui as execuções do pg_cron).
-alter database postgres set app.email_cron_secret = 'COLOQUE_O_SECRET_AQUI';
+-- Segredo no Vault (idempotente: atualiza se já existir).
+do $$
+declare sid uuid;
+begin
+  select id into sid from vault.secrets where name = 'email_cron_secret';
+  if sid is null then
+    perform vault.create_secret('COLOQUE_O_SECRET_AQUI', 'email_cron_secret');
+  else
+    perform vault.update_secret(sid, 'COLOQUE_O_SECRET_AQUI');
+  end if;
+end $$;
 
 -- ========== Funções de disparo ==========
 
@@ -25,8 +35,13 @@ language plpgsql
 security definer
 set search_path to 'public'
 as $$
-declare u record;
+declare
+  u record;
+  secret text;
 begin
+  select decrypted_secret into secret
+  from vault.decrypted_secrets where name = 'email_cron_secret';
+
   for u in
     select email, coalesce(raw_user_meta_data->>'full_name', '') as nome
     from auth.users
@@ -36,7 +51,7 @@ begin
       url := 'https://azul.educarbem.com.br/api/public/emails/cron',
       headers := jsonb_build_object(
         'content-type', 'application/json',
-        'x-cron-secret', current_setting('app.email_cron_secret')
+        'x-cron-secret', secret
       ),
       body := jsonb_build_object(
         'template', 'lembrete-semanal',
@@ -53,8 +68,13 @@ language plpgsql
 security definer
 set search_path to 'public'
 as $$
-declare u record;
+declare
+  u record;
+  secret text;
 begin
+  select decrypted_secret into secret
+  from vault.decrypted_secrets where name = 'email_cron_secret';
+
   -- Contas criadas entre 24h e 48h atrás (rodando 1x/dia, cada conta entra
   -- exatamente uma vez nesta janela).
   for u in
@@ -68,7 +88,7 @@ begin
       url := 'https://azul.educarbem.com.br/api/public/emails/cron',
       headers := jsonb_build_object(
         'content-type', 'application/json',
-        'x-cron-secret', current_setting('app.email_cron_secret')
+        'x-cron-secret', secret
       ),
       body := jsonb_build_object(
         'template', 'onboarding-dia-1',
@@ -78,6 +98,10 @@ begin
     );
   end loop;
 end $$;
+
+-- Só o cron/postgres executa essas funções; usuários do app não.
+revoke execute on function public.enviar_lembrete_semanal() from public, anon, authenticated;
+revoke execute on function public.enviar_onboarding_dia1() from public, anon, authenticated;
 
 -- ========== Agendamentos ==========
 -- unschedule antes para o script poder ser rodado de novo sem duplicar jobs.
