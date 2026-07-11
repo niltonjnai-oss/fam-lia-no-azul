@@ -50,13 +50,24 @@ export function parseCSV(texto: string): LinhaExtrato[] {
   if (linhasBrutas.length === 0) return [];
 
   const sep = detectarSeparador(linhasBrutas[0]);
-  const resultado: LinhaExtrato[] = [];
+
+  // 1ª passada: extrai data/valor e coleta os candidatos a descrição de cada
+  // linha, contando a frequência de cada texto no arquivo inteiro. Textos que
+  // se repetem em quase todas as linhas (nome do banco, "Débito", instituição)
+  // são ruído — a descrição real é a que varia (loja, destinatário).
+  interface LinhaParcial {
+    data: string;
+    valor: number;
+    candidatos: string[];
+  }
+  const parciais: LinhaParcial[] = [];
+  const frequencia = new Map<string, number>();
 
   for (const linha of linhasBrutas) {
-    const celulas = splitCSV(linha, sep).map((c) => c.trim());
+    const celulas = splitCSV(linha, sep).map((c) => c.trim().replace(/^"|"$/g, ""));
     let data: string | null = null;
     let valor: number | null = null;
-    let melhorDescricao = "";
+    const candidatos: string[] = [];
 
     for (const c of celulas) {
       if (data === null) {
@@ -73,21 +84,52 @@ export function parseCSV(texto: string): LinhaExtrato[] {
           continue;
         }
       }
-      if (c.length > melhorDescricao.length && !pareceValor(c) && !parseData(c)) {
-        melhorDescricao = c;
-      }
+      if (pareceTextoDescritivo(c)) candidatos.push(c);
     }
 
     // Linha de cabeçalho ou inválida (sem data ou valor) é ignorada.
     if (data && valor !== null) {
-      resultado.push({
-        data,
-        descricao: melhorDescricao.replace(/^"|"$/g, "") || "Sem descrição",
-        valor,
-      });
+      parciais.push({ data, valor, candidatos });
+      for (const c of new Set(candidatos)) {
+        frequencia.set(c, (frequencia.get(c) ?? 0) + 1);
+      }
     }
   }
-  return resultado;
+
+  // 2ª passada: escolhe a descrição menos repetida (mais específica da linha);
+  // empate decide pelo texto mais longo.
+  const total = parciais.length;
+  return parciais.map((p) => {
+    let melhor = "";
+    let melhorFreq = Infinity;
+    for (const c of p.candidatos) {
+      const f = frequencia.get(c) ?? 0;
+      const repetida = total >= 3 && f > total * 0.6;
+      if (repetida) continue;
+      if (f < melhorFreq || (f === melhorFreq && c.length > melhor.length)) {
+        melhor = c;
+        melhorFreq = f;
+      }
+    }
+    // Se tudo era repetido (arquivo pequeno/uniforme), usa o candidato mais longo.
+    if (!melhor && p.candidatos.length > 0) {
+      melhor = p.candidatos.reduce((a, b) => (b.length > a.length ? b : a), "");
+    }
+    return { data: p.data, valor: p.valor, descricao: melhor || "Sem descrição" };
+  });
+}
+
+/** Filtra células que não servem como descrição: valores, datas, horários,
+ *  CPF/CNPJ, números de agência/conta e rótulos curtos demais. */
+function pareceTextoDescritivo(c: string): boolean {
+  if (c.length < 3) return false;
+  if (pareceValor(c) || parseData(c)) return false;
+  if (/^R\$/.test(c)) return false;
+  if (/^\d{1,2}:\d{2}/.test(c)) return false; // horário
+  if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(c)) return false; // CPF
+  if (/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(c)) return false; // CNPJ
+  if (/^[\d\s./-]+$/.test(c)) return false; // só números (agência, conta, doc)
+  return /[a-zA-ZÀ-ú]{3,}/.test(c);
 }
 
 export function parseExtrato(nomeArquivo: string, texto: string): LinhaExtrato[] {
@@ -125,11 +167,12 @@ function splitCSV(linha: string, sep: string): string[] {
 
 function parseData(c: string): string | null {
   const limpo = c.replace(/^"|"$/g, "");
-  let m = limpo.match(/^(\d{2})\/(\d{2})\/(\d{4})$/); // DD/MM/AAAA
+  // Aceita hora após a data (ex.: "10/07/2026 14:53" no CSV da Stone).
+  let m = limpo.match(/^(\d{2})\/(\d{2})\/(\d{4})(\s+\d{1,2}:\d{2}.*)?$/); // DD/MM/AAAA [hh:mm]
   if (m) return `${m[3]}-${m[2]}-${m[1]}`;
-  m = limpo.match(/^(\d{4})-(\d{2})-(\d{2})$/); // AAAA-MM-DD
-  if (m) return limpo;
-  m = limpo.match(/^(\d{2})-(\d{2})-(\d{4})$/); // DD-MM-AAAA
+  m = limpo.match(/^(\d{4})-(\d{2})-(\d{2})([T\s].*)?$/); // AAAA-MM-DD [hora]
+  if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+  m = limpo.match(/^(\d{2})-(\d{2})-(\d{4})(\s+\d{1,2}:\d{2}.*)?$/); // DD-MM-AAAA [hh:mm]
   if (m) return `${m[3]}-${m[2]}-${m[1]}`;
   return null;
 }
