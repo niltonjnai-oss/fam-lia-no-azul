@@ -2,6 +2,9 @@
 -- Gestão da família: nome dos membros + remover convite pendente / cônjuge.
 
 -- 1) minha_familia_membros passa a devolver o nome (full_name do metadata).
+-- Drop necessário: mudar o tipo de retorno (3 -> 4 colunas) não é permitido
+-- por "create or replace".
+drop function if exists public.minha_familia_membros();
 create or replace function public.minha_familia_membros()
 returns table(user_id uuid, email text, nome text, papel text)
 language sql
