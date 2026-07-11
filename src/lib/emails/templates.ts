@@ -309,6 +309,32 @@ export function renovacaoAviso({
   };
 }
 
+/** Convite do Modo Casal: o titular convida o cônjuge, que entra sem precisar
+ *  de compra própria (o convite libera o gate de cadastro). Disparado
+ *  sincronamente por /api/familia/convidar (não é cron). */
+export function conviteFamilia({
+  nomeConvidante,
+  link,
+}: {
+  nomeConvidante?: string;
+  link: string;
+}) {
+  const quem = nomeConvidante ? `${nomeConvidante.split(" ")[0]}` : "Uma pessoa querida";
+  return {
+    subject: `${quem} te convidou para o Família no Azul 💙`,
+    html: shell({
+      title: "Convite para a família",
+      bodyHtml: `
+        <h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:${BRAND.primaryDark};">Voc&ecirc; foi convidado(a) para o Fam&iacute;lia no Azul 💙</h1>
+        <p style="margin:0 0 16px;"><strong>${quem}</strong> quer organizar as finan&ccedil;as da fam&iacute;lia com voc&ecirc; — no <strong>Modo Casal</strong>, voc&ecirc;s dois acessam o mesmo or&ccedil;amento, cada um com seu pr&oacute;prio login.</p>
+        <p style="margin:0 0 16px;">Sem custo extra e sem precisar comprar de novo — &eacute; s&oacute; aceitar o convite e criar sua senha.</p>
+        ${botao("Aceitar convite", link)}
+        <p style="margin:0;text-align:center;font-size:13px;color:${BRAND.muted};">O convite expira em 7 dias.</p>
+      `,
+    }),
+  };
+}
+
 export const TEMPLATES = {
   "boas-vindas": boasVindas,
   "onboarding-dia-1": onboardingDia1,

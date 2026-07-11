@@ -250,6 +250,62 @@ export async function fetchDiasComRegistro(dias = 60): Promise<string[]> {
   return Array.from(new Set((data ?? []).map((r) => (r as { data: string }).data)));
 }
 
+// ---------- Modo Casal (família compartilhada) ----------
+
+export interface MembroFamilia {
+  user_id: string;
+  email: string;
+  papel: "titular" | "conjuge";
+}
+
+export async function fetchMinhaFamiliaMembros(): Promise<MembroFamilia[]> {
+  const { data, error } = await supabase.rpc("minha_familia_membros");
+  if (error) throw new Error(error.message);
+  return (data ?? []) as MembroFamilia[];
+}
+
+export interface ConviteFamilia {
+  id: string;
+  email: string;
+  expira_em: string;
+}
+
+export async function fetchConvitesPendentes(): Promise<ConviteFamilia[]> {
+  const { data, error } = await supabase
+    .from("convite_familia")
+    .select("id, email, expira_em")
+    .eq("aceito", false)
+    .gt("expira_em", new Date().toISOString());
+  if (error) throw new Error(error.message);
+  return (data ?? []) as ConviteFamilia[];
+}
+
+/** Cria o convite no banco (RPC) — o envio do e-mail é feito à parte, pela
+ *  rota /api/familia/convidar (precisa da service role para disparar). */
+export async function criarConvite(
+  email: string,
+): Promise<{ token: string; email: string } | { error: string }> {
+  const { data, error } = await supabase.rpc("criar_convite_familia", { p_email: email });
+  if (error) throw new Error(error.message);
+  return data as { token: string; email: string } | { error: string };
+}
+
+export async function infoConvite(
+  token: string,
+): Promise<{ valido: true; email: string } | { valido: false; motivo: string }> {
+  const { data, error } = await supabase.rpc("info_convite_familia", { p_token: token });
+  if (error) throw new Error(error.message);
+  return data as { valido: true; email: string } | { valido: false; motivo: string };
+}
+
+export async function aceitarConvite(
+  token: string,
+): Promise<{ ok: true } | { error: string }> {
+  const { data, error } = await supabase.rpc("aceitar_convite_familia", { p_token: token });
+  if (error) throw new Error(error.message);
+  return data as { ok: true } | { error: string };
+}
+
 // ---------- Assinatura (kiwify_pedidos via get_minha_assinatura) ----------
 
 export interface MinhaAssinatura {
@@ -409,7 +465,7 @@ export async function upsertLancamento(args: {
 }): Promise<void> {
   const { error } = await supabase
     .from("lancamento")
-    .upsert(args, { onConflict: "subitem_id,mes_ref,user_id" });
+    .upsert(args, { onConflict: "subitem_id,mes_ref,familia_id" });
   if (error) throw new Error(error.message);
 }
 

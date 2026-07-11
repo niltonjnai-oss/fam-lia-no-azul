@@ -19,13 +19,16 @@ import { Route as MetodoRouteImport } from './routes/metodo'
 import { Route as InicioRouteImport } from './routes/inicio'
 import { Route as IndicacaoRouteImport } from './routes/indicacao'
 import { Route as ImportarRouteImport } from './routes/importar'
+import { Route as FamiliaRouteImport } from './routes/familia'
 import { Route as DividasRouteImport } from './routes/dividas'
 import { Route as ContasRouteImport } from './routes/contas'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssinaturaRouteImport } from './routes/assinatura'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConviteTokenRouteImport } from './routes/convite.$token'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
+import { Route as ApiFamiliaConvidarRouteImport } from './routes/api/familia/convidar'
 import { Route as ApiEmailsSendRouteImport } from './routes/api/emails/send'
 import { Route as ApiPublicKiwifyWebhookRouteImport } from './routes/api/public/kiwify/webhook'
 import { Route as ApiPublicEmailsCronRouteImport } from './routes/api/public/emails/cron'
@@ -80,6 +83,11 @@ const ImportarRoute = ImportarRouteImport.update({
   path: '/importar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FamiliaRoute = FamiliaRouteImport.update({
+  id: '/familia',
+  path: '/familia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DividasRoute = DividasRouteImport.update({
   id: '/dividas',
   path: '/dividas',
@@ -110,9 +118,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConviteTokenRoute = ConviteTokenRouteImport.update({
+  id: '/convite/$token',
+  path: '/convite/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminEmailsRoute = AdminEmailsRouteImport.update({
   id: '/admin/emails',
   path: '/admin/emails',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiFamiliaConvidarRoute = ApiFamiliaConvidarRouteImport.update({
+  id: '/api/familia/convidar',
+  path: '/api/familia/convidar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiEmailsSendRoute = ApiEmailsSendRouteImport.update({
@@ -138,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contas': typeof ContasRoute
   '/dividas': typeof DividasRoute
+  '/familia': typeof FamiliaRoute
   '/importar': typeof ImportarRoute
   '/indicacao': typeof IndicacaoRoute
   '/inicio': typeof InicioRoute
@@ -149,7 +168,9 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/convite/$token': typeof ConviteTokenRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
+  '/api/familia/convidar': typeof ApiFamiliaConvidarRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
   '/api/public/kiwify/webhook': typeof ApiPublicKiwifyWebhookRoute
 }
@@ -160,6 +181,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contas': typeof ContasRoute
   '/dividas': typeof DividasRoute
+  '/familia': typeof FamiliaRoute
   '/importar': typeof ImportarRoute
   '/indicacao': typeof IndicacaoRoute
   '/inicio': typeof InicioRoute
@@ -171,7 +193,9 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/convite/$token': typeof ConviteTokenRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
+  '/api/familia/convidar': typeof ApiFamiliaConvidarRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
   '/api/public/kiwify/webhook': typeof ApiPublicKiwifyWebhookRoute
 }
@@ -183,6 +207,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contas': typeof ContasRoute
   '/dividas': typeof DividasRoute
+  '/familia': typeof FamiliaRoute
   '/importar': typeof ImportarRoute
   '/indicacao': typeof IndicacaoRoute
   '/inicio': typeof InicioRoute
@@ -194,7 +219,9 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/convite/$token': typeof ConviteTokenRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
+  '/api/familia/convidar': typeof ApiFamiliaConvidarRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
   '/api/public/kiwify/webhook': typeof ApiPublicKiwifyWebhookRoute
 }
@@ -207,6 +234,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contas'
     | '/dividas'
+    | '/familia'
     | '/importar'
     | '/indicacao'
     | '/inicio'
@@ -218,7 +246,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/admin/emails'
+    | '/convite/$token'
     | '/api/emails/send'
+    | '/api/familia/convidar'
     | '/api/public/emails/cron'
     | '/api/public/kiwify/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -229,6 +259,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contas'
     | '/dividas'
+    | '/familia'
     | '/importar'
     | '/indicacao'
     | '/inicio'
@@ -240,7 +271,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/admin/emails'
+    | '/convite/$token'
     | '/api/emails/send'
+    | '/api/familia/convidar'
     | '/api/public/emails/cron'
     | '/api/public/kiwify/webhook'
   id:
@@ -251,6 +284,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contas'
     | '/dividas'
+    | '/familia'
     | '/importar'
     | '/indicacao'
     | '/inicio'
@@ -262,7 +296,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/admin/emails'
+    | '/convite/$token'
     | '/api/emails/send'
+    | '/api/familia/convidar'
     | '/api/public/emails/cron'
     | '/api/public/kiwify/webhook'
   fileRoutesById: FileRoutesById
@@ -274,6 +310,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContasRoute: typeof ContasRoute
   DividasRoute: typeof DividasRoute
+  FamiliaRoute: typeof FamiliaRoute
   ImportarRoute: typeof ImportarRoute
   IndicacaoRoute: typeof IndicacaoRoute
   InicioRoute: typeof InicioRoute
@@ -285,7 +322,9 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermosRoute: typeof TermosRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
+  ConviteTokenRoute: typeof ConviteTokenRoute
   ApiEmailsSendRoute: typeof ApiEmailsSendRoute
+  ApiFamiliaConvidarRoute: typeof ApiFamiliaConvidarRoute
   ApiPublicEmailsCronRoute: typeof ApiPublicEmailsCronRoute
   ApiPublicKiwifyWebhookRoute: typeof ApiPublicKiwifyWebhookRoute
 }
@@ -362,6 +401,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImportarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/familia': {
+      id: '/familia'
+      path: '/familia'
+      fullPath: '/familia'
+      preLoaderRoute: typeof FamiliaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dividas': {
       id: '/dividas'
       path: '/dividas'
@@ -404,11 +450,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/convite/$token': {
+      id: '/convite/$token'
+      path: '/convite/$token'
+      fullPath: '/convite/$token'
+      preLoaderRoute: typeof ConviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/emails': {
       id: '/admin/emails'
       path: '/admin/emails'
       fullPath: '/admin/emails'
       preLoaderRoute: typeof AdminEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/familia/convidar': {
+      id: '/api/familia/convidar'
+      path: '/api/familia/convidar'
+      fullPath: '/api/familia/convidar'
+      preLoaderRoute: typeof ApiFamiliaConvidarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/emails/send': {
@@ -442,6 +502,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContasRoute: ContasRoute,
   DividasRoute: DividasRoute,
+  FamiliaRoute: FamiliaRoute,
   ImportarRoute: ImportarRoute,
   IndicacaoRoute: IndicacaoRoute,
   InicioRoute: InicioRoute,
@@ -453,7 +514,9 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   TermosRoute: TermosRoute,
   AdminEmailsRoute: AdminEmailsRoute,
+  ConviteTokenRoute: ConviteTokenRoute,
   ApiEmailsSendRoute: ApiEmailsSendRoute,
+  ApiFamiliaConvidarRoute: ApiFamiliaConvidarRoute,
   ApiPublicEmailsCronRoute: ApiPublicEmailsCronRoute,
   ApiPublicKiwifyWebhookRoute: ApiPublicKiwifyWebhookRoute,
 }

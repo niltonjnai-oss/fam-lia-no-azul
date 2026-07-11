@@ -205,7 +205,9 @@ function AuthGate() {
   // Landing page mora na raiz; /inicio só redireciona pra lá.
   const isLanding = pathname === "/" || pathname === "/inicio";
   const isLegal = pathname === "/termos" || pathname === "/privacidade";
-  const isPublicRoute = isAuthRoute || isResetPassword || isLanding || isLegal;
+  // Convite do Modo Casal: acessível logado ou não (a própria página decide).
+  const isConvite = pathname.startsWith("/convite/");
+  const isPublicRoute = isAuthRoute || isResetPassword || isLanding || isLegal || isConvite;
   const isOnboarding = pathname.startsWith("/onboarding");
   const authErrorNotice = !loading ? getAuthErrorNotice(pathname) : null;
   const isHandlingEmailConfirmation = !loading && shouldSendConfirmedEmailUserToAuth(pathname, session);
