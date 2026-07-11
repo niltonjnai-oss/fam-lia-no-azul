@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Lock, Loader2, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchMinhaFamiliaMembros } from "@/lib/db";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,9 +65,20 @@ function ResetPasswordPage() {
       if (typeof window !== "undefined") {
         window.history.replaceState(null, "", window.location.pathname);
       }
-      // Convite (Modo Casal): a família já tem orçamento montado — vai direto
-      // pro painel. Demais fluxos mantêm o onboarding.
-      navigate({ to: isInvite ? "/app" : "/onboarding", replace: true });
+
+      // Decide o destino pelo DADO, não pelo hash (que o Supabase consome antes
+      // de conseguirmos lê-lo): cônjuge convidado já tem o orçamento da família
+      // montado — vai direto pro painel; titular sem orçamento faz onboarding.
+      let destino: "/app" | "/onboarding" = "/onboarding";
+      try {
+        const { data: sess } = await supabase.auth.getUser();
+        const membros = await fetchMinhaFamiliaMembros();
+        const eu = membros.find((m) => m.user_id === sess.user?.id);
+        if (eu?.papel === "conjuge" || membros.length > 1) destino = "/app";
+      } catch {
+        // Sem info de família: mantém onboarding (fluxo do titular novo).
+      }
+      navigate({ to: destino, replace: true });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Não foi possível definir a senha.";
       toast.error(msg);
