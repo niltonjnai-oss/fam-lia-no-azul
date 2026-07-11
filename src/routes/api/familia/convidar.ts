@@ -67,10 +67,11 @@ export const Route = createFileRoute("/api/familia/convidar")({
         const nomeConvidante =
           (userRes.user.user_metadata as { full_name?: string } | null)?.full_name ?? undefined;
 
-        // Cliente admin (service role): cria a conta do cônjuge diretamente
-        // quando o e-mail ainda não existe — 1 único e-mail "crie sua senha"
-        // (o clique no link É a confirmação de posse do e-mail; sem etapa de
-        // confirmação separada, que confundia o convidado).
+        // Cria a conta do cônjuge via generateLink (type invite): cria o
+        // usuário e devolve o LINK, mas NÃO dispara o e-mail do Supabase — quem
+        // envia é a gente, com o texto de convite (via Resend). Assim o texto
+        // fica 100% sob nosso controle (o template do Supabase dizia "compra
+        // aprovada", errado para o cônjuge).
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
         const url =
           process.env.SUPABASE_URL ??
@@ -78,19 +79,24 @@ export const Route = createFileRoute("/api/familia/convidar")({
           process.env.APP_SUPABASE_URL ??
           "";
 
+        // Link padrão (fallback): página de aceite por token, para quem já tem
+        // conta ou se o generateLink falhar.
+        let linkConvite = `${APP_URL}/convite/${resultado.token}`;
+
         if (serviceKey && url) {
           const admin = createClient(url, serviceKey, {
             auth: { persistSession: false, autoRefreshToken: false },
           });
 
-          const { data: invData, error: invErr } = await admin.auth.admin.inviteUserByEmail(
-            parsed.data.email,
-            { redirectTo: `${APP_URL}/reset-password` },
-          );
+          const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
+            type: "invite",
+            email: parsed.data.email,
+            options: { redirectTo: `${APP_URL}/reset-password` },
+          });
 
-          if (!invErr && invData.user) {
-            // Conta nova criada: entra na família imediatamente (o link do
-            // e-mail só define a senha). Marca o convite como aceito.
+          if (!linkErr && linkData.user && linkData.properties?.action_link) {
+            // Conta nova criada: entra na família na hora (o link só define
+            // nome + senha em /reset-password). Usa o action_link do Supabase.
             const { data: conviteRow } = await admin
               .from("convite_familia")
               .select("familia_id")
@@ -100,7 +106,7 @@ export const Route = createFileRoute("/api/familia/convidar")({
             if (conviteRow) {
               const { error: membroErr } = await admin.from("familia_membro").insert({
                 familia_id: (conviteRow as { familia_id: string }).familia_id,
-                user_id: invData.user.id,
+                user_id: linkData.user.id,
                 papel: "conjuge",
               });
               if (!membroErr) {
@@ -108,21 +114,19 @@ export const Route = createFileRoute("/api/familia/convidar")({
                   .from("convite_familia")
                   .update({ aceito: true })
                   .eq("token", resultado.token);
-                return Response.json({ ok: true, fluxo: "conta-criada" });
+                linkConvite = linkData.properties.action_link;
+              } else {
+                console.error("[familia/convidar] falha ao vincular membro", membroErr);
               }
-              console.error("[familia/convidar] falha ao vincular membro", membroErr);
             }
           }
-          // invErr (ex.: e-mail já cadastrado) ou falha acima: cai no fluxo de
-          // aceite por token, abaixo.
+          // linkErr (ex.: e-mail já cadastrado): mantém o link de aceite por
+          // token — a pessoa faz login e o convite é aceito na página /convite.
         }
 
-        // Convidado já tem conta (ou sem service role): e-mail com link de aceite.
+        // Envia SEMPRE o nosso e-mail (Resend) com o link apropriado.
         try {
-          const t = conviteFamilia({
-            nomeConvidante,
-            link: `${APP_URL}/convite/${resultado.token}`,
-          });
+          const t = conviteFamilia({ nomeConvidante, link: linkConvite });
           await sendEmail({ to: parsed.data.email, ...t });
         } catch (e) {
           // O convite já foi criado no banco; o e-mail é melhor-esforço.

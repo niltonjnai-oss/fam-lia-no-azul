@@ -319,17 +319,17 @@ export function conviteFamilia({
   nomeConvidante?: string;
   link: string;
 }) {
-  const quem = nomeConvidante ? `${nomeConvidante.split(" ")[0]}` : "Uma pessoa querida";
+  const quem = nomeConvidante ? `${nomeConvidante.split(" ")[0]}` : "Alguém que ama você";
   return {
     subject: `${quem} te convidou para o Família no Azul 💙`,
     html: shell({
       title: "Convite para a família",
       bodyHtml: `
-        <h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:${BRAND.primaryDark};">Voc&ecirc; foi convidado(a) para o Fam&iacute;lia no Azul 💙</h1>
-        <p style="margin:0 0 16px;"><strong>${quem}</strong> quer organizar as finan&ccedil;as da fam&iacute;lia com voc&ecirc; — no <strong>Modo Casal</strong>, voc&ecirc;s dois acessam o mesmo or&ccedil;amento, cada um com seu pr&oacute;prio login.</p>
-        <p style="margin:0 0 16px;">Sem custo extra e sem precisar comprar de novo — &eacute; s&oacute; aceitar o convite e criar sua senha.</p>
-        ${botao("Aceitar convite", link)}
-        <p style="margin:0;text-align:center;font-size:13px;color:${BRAND.muted};">O convite expira em 7 dias.</p>
+        <h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:${BRAND.primaryDark};">Voc&ecirc; foi convidado(a) para a fam&iacute;lia 💙</h1>
+        <p style="margin:0 0 16px;"><strong>${quem}</strong> quer cuidar das finan&ccedil;as da casa junto com voc&ecirc; no <strong>Fam&iacute;lia no Azul</strong> — voc&ecirc;s dois no mesmo or&ccedil;amento, cada um com seu login.</p>
+        <p style="margin:0 0 16px;">Sem custo extra — o acesso &eacute; da fam&iacute;lia. &Eacute; s&oacute; criar seu acesso (seu nome e uma senha) para entrar.</p>
+        ${botao("Entrar na família", link)}
+        <p style="margin:0;text-align:center;font-size:13px;color:${BRAND.muted};">Este link &eacute; pessoal e expira em breve.</p>
       `,
     }),
   };
