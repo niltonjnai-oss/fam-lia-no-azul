@@ -255,6 +255,7 @@ export async function fetchDiasComRegistro(dias = 60): Promise<string[]> {
 export interface MembroFamilia {
   user_id: string;
   email: string;
+  nome: string;
   papel: "titular" | "conjuge";
 }
 
@@ -262,6 +263,26 @@ export async function fetchMinhaFamiliaMembros(): Promise<MembroFamilia[]> {
   const { data, error } = await supabase.rpc("minha_familia_membros");
   if (error) throw new Error(error.message);
   return (data ?? []) as MembroFamilia[];
+}
+
+export async function cancelarConvite(
+  conviteId: string,
+): Promise<{ ok: true } | { error: string }> {
+  const { data, error } = await supabase.rpc("cancelar_convite_familia", {
+    p_convite_id: conviteId,
+  });
+  if (error) throw new Error(error.message);
+  return data as { ok: true } | { error: string };
+}
+
+export async function removerMembro(
+  userId: string,
+): Promise<{ ok: true } | { error: string }> {
+  const { data, error } = await supabase.rpc("remover_membro_familia", {
+    p_user_id: userId,
+  });
+  if (error) throw new Error(error.message);
+  return data as { ok: true } | { error: string };
 }
 
 export interface ConviteFamilia {

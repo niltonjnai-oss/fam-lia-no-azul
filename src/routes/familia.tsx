@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Users, Mail, Loader2, Clock, Crown, Heart } from "lucide-react";
+import { Users, Mail, Loader2, Clock, Crown, Heart, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageTitle } from "@/components/PageTitle";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchMinhaFamiliaMembros, fetchConvitesPendentes } from "@/lib/db";
+import {
+  fetchMinhaFamiliaMembros,
+  fetchConvitesPendentes,
+  cancelarConvite,
+  removerMembro,
+} from "@/lib/db";
 import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/familia")({
@@ -43,6 +48,31 @@ function FamiliaPage() {
   const membros = membrosQ.data ?? [];
   const convites = convitesQ.data ?? [];
   const vagas = 2 - membros.length - convites.length;
+  const souTitular = membros.find((m) => m.user_id === user?.id)?.papel === "titular";
+
+  const cancelar = useMutation({
+    mutationFn: async (id: string) => {
+      const r = await cancelarConvite(id);
+      if ("error" in r) throw new Error(r.error);
+    },
+    onSuccess: () => {
+      toast.success("Convite cancelado.");
+      qc.invalidateQueries({ queryKey: QK_CONVITES });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao cancelar"),
+  });
+
+  const remover = useMutation({
+    mutationFn: async (userId: string) => {
+      const r = await removerMembro(userId);
+      if ("error" in r) throw new Error(r.error);
+    },
+    onSuccess: () => {
+      toast.success("Membro removido da família.");
+      qc.invalidateQueries({ queryKey: QK_MEMBROS });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Erro ao remover"),
+  });
 
   const convidar = useMutation({
     mutationFn: async () => {
@@ -99,15 +129,31 @@ function FamiliaPage() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-medium">
-                    {m.email}
+                    {m.nome || m.email}
                     {m.user_id === user?.id && (
                       <span className="ml-1.5 text-xs text-muted-foreground">(você)</span>
                     )}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="truncate text-xs text-muted-foreground">
                     {m.papel === "titular" ? "Titular da assinatura" : "Cônjuge"}
+                    {m.nome && ` · ${m.email}`}
                   </div>
                 </div>
+                {souTitular && m.papel === "conjuge" && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-danger hover:bg-danger/10 hover:text-danger"
+                    disabled={remover.isPending}
+                    onClick={() => {
+                      if (confirm(`Remover ${m.nome || m.email} da família? Essa pessoa perde o acesso ao orçamento.`))
+                        remover.mutate(m.user_id);
+                    }}
+                    aria-label="Remover membro"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
               </li>
             ))}
             {convites.map((c) => (
@@ -124,6 +170,18 @@ function FamiliaPage() {
                     Convite enviado — aguardando aceite
                   </div>
                 </div>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-danger hover:bg-danger/10 hover:text-danger"
+                  disabled={cancelar.isPending}
+                  onClick={() => {
+                    if (confirm(`Cancelar o convite para ${c.email}?`)) cancelar.mutate(c.id);
+                  }}
+                  aria-label="Cancelar convite"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </li>
             ))}
           </ul>

@@ -30,6 +30,7 @@ import {
   type Classificacao,
 } from "@/lib/db";
 import { useMes } from "@/lib/mes-context";
+import { useAuth } from "@/lib/auth-context";
 
 import { formatBRL, formatPct } from "@/lib/format";
 import { MesSelector } from "@/components/MesSelector";
@@ -130,6 +131,12 @@ class DashboardSectionBoundary extends Component<
 
 function PainelPage() {
   const { mes } = useMes();
+  const { user } = useAuth();
+  const primeiroNome = (
+    (user?.user_metadata as { full_name?: string } | undefined)?.full_name ?? ""
+  )
+    .trim()
+    .split(" ")[0];
 
   const rendaQ = useQuery({ queryKey: qk.renda(mes), queryFn: () => fetchRenda(mes) });
   const resumoQ = useQuery({ queryKey: qk.resumo(mes), queryFn: () => fetchResumoMensal(mes) });
@@ -165,7 +172,7 @@ function PainelPage() {
       <header className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <p className="text-sm text-muted-foreground">{formatMes(mes)}</p>
-          <PageTitle>Olá, família!</PageTitle>
+          <PageTitle>{primeiroNome ? `Olá, ${primeiroNome}!` : "Olá, família!"}</PageTitle>
         </div>
         <div className="flex items-center gap-2">
           <PersonalizarPainelButton prefs={prefs} setPrefs={setPrefs} />
