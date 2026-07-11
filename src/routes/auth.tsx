@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { assetUrl } from "@/lib/asset-url";
 import { InstalarAppButton } from "@/components/InstalarAppButton";
-import { CONVITE_PENDENTE_KEY } from "@/routes/convite.$token";
+import { CONVITE_PENDENTE_KEY, CONVITE_EMAIL_KEY } from "@/routes/convite.$token";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
