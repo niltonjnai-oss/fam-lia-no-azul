@@ -12,6 +12,7 @@ import { useAuth } from "@/lib/auth-context";
 import { infoConvite, aceitarConvite } from "@/lib/db";
 
 export const CONVITE_PENDENTE_KEY = "fna_convite_pendente";
+export const CONVITE_EMAIL_KEY = "fna_convite_email";
 
 export const Route = createFileRoute("/convite/$token")({
   ssr: false,
@@ -67,6 +68,7 @@ function ConvitePage() {
           setEstado({ tipo: "invalido", motivo: info.motivo });
         } else {
           window.sessionStorage.setItem(CONVITE_PENDENTE_KEY, token);
+          window.sessionStorage.setItem(CONVITE_EMAIL_KEY, info.email);
           setEstado({ tipo: "pendente_login", email: info.email });
         }
       } catch (e) {
@@ -106,10 +108,10 @@ function ConvitePage() {
             </p>
             <div className="mt-5 flex flex-col gap-2">
               <Button asChild>
-                <Link to="/auth">Criar minha conta</Link>
+                <a href="/auth?modo=signup">Criar minha conta</a>
               </Button>
               <Button asChild variant="outline">
-                <Link to="/auth">Já tenho conta, entrar</Link>
+                <a href="/auth?modo=login">Já tenho conta, entrar</a>
               </Button>
             </div>
           </>

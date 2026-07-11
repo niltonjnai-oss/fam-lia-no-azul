@@ -81,8 +81,17 @@ function noticeMessage(notice: AuthNotice) {
 function AuthPage() {
   const { session, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const temConvitePendente =
+    typeof window !== "undefined" && window.sessionStorage.getItem(CONVITE_PENDENTE_KEY) != null;
+  const [mode, setMode] = useState<"login" | "signup">(() => {
+    if (typeof window === "undefined") return "login";
+    const modo = new URLSearchParams(window.location.search).get("modo");
+    if (modo === "signup" || modo === "login") return modo;
+    return temConvitePendente ? "signup" : "login";
+  });
   const [notice, setNotice] = useState<AuthNotice | null>(null);
+  const emailConvite =
+    typeof window !== "undefined" ? window.sessionStorage.getItem(CONVITE_EMAIL_KEY) : null;
 
   useEffect(() => {
     const storedNotice = window.sessionStorage.getItem(AUTH_NOTICE_STORAGE_KEY);
@@ -157,7 +166,7 @@ function AuthPage() {
               <LoginForm />
             </TabsContent>
             <TabsContent value="signup" className="mt-5">
-              <SignupForm onSwitchToLogin={() => setMode("login")} />
+              <SignupForm onSwitchToLogin={() => setMode("login")} emailInicial={emailConvite ?? ""} />
             </TabsContent>
           </Tabs>
         </div>
@@ -255,9 +264,15 @@ const REQUIREMENTS: Requirement[] = [
   { key: "special", label: "Um caractere especial", test: (p) => /[^A-Za-z0-9]/.test(p) },
 ];
 
-function SignupForm({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
+function SignupForm({
+  onSwitchToLogin,
+  emailInicial = "",
+}: {
+  onSwitchToLogin: () => void;
+  emailInicial?: string;
+}) {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailInicial);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
