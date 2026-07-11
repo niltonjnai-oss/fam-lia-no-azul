@@ -132,6 +132,66 @@ export interface TransacaoDia {
   mes_ref: string;
 }
 
+// ---------- Importação de extrato ----------
+
+/** Grava um gasto vindo do extrato preservando a data original da transação.
+ *  Mesmo efeito do registrar_gasto_rapido (transacao + acumula custo_real do
+ *  lancamento do mês), mas com `data` explícita. */
+export async function registrarGastoImportado(args: {
+  subitem_id: string;
+  mes_ref: string;
+  valor: number;
+  descricao?: string | null;
+  data: string; // YYYY-MM-DD
+}): Promise<void> {
+  const { error: tErr } = await supabase.from("transacao").insert({
+    subitem_id: args.subitem_id,
+    mes_ref: args.mes_ref,
+    valor: args.valor,
+    descricao: args.descricao ?? null,
+    data: args.data,
+  });
+  if (tErr) throw new Error(tErr.message);
+
+  // Acumula no lancamento do mês (cria se não existir).
+  const { data: existente, error: selErr } = await supabase
+    .from("lancamento")
+    .select("id, custo_real")
+    .eq("subitem_id", args.subitem_id)
+    .eq("mes_ref", args.mes_ref)
+    .maybeSingle();
+  if (selErr) throw new Error(selErr.message);
+
+  if (existente) {
+    const { error } = await supabase
+      .from("lancamento")
+      .update({ custo_real: Number((existente as { custo_real: number }).custo_real) + args.valor })
+      .eq("id", (existente as { id: string }).id);
+    if (error) throw new Error(error.message);
+  } else {
+    const { error } = await supabase.from("lancamento").insert({
+      subitem_id: args.subitem_id,
+      mes_ref: args.mes_ref,
+      custo_real: args.valor,
+    });
+    if (error) throw new Error(error.message);
+  }
+}
+
+/** Transações num intervalo de datas (para detectar duplicatas no import). */
+export async function fetchTransacoesPeriodo(
+  de: string,
+  ate: string,
+): Promise<{ data: string; valor: number }[]> {
+  const { data, error } = await supabase
+    .from("transacao")
+    .select("data, valor")
+    .gte("data", de)
+    .lte("data", ate);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as { data: string; valor: number }[];
+}
+
 // ---------- Contas recorrentes (vencimentos mensais com alerta) ----------
 
 export interface ContaRecorrente {

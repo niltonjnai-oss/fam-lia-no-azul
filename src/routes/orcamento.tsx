@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Mic, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Plus, Mic, TrendingUp, TrendingDown, Minus, Upload } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -150,11 +150,20 @@ function OrcamentoPage() {
   return (
     <div className="space-y-5">
       <header className="space-y-3">
-        <div>
-          <PageTitle>Orçamento</PageTitle>
-          <p className="text-sm text-muted-foreground">
-            Seus gastos do mês
-          </p>
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <PageTitle>Orçamento</PageTitle>
+            <p className="text-sm text-muted-foreground">
+              Seus gastos do mês
+            </p>
+          </div>
+          <Link
+            to="/importar"
+            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium shadow-soft transition-colors hover:border-primary/40 hover:bg-primary/5"
+          >
+            <Upload className="h-4 w-4 text-primary" />
+            Importar extrato
+          </Link>
         </div>
         <MesSelector />
       </header>

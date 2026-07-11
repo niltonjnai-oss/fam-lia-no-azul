@@ -18,6 +18,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MetodoRouteImport } from './routes/metodo'
 import { Route as InicioRouteImport } from './routes/inicio'
 import { Route as IndicacaoRouteImport } from './routes/indicacao'
+import { Route as ImportarRouteImport } from './routes/importar'
 import { Route as DividasRouteImport } from './routes/dividas'
 import { Route as ContasRouteImport } from './routes/contas'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -72,6 +73,11 @@ const InicioRoute = InicioRouteImport.update({
 const IndicacaoRoute = IndicacaoRouteImport.update({
   id: '/indicacao',
   path: '/indicacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportarRoute = ImportarRouteImport.update({
+  id: '/importar',
+  path: '/importar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DividasRoute = DividasRouteImport.update({
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contas': typeof ContasRoute
   '/dividas': typeof DividasRoute
+  '/importar': typeof ImportarRoute
   '/indicacao': typeof IndicacaoRoute
   '/inicio': typeof InicioRoute
   '/metodo': typeof MetodoRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contas': typeof ContasRoute
   '/dividas': typeof DividasRoute
+  '/importar': typeof ImportarRoute
   '/indicacao': typeof IndicacaoRoute
   '/inicio': typeof InicioRoute
   '/metodo': typeof MetodoRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contas': typeof ContasRoute
   '/dividas': typeof DividasRoute
+  '/importar': typeof ImportarRoute
   '/indicacao': typeof IndicacaoRoute
   '/inicio': typeof InicioRoute
   '/metodo': typeof MetodoRoute
@@ -198,6 +207,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contas'
     | '/dividas'
+    | '/importar'
     | '/indicacao'
     | '/inicio'
     | '/metodo'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contas'
     | '/dividas'
+    | '/importar'
     | '/indicacao'
     | '/inicio'
     | '/metodo'
@@ -240,6 +251,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contas'
     | '/dividas'
+    | '/importar'
     | '/indicacao'
     | '/inicio'
     | '/metodo'
@@ -262,6 +274,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContasRoute: typeof ContasRoute
   DividasRoute: typeof DividasRoute
+  ImportarRoute: typeof ImportarRoute
   IndicacaoRoute: typeof IndicacaoRoute
   InicioRoute: typeof InicioRoute
   MetodoRoute: typeof MetodoRoute
@@ -340,6 +353,13 @@ declare module '@tanstack/react-router' {
       path: '/indicacao'
       fullPath: '/indicacao'
       preLoaderRoute: typeof IndicacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/importar': {
+      id: '/importar'
+      path: '/importar'
+      fullPath: '/importar'
+      preLoaderRoute: typeof ImportarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dividas': {
@@ -422,6 +442,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContasRoute: ContasRoute,
   DividasRoute: DividasRoute,
+  ImportarRoute: ImportarRoute,
   IndicacaoRoute: IndicacaoRoute,
   InicioRoute: InicioRoute,
   MetodoRoute: MetodoRoute,
