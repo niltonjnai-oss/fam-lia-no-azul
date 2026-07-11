@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Lock, Loader2, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Lock, Loader2, Eye, EyeOff, ShieldCheck, User as UserIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchMinhaFamiliaMembros } from "@/lib/db";
 import { useAuth } from "@/lib/auth-context";
@@ -23,8 +23,17 @@ function ResetPasswordPage() {
   const { session, loading: authLoading } = useAuth();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [nome, setNome] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // Convidado (cônjuge) chega sem nome no cadastro — pedimos aqui, junto da
+  // senha, para ele aparecer com o nome no painel e na família. Recuperação de
+  // senha de quem já tem conta não mostra o campo. Independe do hash da URL.
+  const nomeAtual = (
+    (session?.user?.user_metadata as { full_name?: string } | undefined)?.full_name ?? ""
+  ).trim();
+  const precisaNome = Boolean(session) && nomeAtual === "";
 
   // Detecta se veio de um link de convite/recuperação (hash do Supabase).
   const linkType = useMemo(() => {
@@ -57,11 +66,18 @@ function ResetPasswordPage() {
       toast.error("As senhas não conferem.");
       return;
     }
+    if (precisaNome && nome.trim().length < 2) {
+      toast.error("Digite seu nome para continuar.");
+      return;
+    }
     setSubmitting(true);
     try {
-      const { error } = await supabase.auth.updateUser({ password });
+      const { error } = await supabase.auth.updateUser({
+        password,
+        ...(precisaNome ? { data: { full_name: nome.trim() } } : {}),
+      });
       if (error) throw error;
-      toast.success("Senha definida com sucesso! Vamos começar.");
+      toast.success("Tudo pronto! Vamos começar.");
       if (typeof window !== "undefined") {
         window.history.replaceState(null, "", window.location.pathname);
       }
@@ -87,9 +103,10 @@ function ResetPasswordPage() {
     }
   }
 
-  const title = isInvite ? "Bem-vindo(a)! Crie sua senha" : "Defina uma nova senha";
-  const subtitle = isInvite
-    ? "Sua conta já está criada. Escolha uma senha para entrar sempre que quiser."
+  const boasVindas = isInvite || precisaNome;
+  const title = boasVindas ? "Bem-vindo(a) à família! 💙" : "Defina uma nova senha";
+  const subtitle = boasVindas
+    ? "Falta só criar seu acesso: seu nome e uma senha para entrar sempre que quiser."
     : "Escolha uma nova senha para acessar sua conta.";
 
   return (
@@ -103,8 +120,27 @@ function ResetPasswordPage() {
 
         <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
           <form onSubmit={handleSubmit} className="space-y-4">
+            {precisaNome && (
+              <div className="space-y-1.5">
+                <Label htmlFor="nome">Seu nome</Label>
+                <div className="relative">
+                  <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="nome"
+                    type="text"
+                    autoComplete="name"
+                    required
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                    className="pl-9"
+                    placeholder="Como devemos te chamar"
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="space-y-1.5">
-              <Label htmlFor="password">Nova senha</Label>
+              <Label htmlFor="password">{precisaNome ? "Crie uma senha" : "Nova senha"}</Label>
               <div className="relative">
                 <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -149,7 +185,7 @@ function ResetPasswordPage() {
 
             <Button type="submit" className="h-11 w-full" disabled={submitting || authLoading}>
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isInvite ? "Criar senha e entrar" : "Salvar nova senha"}
+              {boasVindas ? "Entrar na família" : "Salvar nova senha"}
             </Button>
           </form>
 
