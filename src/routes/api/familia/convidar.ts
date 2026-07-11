@@ -67,6 +67,57 @@ export const Route = createFileRoute("/api/familia/convidar")({
         const nomeConvidante =
           (userRes.user.user_metadata as { full_name?: string } | null)?.full_name ?? undefined;
 
+        // Cliente admin (service role): cria a conta do cônjuge diretamente
+        // quando o e-mail ainda não existe — 1 único e-mail "crie sua senha"
+        // (o clique no link É a confirmação de posse do e-mail; sem etapa de
+        // confirmação separada, que confundia o convidado).
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const url =
+          process.env.SUPABASE_URL ??
+          process.env.VITE_SUPABASE_URL ??
+          process.env.APP_SUPABASE_URL ??
+          "";
+
+        if (serviceKey && url) {
+          const admin = createClient(url, serviceKey, {
+            auth: { persistSession: false, autoRefreshToken: false },
+          });
+
+          const { data: invData, error: invErr } = await admin.auth.admin.inviteUserByEmail(
+            parsed.data.email,
+            { redirectTo: `${APP_URL}/reset-password` },
+          );
+
+          if (!invErr && invData.user) {
+            // Conta nova criada: entra na família imediatamente (o link do
+            // e-mail só define a senha). Marca o convite como aceito.
+            const { data: conviteRow } = await admin
+              .from("convite_familia")
+              .select("familia_id")
+              .eq("token", resultado.token)
+              .maybeSingle();
+
+            if (conviteRow) {
+              const { error: membroErr } = await admin.from("familia_membro").insert({
+                familia_id: (conviteRow as { familia_id: string }).familia_id,
+                user_id: invData.user.id,
+                papel: "conjuge",
+              });
+              if (!membroErr) {
+                await admin
+                  .from("convite_familia")
+                  .update({ aceito: true })
+                  .eq("token", resultado.token);
+                return Response.json({ ok: true, fluxo: "conta-criada" });
+              }
+              console.error("[familia/convidar] falha ao vincular membro", membroErr);
+            }
+          }
+          // invErr (ex.: e-mail já cadastrado) ou falha acima: cai no fluxo de
+          // aceite por token, abaixo.
+        }
+
+        // Convidado já tem conta (ou sem service role): e-mail com link de aceite.
         try {
           const t = conviteFamilia({
             nomeConvidante,
@@ -79,7 +130,7 @@ export const Route = createFileRoute("/api/familia/convidar")({
           return Response.json({ ok: true, emailEnviado: false });
         }
 
-        return Response.json({ ok: true, emailEnviado: true });
+        return Response.json({ ok: true, emailEnviado: true, fluxo: "aceite" });
       },
     },
   },

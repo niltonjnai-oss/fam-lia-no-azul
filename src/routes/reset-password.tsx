@@ -61,11 +61,12 @@ function ResetPasswordPage() {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       toast.success("Senha definida com sucesso! Vamos começar.");
-      // Limpa o hash e vai para o onboarding.
       if (typeof window !== "undefined") {
         window.history.replaceState(null, "", window.location.pathname);
       }
-      navigate({ to: "/onboarding", replace: true });
+      // Convite (Modo Casal): a família já tem orçamento montado — vai direto
+      // pro painel. Demais fluxos mantêm o onboarding.
+      navigate({ to: isInvite ? "/app" : "/onboarding", replace: true });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Não foi possível definir a senha.";
       toast.error(msg);
