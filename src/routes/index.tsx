@@ -536,9 +536,8 @@ function LandingPage() {
                 Faça o teste por 7 dias.
               </h2>
               <p className="mt-4 text-base text-[#0F2A47]/70">
-                Entre, cadastre seu mês, veja o painel funcionando. Se em 7 dias você sentir que
-                não é pra você, devolvemos 100% do valor. Sem perguntas, sem formulário chato, sem
-                "aguarde 15 dias úteis".
+                Experimente sem riscos. Se em 7 dias achar que não é o ideal para sua família,
+                devolvemos o seu dinheiro.
               </p>
             </div>
           </div>
