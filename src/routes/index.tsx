@@ -65,11 +65,6 @@ const heroPhotoUrl = assetUrl(heroPhoto);
 const familiaLineartUrl = assetUrl(familiaLineart);
 const jantarPhotoUrl = assetUrl(jantarPhoto);
 
-// Data dinâmica do mockup (pt-BR), ex.: "julho 2026"
-const MES_ATUAL = new Date()
-  .toLocaleDateString("pt-BR", { month: "long", year: "numeric" })
-  .replace(/^./, (c) => c.toUpperCase());
-
 const benefits = [
   {
     icon: Wallet,
@@ -291,7 +286,7 @@ function LandingPage() {
           </div>
         </div>
 
-        {/* Foto ambiente + painel mockup lado a lado (desktop) / empilhados (mobile) */}
+        {/* Foto ambiente + app no celular lado a lado (desktop) / empilhados (mobile) */}
         <div className="mx-auto mt-16 grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-10">
           {/* Foto da família */}
           <div className="relative overflow-hidden rounded-[2rem] border border-white/60 shadow-2xl">
@@ -305,41 +300,16 @@ function LandingPage() {
             />
           </div>
 
-          {/* Painel mockup */}
-          <div className="relative">
-            <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-white/60 to-[#B8DCF3]/60 blur-3xl" />
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/60 bg-white/95 p-8 text-left shadow-2xl backdrop-blur">
-              <div className="flex items-center justify-between text-xs text-[#0F2A47]/60">
-                <span>{MES_ATUAL}</span>
-                <span className="rounded-full bg-[#E8F3EA] px-2.5 py-0.5 text-[10px] font-semibold text-[#2F7A3E]">
-                  No azul
-                </span>
-              </div>
-              <div className="mt-5">
-                <div className="text-xs text-[#0F2A47]/60">Saldo do mês</div>
-                <div className="mt-1 text-5xl font-semibold tracking-tight tabular-nums">R$ 2.480,00</div>
-              </div>
-              <div className="mt-8 space-y-4">
-                {[
-                  { label: "Essencial", pct: 46, color: NAVY },
-                  { label: "Estilo de vida", pct: 24, color: "#5B7C99" },
-                  { label: "Reserva & Dívidas", pct: 22, color: "#2F7A3E" },
-                ].map((r) => (
-                  <div key={r.label}>
-                    <div className="mb-1 flex justify-between text-xs">
-                      <span className="text-[#0F2A47]/70">{r.label}</span>
-                      <span className="font-medium tabular-nums">{r.pct}%</span>
-                    </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-[#0F2A47]/5">
-                      <div
-                        className="h-full rounded-full"
-                        style={{ width: `${r.pct}%`, backgroundColor: r.color }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {/* App em destaque no celular */}
+          <div className="flex justify-center">
+            <img
+              src="/lp/app/painel.png"
+              alt="Painel do mês do app Família no Azul num celular, com o saldo do mês e a divisão 50-30-20."
+              loading="eager"
+              width={1000}
+              height={1185}
+              className="w-full max-w-[300px] drop-shadow-2xl md:max-w-[360px]"
+            />
           </div>
         </div>
       </section>
