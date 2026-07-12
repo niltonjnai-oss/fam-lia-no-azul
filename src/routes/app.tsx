@@ -79,7 +79,7 @@ function statusBloco(classificacao: Classificacao, pctRenda: number): Status {
   return pctRenda > limite ? "acima" : "ok";
 }
 function statusLabel(s: Status): string {
-  return s === "ok" ? "OK" : s === "acima" ? "Acima do Limite" : "Abaixo da Meta";
+  return s === "ok" ? "OK" : s === "acima" ? "Passou do limite" : "Dá pra guardar mais";
 }
 function statusClasses(s: Status): string {
   return s === "ok"
@@ -181,7 +181,7 @@ function PainelPage() {
             className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 min-h-[44px]"
           >
             <RotateCcw className="h-4 w-4" />
-            Refazer Despesas Iniciais
+            Refazer meu orçamento
           </Link>
         </div>
       </header>
@@ -201,7 +201,7 @@ function PainelPage() {
           <div className="min-w-0 flex-1">
             <div className="text-sm font-semibold">Comece aqui</div>
             <div className="text-xs text-muted-foreground">
-              Em 1 minuto seu orçamento inicial fica montado.
+              Monte seu orçamento inicial em apenas 1 minuto.
             </div>
           </div>
           <ArrowUpRight className="h-4 w-4 text-primary" />
@@ -258,7 +258,7 @@ function PainelPage() {
       >
       <section className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-          <h2 className="text-sm font-semibold">Divisão por classificação</h2>
+          <h2 className="text-sm font-semibold">Para onde foi seu dinheiro</h2>
           <p className="text-xs text-muted-foreground">Como sua renda foi gasta este mês.</p>
           <div className="mt-3 h-56" role="img" aria-label={
             (() => {
@@ -340,7 +340,7 @@ function PainelPage() {
 
         <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
           <h2 className="text-sm font-semibold">Método 50-30-20</h2>
-          <p className="text-xs text-muted-foreground">Compare o realizado com a meta de cada bloco.</p>
+          <p className="text-xs text-muted-foreground">Veja se cada parte está dentro do combinado.</p>
           <div className="mt-4 space-y-4">
             {(["Essencial", "Estilo de Vida", "Reserva/Dívidas"] as Classificacao[]).map((cls) => {
               const linha = blocos.find((b) => b.classificacao === cls);
@@ -368,7 +368,7 @@ function PainelPage() {
                   <div className="tabular mt-1 flex justify-between text-[11px] text-muted-foreground">
                     <span>{formatBRL(realizado)}</span>
                     <span>
-                      limite {formatBRL(limite)} · {formatPct(LIMITE_PCT[cls] * 100)}
+                      até {formatBRL(limite)} · {formatPct(LIMITE_PCT[cls] * 100)} da renda
                     </span>
                   </div>
                 </div>

@@ -84,7 +84,7 @@ export function LancamentoRapido() {
       if (!subId) {
         const outros = await fetchSubitemOutros(categoriaId);
         if (!outros)
-          throw new Error('Esta categoria não possui o subitem "Outros". Selecione um subitem.');
+          throw new Error("Escolha um tipo de gasto para esta categoria.");
         subId = outros;
       }
       await registrarGasto({
@@ -118,8 +118,8 @@ export function LancamentoRapido() {
           <Zap className="h-4 w-4" />
         </span>
         <div>
-          <h2 className="text-sm font-semibold">Lançamento rápido</h2>
-          <p className="text-xs text-muted-foreground">Some um gasto ao mês atual.</p>
+          <h2 className="text-sm font-semibold">Anotar um gasto</h2>
+          <p className="text-xs text-muted-foreground">Registre seus gastos de hoje.</p>
         </div>
       </header>
 
@@ -167,7 +167,7 @@ export function LancamentoRapido() {
 
         <div className="space-y-1">
           <Label htmlFor="lr-sub" className="text-xs">
-            Subitem <span className="text-muted-foreground">(opcional)</span>
+            Tipo de gasto <span className="text-muted-foreground">(opcional)</span>
           </Label>
           <Select
             value={subitemId}
@@ -202,14 +202,14 @@ export function LancamentoRapido() {
         <div className="sm:col-span-2">
           <Button type="submit" className="h-11 w-full" disabled={addMut.isPending}>
             <Plus className="mr-1 h-4 w-4" />
-            {addMut.isPending ? "Adicionando..." : "Adicionar"}
+            {addMut.isPending ? "Salvando..." : "Salvar gasto"}
           </Button>
         </div>
       </form>
 
       <div className="mt-5 border-t border-border pt-4">
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-xs font-medium text-muted-foreground">Lançado hoje</span>
+          <span className="text-xs font-medium text-muted-foreground">Gasto hoje</span>
           <span className="tabular text-sm font-semibold">
             {transacoesQ.isLoading ? <Skeleton className="h-4 w-20" /> : formatBRL(totalHoje)}
           </span>
@@ -222,7 +222,7 @@ export function LancamentoRapido() {
           </div>
         ) : (transacoesQ.data ?? []).length === 0 ? (
           <p className="rounded-xl bg-muted/40 px-3 py-3 text-xs text-muted-foreground">
-            Nenhum gasto lançado hoje ainda.
+            Você ainda não anotou nenhum gasto hoje.
           </p>
         ) : (
           <ul className="space-y-1.5">

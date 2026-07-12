@@ -40,7 +40,7 @@ export function ProjecaoMes({
     <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium text-muted-foreground sm:text-sm">
-          Projeção do mês
+          Previsão do mês
         </span>
         <span
           className={`grid h-7 w-7 place-items-center rounded-lg ${dentro ? "bg-success/10" : "bg-danger/10"}`}
@@ -56,21 +56,21 @@ export function ProjecaoMes({
         <Skeleton className="mt-2 h-10 w-full" />
       ) : totalReal <= 0 ? (
         <p className="mt-2 text-xs text-muted-foreground">
-          Registre seus gastos para ver a projeção do fim do mês.
+          Registre seus gastos para ver a previsão do fim do mês.
         </p>
       ) : (
         <>
           <div className="tabular mt-2 text-base font-bold sm:text-xl">{formatBRL(projecao)}</div>
           <p className="mt-1 text-xs text-muted-foreground">
-            No ritmo atual, é isso que você gasta até o dia {diasNoMes}.{" "}
+            Se continuar assim, seu gasto total do mês será esse.{" "}
             {base > 0 && (
               <span className={dentro ? "font-medium text-success" : "font-medium text-danger"}>
                 {dentro
-                  ? `Dentro ${baseLabel} — folga de ${formatBRL(delta)}. 🎉`
+                  ? `No ritmo atual, ainda sobram ${formatBRL(delta)}. 🎉`
                   : `${formatBRL(delta)} acima ${baseLabel}.`}
               </span>
             )}
-            {inicioDoMes && " (Início do mês: a projeção ainda é imprecisa.)"}
+            {inicioDoMes && " (Início do mês: a previsão ainda é imprecisa.)"}
           </p>
         </>
       )}
@@ -125,7 +125,7 @@ export function DiasNoAzul() {
           <p className="mt-1 text-xs text-muted-foreground">
             {registrouHoje
               ? "Sequência de dias registrando os gastos. Continue assim!"
-              : "Registre um gasto hoje para manter a sequência."}
+              : "Mantenha a sequência registrando seus gastos."}
           </p>
         </>
       )}

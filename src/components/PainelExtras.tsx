@@ -45,12 +45,12 @@ export type CardKey =
   | "estouros";
 
 const ALL_CARDS: { key: CardKey; label: string; descricao: string }[] = [
-  { key: "maior_gasto", label: "Maior gasto do mês", descricao: "Categoria que mais consumiu o orçamento." },
+  { key: "maior_gasto", label: "Maior gasto do mês", descricao: "Onde você mais gastou." },
   { key: "top3", label: "Top 3 categorias", descricao: "As três categorias com maior gasto real." },
   { key: "comparativo", label: "Comparativo com mês anterior", descricao: "Gasto total deste mês vs o anterior." },
-  { key: "divida_prio", label: "Dívida prioritária", descricao: "Dívida ativa com maior taxa de juros." },
+  { key: "divida_prio", label: "Dívida para pagar primeiro", descricao: "A que mais cresce com juros." },
   { key: "reserva", label: "Progresso da reserva", descricao: "Quanto falta para sua meta de emergência." },
-  { key: "estouros", label: "Estouros do mês", descricao: "Subitens onde o gasto real superou o previsto." },
+  { key: "estouros", label: "Onde passou do limite", descricao: "Gastos que ficaram acima do planejado." },
 ];
 
 const STORAGE_KEY = "fna:painel:cards";
@@ -161,7 +161,7 @@ function CardShell({
   return content;
 }
 
-function Empty({ texto = "Sem dados ainda neste mês." }: { texto?: string }) {
+function Empty({ texto = "Nada anotado neste mês ainda." }: { texto?: string }) {
   return <p className="text-xs text-muted-foreground">{texto}</p>;
 }
 
@@ -302,7 +302,7 @@ export function PainelExtras({ mes, prefs }: { mes: string; prefs: Record<CardKe
         }
         if (c.key === "divida_prio") {
           return (
-            <CardShell key={c.key} title="Dívida prioritária" Icon={Flame} href="/dividas">
+            <CardShell key={c.key} title="Dívida para pagar primeiro" Icon={Flame} href="/dividas">
               {dividasQ.isLoading ? (
                 <Skeleton className="h-12 w-full" />
               ) : !dividaPrio ? (
@@ -350,13 +350,13 @@ export function PainelExtras({ mes, prefs }: { mes: string; prefs: Record<CardKe
         if (c.key === "estouros") {
           const total503020Ok = false; // placeholder for selo
           return (
-            <CardShell key={c.key} title="Estouros do mês" Icon={AlertTriangle}>
+            <CardShell key={c.key} title="Onde passou do limite" Icon={AlertTriangle}>
               {carregando ? (
                 <Skeleton className="h-20 w-full" />
               ) : estouros.length === 0 ? (
                 <div className="flex items-center gap-2 text-success">
                   <CheckCircle2 className="h-4 w-4" />
-                  <span className="text-xs font-medium">Nenhum estouro 🎯</span>
+                  <span className="text-xs font-medium">Nada passou do limite 🎯</span>
                 </div>
               ) : (
                 <>

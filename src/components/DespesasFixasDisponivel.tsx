@@ -61,7 +61,7 @@ export function DespesasFixasDisponivel({ mes }: { mes: string }) {
         <div className="min-w-0">
           <h2 className="text-sm font-semibold">Despesas fixas e disponível</h2>
           <p className="text-xs text-muted-foreground">
-            Quanto da renda ainda sobra após as despesas comprometidas.
+            Saldo disponível após despesas fixas.
           </p>
         </div>
       </header>
@@ -83,7 +83,7 @@ export function DespesasFixasDisponivel({ mes }: { mes: string }) {
           <Skeleton className="mt-2 h-3 w-56" />
         ) : (
           <div className="tabular mt-1 text-xs text-muted-foreground">
-            Renda {formatBRL(renda)} − Despesas {formatBRL(comprometido)}
+            Você ganha {formatBRL(renda)} − gasta {formatBRL(comprometido)}
           </div>
         )}
       </div>
@@ -111,9 +111,9 @@ export function DespesasFixasDisponivel({ mes }: { mes: string }) {
           </div>
         ) : fixas.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border bg-background/40 p-4 text-center">
-            <p className="text-sm font-medium">Você ainda não cadastrou despesas fixas</p>
+            <p className="text-sm font-medium">Você ainda não anotou suas contas fixas (aluguel, luz, internet...)</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Monte seu orçamento inicial em 1 minuto.
+              Monte seu orçamento inicial em apenas 1 minuto.
             </p>
             <Link
               to="/onboarding"
@@ -155,7 +155,7 @@ export function DespesasFixasDisponivel({ mes }: { mes: string }) {
 
       <p className="mt-3 flex items-start gap-1.5 text-[11px] text-muted-foreground">
         <Info className="mt-0.5 h-3 w-3 shrink-0" />
-        <span>As despesas fixas e cada gasto lançado reduzem o seu disponível.</span>
+        <span>Cada gasto que você registra reduz o valor disponível.</span>
       </p>
     </section>
   );
