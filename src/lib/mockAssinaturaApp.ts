@@ -42,6 +42,14 @@ export function statusAssinatura(dataVencimento: string): StatusAssinaturaApp {
   return "ativa";
 }
 
+export const indicacaoMock = {
+  desconto: "10% off",
+};
+
+export function linkIndicacao(): string {
+  return "https://familianoazul.com.br/indicacao/AMIGO123";
+}
+
 export function formatDataBR(iso: string): string {
   return new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",
