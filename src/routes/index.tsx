@@ -350,22 +350,42 @@ function LandingPage() {
             Cinco coisas que o App Família no Azul <span className="italic text-orange-500">resolve pra você.</span>
           </h2>
         </div>
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {benefits.map(({ icon: Icon, title, desc }) => (
-            <div
-              key={title}
-              className="rounded-2xl border border-white/70 bg-white/80 p-7 shadow-sm transition-shadow hover:shadow-md"
-            >
+        <div className="mt-16 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {benefits.map(({ icon: Icon, title, desc }, i) => {
+            // Padrão bento: alterna azul preenchido e cinza claro
+            const filled = i % 2 === 1;
+            const bg = filled ? "#0F2A47" : "#F1F3F5";
+            const titleColor = filled ? "#FFFFFF" : "#0F2A47";
+            const descColor = filled ? "rgba(255,255,255,0.85)" : "rgba(15,42,71,0.72)";
+            const iconWrap = filled ? "bg-white/15 text-white" : "text-[#0F2A47]";
+            const iconStyle = filled ? {} : { backgroundColor: "#E6F2FB" };
+            return (
               <div
-                className="grid h-12 w-12 place-items-center rounded-xl text-[#0F2A47]"
-                style={{ backgroundColor: "#E6F2FB" }}
+                key={title}
+                className="flex min-h-[240px] flex-col p-8 transition-transform hover:-translate-y-0.5"
+                style={{ backgroundColor: bg }}
               >
-                <Icon className="h-5 w-5" />
+                <div
+                  className={`grid h-11 w-11 place-items-center rounded-lg ${iconWrap}`}
+                  style={iconStyle}
+                >
+                  <Icon className="h-5 w-5" />
+                </div>
+                <div
+                  className="mt-6 text-xl font-semibold leading-snug"
+                  style={{ color: titleColor }}
+                >
+                  {title}
+                </div>
+                <p
+                  className="mt-3 text-sm leading-relaxed"
+                  style={{ color: descColor }}
+                >
+                  {desc}
+                </p>
               </div>
-              <div className="mt-5 text-lg font-semibold">{title}</div>
-              <p className="mt-2 text-sm leading-relaxed text-[#0F2A47]/70">{desc}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className="mt-12 text-center">
           <a
