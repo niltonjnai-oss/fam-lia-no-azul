@@ -47,6 +47,8 @@ export interface Divida {
   parcela_mensal: number;
   status: StatusDivida;
   meses_para_quitar: number | null;
+  parcelas_total: number | null;
+  parcelas_pagas: number | null;
 }
 
 export interface ReservaConfig {
@@ -548,6 +550,8 @@ export async function inserirDivida(args: {
   taxa_juros_mensal: number;
   parcela_mensal: number;
   status?: StatusDivida;
+  parcelas_total?: number | null;
+  parcelas_pagas?: number | null;
 }): Promise<void> {
   const { error } = await supabase
     .from("divida")
@@ -557,7 +561,18 @@ export async function inserirDivida(args: {
 
 export async function atualizarDivida(
   id: string,
-  patch: Partial<Pick<Divida, "nome" | "valor_total" | "taxa_juros_mensal" | "parcela_mensal" | "status">>,
+  patch: Partial<
+    Pick<
+      Divida,
+      | "nome"
+      | "valor_total"
+      | "taxa_juros_mensal"
+      | "parcela_mensal"
+      | "status"
+      | "parcelas_total"
+      | "parcelas_pagas"
+    >
+  >,
 ): Promise<void> {
   const { error } = await supabase.from("divida").update(patch).eq("id", id);
   if (error) throw new Error(error.message);

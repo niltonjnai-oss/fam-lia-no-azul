@@ -38,6 +38,7 @@ import {
 import { formatBRL } from "@/lib/format";
 import { EmptyState } from "@/components/EmptyState";
 import { AssistenteDividaCard } from "@/components/AssistenteDivida";
+import { CurrencyInput } from "@/components/CurrencyInput";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageTitle } from "@/components/PageTitle";
 
@@ -305,6 +306,12 @@ function DividaCard({ divida: d, prioritaria }: { divida: Divida; prioritaria: b
           </div>
           <p className="mt-0.5 text-xs text-muted-foreground">
             Juros {(Number(d.taxa_juros_mensal) * 100).toFixed(2)}% a.m.
+            {d.parcelas_total ? (
+              <>
+                {" "}
+                · Parcelas: <strong>{d.parcelas_pagas ?? 0} de {d.parcelas_total}</strong> pagas
+              </>
+            ) : null}
           </p>
           {!quitada && (
             <p className="mt-1 text-xs">
@@ -362,12 +369,20 @@ function pctParaDecimal(raw: string): number {
   return Number.isFinite(n) && n > 0 ? n / 100 : 0;
 }
 
+// "12" → 12; vazio/zero → null (parcelas são opcionais).
+function intOuNull(raw: string): number | null {
+  const n = Math.floor(Number(raw) || 0);
+  return n > 0 ? n : null;
+}
+
 function NovaDividaDialog() {
   const [open, setOpen] = useState(false);
   const [nome, setNome] = useState("");
   const [total, setTotal] = useState("");
   const [juros, setJuros] = useState("");
   const [parcela, setParcela] = useState("");
+  const [parcelasTotal, setParcelasTotal] = useState("");
+  const [parcelasPagas, setParcelasPagas] = useState("");
   const qc = useQueryClient();
   const mut = useMutation({
     mutationFn: () =>
@@ -376,6 +391,8 @@ function NovaDividaDialog() {
         valor_total: Number(total) || 0,
         taxa_juros_mensal: pctParaDecimal(juros),
         parcela_mensal: Number(parcela) || 0,
+        parcelas_total: intOuNull(parcelasTotal),
+        parcelas_pagas: intOuNull(parcelasPagas) ?? (intOuNull(parcelasTotal) ? 0 : null),
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: qk.dividas });
@@ -383,6 +400,8 @@ function NovaDividaDialog() {
       setTotal("");
       setJuros("");
       setParcela("");
+      setParcelasTotal("");
+      setParcelasPagas("");
       setOpen(false);
     },
   });
@@ -404,13 +423,35 @@ function NovaDividaDialog() {
             <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex: Cartão" />
           </div>
           <div className="grid grid-cols-2 gap-3">
+            <CurrencyInput
+              label="Valor total"
+              value={total}
+              onChange={setTotal}
+              className="h-10 text-sm"
+            />
+            <CurrencyInput
+              label="Parcela mensal"
+              value={parcela}
+              onChange={setParcela}
+              className="h-10 text-sm"
+            />
             <div>
-              <Label>Valor total</Label>
-              <Input inputMode="decimal" value={total} onChange={(e) => setTotal(e.target.value)} />
+              <Label>Número de parcelas</Label>
+              <Input
+                inputMode="numeric"
+                value={parcelasTotal}
+                onChange={(e) => setParcelasTotal(e.target.value.replace(/\D/g, ""))}
+                placeholder="Ex.: 24"
+              />
             </div>
             <div>
-              <Label>Parcela mensal</Label>
-              <Input inputMode="decimal" value={parcela} onChange={(e) => setParcela(e.target.value)} />
+              <Label>Parcelas já pagas</Label>
+              <Input
+                inputMode="numeric"
+                value={parcelasPagas}
+                onChange={(e) => setParcelasPagas(e.target.value.replace(/\D/g, ""))}
+                placeholder="Ex.: 6"
+              />
             </div>
             <div className="col-span-2">
               <Label>Juros por mês (%)</Label>
@@ -441,6 +482,8 @@ function EditarDividaDialog({ divida: d }: { divida: Divida }) {
     String(+(Number(d.taxa_juros_mensal) * 100).toFixed(4)),
   );
   const [parcela, setParcela] = useState(String(d.parcela_mensal));
+  const [parcelasTotal, setParcelasTotal] = useState(d.parcelas_total ? String(d.parcelas_total) : "");
+  const [parcelasPagas, setParcelasPagas] = useState(d.parcelas_pagas ? String(d.parcelas_pagas) : "");
   const qc = useQueryClient();
   const mut = useMutation({
     mutationFn: () =>
@@ -449,6 +492,8 @@ function EditarDividaDialog({ divida: d }: { divida: Divida }) {
         valor_total: Number(total) || 0,
         taxa_juros_mensal: pctParaDecimal(juros),
         parcela_mensal: Number(parcela) || 0,
+        parcelas_total: intOuNull(parcelasTotal),
+        parcelas_pagas: intOuNull(parcelasPagas) ?? (intOuNull(parcelasTotal) ? 0 : null),
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: qk.dividas });
@@ -472,13 +517,35 @@ function EditarDividaDialog({ divida: d }: { divida: Divida }) {
             <Input value={nome} onChange={(e) => setNome(e.target.value)} />
           </div>
           <div className="grid grid-cols-2 gap-3">
+            <CurrencyInput
+              label="Valor total"
+              value={total}
+              onChange={setTotal}
+              className="h-10 text-sm"
+            />
+            <CurrencyInput
+              label="Parcela mensal"
+              value={parcela}
+              onChange={setParcela}
+              className="h-10 text-sm"
+            />
             <div>
-              <Label>Valor total</Label>
-              <Input inputMode="decimal" value={total} onChange={(e) => setTotal(e.target.value)} />
+              <Label>Número de parcelas</Label>
+              <Input
+                inputMode="numeric"
+                value={parcelasTotal}
+                onChange={(e) => setParcelasTotal(e.target.value.replace(/\D/g, ""))}
+                placeholder="Ex.: 24"
+              />
             </div>
             <div>
-              <Label>Parcela mensal</Label>
-              <Input inputMode="decimal" value={parcela} onChange={(e) => setParcela(e.target.value)} />
+              <Label>Parcelas já pagas</Label>
+              <Input
+                inputMode="numeric"
+                value={parcelasPagas}
+                onChange={(e) => setParcelasPagas(e.target.value.replace(/\D/g, ""))}
+                placeholder="Ex.: 6"
+              />
             </div>
             <div className="col-span-2">
               <Label>Juros por mês (%)</Label>
