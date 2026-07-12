@@ -31,13 +31,13 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Família no Azul — Termine o mês sabendo pra onde foi cada real" },
+      { title: "Família no Azul · Termine o mês sabendo pra onde foi cada real" },
       {
         name: "description",
         content:
           "Método 50-30-20 no automático, reserva de emergência e dívidas sob controle. 3 minutos por dia, sua família volta pro azul.",
       },
-      { property: "og:title", content: "Família no Azul — Termine o mês sabendo pra onde foi cada real" },
+      { property: "og:title", content: "Família no Azul · Termine o mês sabendo pra onde foi cada real" },
       {
         property: "og:description",
         content:
