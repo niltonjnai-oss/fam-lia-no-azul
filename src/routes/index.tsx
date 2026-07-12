@@ -144,22 +144,26 @@ const appScreens = [
   {
     title: "Painel do mês",
     desc: "Saldo e destino de cada real, numa tela. Abriu, entendeu, fechou.",
-    variant: "painel" as const,
+    image: "/lp/app/painel.png",
+    alt: "Tela do Painel do mês do app Família no Azul, mostrando o saldo do mês e a divisão entre Essencial, Estilo de vida e Futuro.",
   },
   {
     title: "Método 50-30-20",
     desc: "Suas três fatias, sempre atualizadas. Verde quando tá no azul, alerta quando precisa segurar.",
-    variant: "metodo" as const,
+    image: "/lp/app/metodo.png",
+    alt: "Tela do Método 50-30-20 do app Família no Azul, com três barras de progresso: Essencial, Estilo de vida e Reserva & Dívidas.",
   },
   {
     title: "Reserva de emergência",
     desc: "A barrinha que mais dá orgulho de ver crescer.",
-    variant: "reserva" as const,
+    image: "/lp/app/reserva.png",
+    alt: "Tela da Reserva de emergência do app Família no Azul, mostrando R$ 4.320 de R$ 12.000 e o progresso ao longo dos meses.",
   },
   {
     title: "Modo Casal",
     desc: "Você e seu cônjuge no mesmo orçamento, cada um com sua conta. Os dois registram, os dois enxergam tudo — nada de gasto escondido.",
-    variant: "casal" as const,
+    image: "/lp/app/casal.png",
+    alt: "Tela do Modo Casal do app Família no Azul, com os avatares de Ana e João no mesmo orçamento e os lançamentos de cada um.",
   },
 ];
 
@@ -197,161 +201,6 @@ const faqs = [
     a: "O pagamento é processado com segurança pela Kiwify, que aceita cartão de crédito, Pix e boleto.",
   },
 ];
-
-// TODO: substituir por prints reais do app quando disponíveis
-function AppMock({ variant }: { variant: "painel" | "metodo" | "reserva" | "casal" }) {
-  if (variant === "painel") {
-    return (
-      <div className="aspect-[4/3] w-full bg-gradient-to-br from-[#F5F9FC] to-[#EAF4FC] p-6">
-        <div className="flex items-center justify-between text-[10px] text-[#0F2A47]/60">
-          <span>{MES_ATUAL}</span>
-          <span className="rounded-full bg-[#E8F3EA] px-2 py-0.5 font-semibold text-[#2F7A3E]">
-            No azul
-          </span>
-        </div>
-        <div className="mt-3 text-[10px] text-[#0F2A47]/60">Saldo do mês</div>
-        <div className="text-3xl font-semibold tracking-tight text-[#0F2A47] tabular-nums">
-          R$ 2.480,00
-        </div>
-        <div className="mt-4 grid grid-cols-3 gap-2">
-          {[
-            { l: "Essencial", v: "R$ 2.100", c: NAVY },
-            { l: "Estilo de vida", v: "R$ 1.080", c: ORANGE },
-            { l: "Futuro", v: "R$ 990", c: "#2F7A3E" },
-          ].map((c) => (
-            <div key={c.l} className="rounded-lg bg-white/80 p-2">
-              <div className="text-[9px] text-[#0F2A47]/60">{c.l}</div>
-              <div className="text-xs font-semibold tabular-nums" style={{ color: c.c }}>
-                {c.v}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-  if (variant === "metodo") {
-    return (
-      <div className="aspect-[4/3] w-full bg-gradient-to-br from-[#F5F9FC] to-[#EAF4FC] p-6">
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-[#0F2A47]/60">
-          Método 50-30-20
-        </div>
-        <div className="mt-4 space-y-4">
-          {[
-            { label: "Essencial", pct: 46, meta: 50, color: NAVY, ok: true },
-            { label: "Estilo de vida", pct: 32, meta: 30, color: ORANGE, ok: false },
-            { label: "Reserva & Dívidas", pct: 22, meta: 20, color: "#2F7A3E", ok: true },
-          ].map((r) => (
-            <div key={r.label}>
-              <div className="mb-1 flex justify-between text-[11px]">
-                <span className="text-[#0F2A47]/70">{r.label}</span>
-                <span className="font-medium tabular-nums text-[#0F2A47]">
-                  {r.pct}% <span className="text-[#0F2A47]/40">/ {r.meta}%</span>
-                </span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-[#0F2A47]/5">
-                <div
-                  className="h-full rounded-full"
-                  style={{ width: `${r.pct}%`, backgroundColor: r.color }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-  if (variant === "casal") {
-    return (
-      <div className="aspect-[4/3] w-full bg-gradient-to-br from-[#F5F9FC] to-[#EAF4FC] p-6">
-        <div className="flex items-center justify-between">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-[#0F2A47]/60">
-            Nosso orçamento
-          </div>
-          <span className="rounded-full bg-white/80 px-2 py-0.5 text-[9px] font-semibold text-[#0F2A47]/70">
-            2 pessoas
-          </span>
-        </div>
-
-        {/* Avatares do casal */}
-        <div className="mt-3 flex items-center gap-2">
-          <div className="flex -space-x-2">
-            <span
-              className="grid h-8 w-8 place-items-center rounded-full border-2 border-white text-[11px] font-bold text-white"
-              style={{ backgroundColor: NAVY }}
-            >
-              A
-            </span>
-            <span
-              className="grid h-8 w-8 place-items-center rounded-full border-2 border-white text-[11px] font-bold text-white"
-              style={{ backgroundColor: ORANGE }}
-            >
-              J
-            </span>
-          </div>
-          <span className="text-[11px] text-[#0F2A47]/70">Ana &amp; João</span>
-        </div>
-
-        <div className="mt-3 text-[10px] text-[#0F2A47]/60">Saldo do mês</div>
-        <div className="text-2xl font-semibold tracking-tight text-[#0F2A47] tabular-nums">
-          R$ 2.480,00
-        </div>
-
-        {/* Últimos lançamentos, cada um com quem registrou */}
-        <div className="mt-3 space-y-1.5">
-          {[
-            { ini: "A", cor: NAVY, desc: "Mercado", val: "R$ 320" },
-            { ini: "J", cor: ORANGE, desc: "Farmácia", val: "R$ 85" },
-          ].map((t) => (
-            <div
-              key={t.desc}
-              className="flex items-center gap-2 rounded-lg bg-white/80 px-2.5 py-1.5"
-            >
-              <span
-                className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-[9px] font-bold text-white"
-                style={{ backgroundColor: t.cor }}
-              >
-                {t.ini}
-              </span>
-              <span className="flex-1 text-[11px] text-[#0F2A47]/80">{t.desc}</span>
-              <span className="text-[11px] font-semibold tabular-nums text-[#0F2A47]">
-                {t.val}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-  // reserva
-  return (
-    <div className="aspect-[4/3] w-full bg-gradient-to-br from-[#F5F9FC] to-[#EAF4FC] p-6">
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-[#0F2A47]/60">
-        Reserva de emergência
-      </div>
-      <div className="mt-3 flex items-baseline justify-between">
-        <div className="text-3xl font-semibold tracking-tight text-[#0F2A47] tabular-nums">
-          R$ 4.320
-        </div>
-        <div className="text-xs text-[#0F2A47]/60">meta R$ 12.000</div>
-      </div>
-      <div className="mt-3 h-3 overflow-hidden rounded-full bg-[#0F2A47]/5">
-        <div className="h-full rounded-full bg-[#2F7A3E]" style={{ width: "36%" }} />
-      </div>
-      <div className="mt-2 text-[11px] font-semibold text-[#2F7A3E]">36% da meta</div>
-      <div className="mt-5 grid grid-cols-6 items-end gap-1.5">
-        {[20, 28, 32, 30, 34, 36].map((h, i) => (
-          <div
-            key={i}
-            className="rounded-t bg-[#2F7A3E]/70"
-            style={{ height: `${h * 1.6}px` }}
-          />
-        ))}
-      </div>
-      <div className="mt-1 text-[9px] text-[#0F2A47]/50">6 meses de progresso</div>
-    </div>
-  );
-}
 
 function LandingPage() {
   return (
@@ -609,7 +458,6 @@ function LandingPage() {
           </h2>
         </div>
         <div className="mt-16 space-y-16">
-          {/* TODO: substituir por prints reais do app */}
           {appScreens.map((screen, i) => (
             <div
               key={screen.title}
@@ -623,14 +471,13 @@ function LandingPage() {
                 </h3>
                 <p className="mt-4 max-w-md text-base text-[#0F2A47]/70">{screen.desc}</p>
               </div>
-              {/* Moldura de navegador */}
-              <div className="overflow-hidden rounded-2xl border border-white/70 bg-white shadow-lg">
-                <div className="flex items-center gap-1.5 border-b border-[#0F2A47]/5 bg-[#F5F9FC] px-4 py-2.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#28C840]" />
-                </div>
-                <AppMock variant={screen.variant} />
+              <div className="flex justify-center">
+                <img
+                  src={screen.image}
+                  alt={screen.alt}
+                  loading="lazy"
+                  className="w-full max-w-[360px] drop-shadow-xl"
+                />
               </div>
             </div>
           ))}
