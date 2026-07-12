@@ -37,6 +37,7 @@ import {
 } from "@/lib/db";
 import { formatBRL } from "@/lib/format";
 import { EmptyState } from "@/components/EmptyState";
+import { AssistenteDividaCard } from "@/components/AssistenteDivida";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageTitle } from "@/components/PageTitle";
 
@@ -80,6 +81,8 @@ function DividasPage() {
         </div>
         <NovaDividaDialog />
       </header>
+
+      <AssistenteDividaCard />
 
       <section className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
