@@ -300,15 +300,15 @@ function LandingPage() {
             />
           </div>
 
-          {/* App em destaque no celular */}
+          {/* App no notebook e no celular */}
           <div className="flex justify-center">
             <img
-              src="/lp/app/painel.png"
-              alt="Painel do mês do app Família no Azul num celular, com o saldo do mês e a divisão 50-30-20."
+              src="/lp/app/hero.png"
+              alt="App Família no Azul aberto num notebook e num celular ao mesmo tempo, mostrando o painel do mês com o saldo e a divisão 50-30-20."
               loading="eager"
-              width={1000}
-              height={1185}
-              className="w-full max-w-[300px] drop-shadow-2xl md:max-w-[360px]"
+              width={1200}
+              height={801}
+              className="w-full max-w-[560px] drop-shadow-2xl"
             />
           </div>
         </div>
