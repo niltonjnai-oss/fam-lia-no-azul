@@ -154,7 +154,7 @@ function OrcamentoPage() {
           <div>
             <PageTitle>Orçamento</PageTitle>
             <p className="text-sm text-muted-foreground">
-              Seus gastos do mês
+              Planeje e acompanhe seus gastos do mês
             </p>
           </div>
           <Link
@@ -171,19 +171,19 @@ function OrcamentoPage() {
       {/* Resumo fixo no topo */}
       <section className="sticky top-2 z-20 grid grid-cols-3 gap-2 rounded-2xl border border-border bg-card/95 p-3 shadow-soft backdrop-blur sm:gap-3 sm:p-4">
         <div>
-          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Previsto</div>
+          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Planejado</div>
           <div className="tabular mt-0.5 text-sm font-bold sm:text-base">
             {carregando ? <Skeleton className="h-5 w-20" /> : formatBRL(totais.prev)}
           </div>
         </div>
         <div>
-          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Real</div>
+          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Gasto</div>
           <div className="tabular mt-0.5 text-sm font-bold sm:text-base">
             {carregando ? <Skeleton className="h-5 w-20" /> : formatBRL(totais.real)}
           </div>
         </div>
         <div>
-          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Diferença</div>
+          <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Sobrou</div>
           <div
             className={`tabular mt-0.5 flex items-center gap-1 text-sm font-bold sm:text-base ${diffClasses(totais.diff)}`}
             aria-label={`Diferença ${diffLabel(totais.diff)} ${signed(totais.diff)}`}
@@ -211,8 +211,8 @@ function OrcamentoPage() {
         </div>
       ) : cats.length === 0 ? (
         <EmptyState
-          title="Nenhuma categoria criada"
-          description="Crie sua primeira categoria pelo botão abaixo para começar a planejar o mês."
+          title="Nenhuma categoria ainda"
+          description={'Toque em "Nova categoria" abaixo para começar a planejar o mês.'}
         />
       ) : (
         <Accordion
@@ -273,7 +273,7 @@ function CategoriaSection({
           <div className="min-w-0 flex-1 text-left">
             <div className="truncate text-sm font-semibold">{categoria.nome}</div>
             <div className="tabular text-[11px] text-muted-foreground">
-              Prev {formatBRL(sub.prev)} · Real {formatBRL(sub.real)}
+              Planejado {formatBRL(sub.prev)} · Gasto {formatBRL(sub.real)}
             </div>
           </div>
           <span
@@ -291,14 +291,14 @@ function CategoriaSection({
       <AccordionContent className="px-3 pb-4 sm:px-4">
         {subitens.length === 0 ? (
           <p className="border-t border-border pt-3 text-xs text-muted-foreground">
-            Nenhum subitem nesta categoria.
+            Nenhum item nesta categoria ainda.
           </p>
         ) : (
           <>
             <div className="hidden border-t border-border pt-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground sm:grid sm:grid-cols-[1fr_120px_120px_110px] sm:gap-3 sm:px-1">
-              <span>Subitem</span>
-              <span className="text-right">Previsto</span>
-              <span className="text-right">Real</span>
+              <span>Item</span>
+              <span className="text-right">Planejado</span>
+              <span className="text-right">Realizado</span>
               <span className="text-right">Diferença</span>
             </div>
             <ul className="divide-y divide-border border-t border-border sm:divide-y-0 sm:border-t-0">
@@ -352,7 +352,7 @@ function SubitemRow({
       {/* Mobile: lado a lado */}
       <div className="mt-2 grid grid-cols-2 gap-2 sm:hidden">
         <label className="block">
-          <span className="text-[11px] text-muted-foreground">Previsto</span>
+          <span className="text-[11px] text-muted-foreground">Planejado</span>
           <Input
             inputMode="decimal"
             value={prev}
@@ -362,7 +362,7 @@ function SubitemRow({
           />
         </label>
         <label className="block">
-          <span className="text-[11px] text-muted-foreground">Real</span>
+          <span className="text-[11px] text-muted-foreground">Gasto</span>
           <Input
             inputMode="decimal"
             value={real}
@@ -441,14 +441,14 @@ function NovoSubitemDialog({
           type="button"
           className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
         >
-          <Plus className="h-3 w-3" /> novo subitem
+          <Plus className="h-3 w-3" /> novo item
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Novo subitem</DialogTitle>
+          <DialogTitle>Novo item</DialogTitle>
           <DialogDescription>
-            Escolha um nome e a classificação 50-30-20 (obrigatória).
+            Dê um nome e diga em qual grupo do 50-30-20 ele entra.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
@@ -457,7 +457,7 @@ function NovoSubitemDialog({
             <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex: Aluguel" />
           </div>
           <div>
-            <Label>Classificação</Label>
+            <Label>Grupo no 50-30-20</Label>
             <Select value={classificacao} onValueChange={(v) => setClassificacao(v as Classificacao)}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione" />

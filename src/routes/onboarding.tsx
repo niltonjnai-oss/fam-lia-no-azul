@@ -256,7 +256,8 @@ function OnboardingPage() {
             nome: d.nome.trim(),
             valor_total,
             parcela_mensal: parcela,
-            taxa_juros_mensal: parseBR(d.taxa_juros_mensal),
+            // campo pede % ao mês; o banco guarda decimal (5% → 0.05)
+            taxa_juros_mensal: parseBR(d.taxa_juros_mensal) / 100,
           });
         }
         qc.invalidateQueries({ queryKey: qk.dividas });
@@ -607,7 +608,7 @@ function OnboardingPage() {
 
               <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-success/15 px-3 py-1.5 text-xs font-semibold text-success">
                 <PartyPopper className="h-4 w-4" />
-                Selo "Orçamento iniciado" desbloqueado
+                🏅 Primeira conquista: orçamento montado!
               </div>
             </>
           )}

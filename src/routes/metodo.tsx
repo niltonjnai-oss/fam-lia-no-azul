@@ -48,11 +48,11 @@ const COR: Record<Classificacao, string> = {
 
 function statusFor(cls: Classificacao, pctRenda: number): { label: string; ok: boolean } {
   if (cls === "Reserva/Dívidas") {
-    return pctRenda < 0.2 ? { label: "Abaixo da Meta", ok: false } : { label: "OK", ok: true };
+    return pctRenda < 0.2 ? { label: "Dá pra guardar mais", ok: false } : { label: "OK", ok: true };
   }
   const limite = LIMITE_PCT[cls];
   return pctRenda > limite
-    ? { label: "Acima do Limite", ok: false }
+    ? { label: "Passou do limite", ok: false }
     : { label: "OK", ok: true };
 }
 
@@ -113,7 +113,7 @@ function MetodoPage() {
         <header>
           <PageTitle>Método 50-30-20</PageTitle>
           <p className="text-sm text-muted-foreground">
-            Essenciais, Estilo de Vida e Reserva/Dívidas em equilíbrio.
+            Divida sua renda em três partes e veja se está no caminho.
           </p>
         </header>
 
@@ -131,12 +131,12 @@ function MetodoPage() {
       <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-3 shadow-soft">
         <div>
           <div className="text-sm font-semibold">Limite</div>
-          <div className="text-xs text-muted-foreground">Como calcular o limite mostrado</div>
+          <div className="text-xs text-muted-foreground">Escolha como comparar seus gastos</div>
         </div>
         <div className="inline-flex rounded-xl bg-muted p-1 text-xs font-medium">
           {([
             { id: "classico", label: "% da renda" },
-            { id: "previsto", label: "Previsto" },
+            { id: "previsto", label: "Planejado" },
           ] as const).map((opt) => (
             <button
               key={opt.id}
@@ -200,9 +200,9 @@ function MetodoPage() {
 
       <section className="rounded-2xl border border-border bg-card shadow-soft">
         <div className="border-b border-border p-4">
-          <h2 className="text-sm font-semibold">Detalhamento por categoria</h2>
+          <h2 className="text-sm font-semibold">Gastos por categoria</h2>
           <p className="text-xs text-muted-foreground">
-            Status comparando o real com o previsto.
+            Compare o que gastou com o que planejou.
           </p>
         </div>
         {detalhamento.length === 0 ? (
@@ -215,8 +215,8 @@ function MetodoPage() {
               <thead>
                 <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <th className="px-4 py-2 font-medium">Categoria</th>
-                  <th className="px-4 py-2 text-right font-medium">Previsto</th>
-                  <th className="px-4 py-2 text-right font-medium">Real</th>
+                  <th className="px-4 py-2 text-right font-medium">Planejado</th>
+                  <th className="px-4 py-2 text-right font-medium">Gasto</th>
                   <th className="px-4 py-2 text-right font-medium">Status</th>
                 </tr>
               </thead>
@@ -244,7 +244,7 @@ function MetodoPage() {
                           ) : (
                             <CheckCircle2 className="h-3 w-3" />
                           )}
-                          {estourou ? "Estourou" : "OK"}
+                          {estourou ? "Passou do limite" : "OK"}
                         </span>
                       </td>
                     </tr>

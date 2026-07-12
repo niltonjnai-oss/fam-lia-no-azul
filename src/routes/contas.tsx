@@ -76,7 +76,7 @@ function ContasPage() {
               <CalendarClock className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Total recorrente/mês</div>
+              <div className="text-xs text-muted-foreground">Total de contas por mês</div>
               <div className="tabular text-xl font-bold">
                 {contasQ.isLoading ? <Skeleton className="h-6 w-28" /> : formatBRL(totalMes)}
               </div>

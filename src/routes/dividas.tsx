@@ -88,7 +88,7 @@ function DividasPage() {
               <CreditCard className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Total ativo</div>
+              <div className="text-xs text-muted-foreground">Total devido</div>
               <div className="tabular text-xl font-bold">
                 {dividasQ.isLoading ? <Skeleton className="h-6 w-28" /> : formatBRL(totalAtivo)}
               </div>
@@ -216,7 +216,7 @@ function SimuladorAporte({ dividas }: { dividas: Divida[] }) {
   return (
     <div className="space-y-4">
       <div>
-        <Label>Aporte extra por mês (R$)</Label>
+        <Label>Quanto a mais você consegue pagar por mês? (R$)</Label>
         <Input
           inputMode="decimal"
           value={aporte}
@@ -236,12 +236,12 @@ function SimuladorAporte({ dividas }: { dividas: Divida[] }) {
               <strong className="text-success">{mesesGanhos} {mesesGanhos === 1 ? "mês" : "meses"} antes</strong>{" "}
               do ritmo atual{jurosEconomizados !== null && jurosEconomizados > 0.005 && (
                 <> — e {formatBRL(jurosEconomizados)} a menos em juros</>
-              )}. Esse é o poder do aporte extra. 💙
+              )}. Esse é o poder de pagar um pouquinho a mais. 💙
             </p>
           )}
           {mesesGanhos !== null && mesesGanhos <= 0 && extra > 0 && (
             <p className="mt-1 text-xs text-muted-foreground">
-              O prazo não mudou — o aporte é pequeno diante das dívidas. Experimente um valor maior.
+              O prazo não mudou — o valor extra é pequeno perto das dívidas. Experimente um valor maior.
             </p>
           )}
           {!base.plano && (
@@ -307,11 +307,11 @@ function DividaCard({ divida: d, prioritaria }: { divida: Divida; prioritaria: b
             <p className="mt-1 text-xs">
               {semQuitacao ? (
                 <span className="inline-flex items-center gap-1 rounded-md bg-danger/10 px-2 py-0.5 font-semibold text-danger">
-                  <AlertTriangle className="h-3 w-3" /> A parcela não cobre os juros — a dívida não quita assim
+                  <AlertTriangle className="h-3 w-3" /> A parcela é menor que os juros — assim a dívida nunca acaba
                 </span>
               ) : (
                 <span className="text-muted-foreground">
-                  {d.meses_para_quitar} meses para quitar
+                  Termina de pagar em {d.meses_para_quitar} meses
                 </span>
               )}
             </p>
@@ -353,6 +353,12 @@ function DividaCard({ divida: d, prioritaria }: { divida: Divida; prioritaria: b
   );
 }
 
+// Juros digitados em % ao mês (ex.: "5" ou "0,8") → decimal salvo no banco (0.05, 0.008).
+function pctParaDecimal(raw: string): number {
+  const n = Number(raw.replace(",", "."));
+  return Number.isFinite(n) && n > 0 ? n / 100 : 0;
+}
+
 function NovaDividaDialog() {
   const [open, setOpen] = useState(false);
   const [nome, setNome] = useState("");
@@ -365,7 +371,7 @@ function NovaDividaDialog() {
       inserirDivida({
         nome,
         valor_total: Number(total) || 0,
-        taxa_juros_mensal: Number(juros) || 0,
+        taxa_juros_mensal: pctParaDecimal(juros),
         parcela_mensal: Number(parcela) || 0,
       }),
     onSuccess: () => {
@@ -387,7 +393,7 @@ function NovaDividaDialog() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Nova dívida</DialogTitle>
-          <DialogDescription>Use a taxa mensal em decimal (ex: 0.05 = 5% a.m.).</DialogDescription>
+          <DialogDescription>Cartão, empréstimo, financiamento — registre o que ainda está pagando.</DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
           <div>
@@ -404,12 +410,12 @@ function NovaDividaDialog() {
               <Input inputMode="decimal" value={parcela} onChange={(e) => setParcela(e.target.value)} />
             </div>
             <div className="col-span-2">
-              <Label>Taxa de juros mensal (decimal)</Label>
+              <Label>Juros por mês (%)</Label>
               <Input
                 inputMode="decimal"
                 value={juros}
                 onChange={(e) => setJuros(e.target.value)}
-                placeholder="0.05"
+                placeholder="Ex.: 5"
               />
             </div>
           </div>
@@ -428,7 +434,9 @@ function EditarDividaDialog({ divida: d }: { divida: Divida }) {
   const [open, setOpen] = useState(false);
   const [nome, setNome] = useState(d.nome);
   const [total, setTotal] = useState(String(d.valor_total));
-  const [juros, setJuros] = useState(String(d.taxa_juros_mensal));
+  const [juros, setJuros] = useState(
+    String(+(Number(d.taxa_juros_mensal) * 100).toFixed(4)),
+  );
   const [parcela, setParcela] = useState(String(d.parcela_mensal));
   const qc = useQueryClient();
   const mut = useMutation({
@@ -436,7 +444,7 @@ function EditarDividaDialog({ divida: d }: { divida: Divida }) {
       atualizarDivida(d.id, {
         nome,
         valor_total: Number(total) || 0,
-        taxa_juros_mensal: Number(juros) || 0,
+        taxa_juros_mensal: pctParaDecimal(juros),
         parcela_mensal: Number(parcela) || 0,
       }),
     onSuccess: () => {
@@ -470,8 +478,8 @@ function EditarDividaDialog({ divida: d }: { divida: Divida }) {
               <Input inputMode="decimal" value={parcela} onChange={(e) => setParcela(e.target.value)} />
             </div>
             <div className="col-span-2">
-              <Label>Taxa de juros mensal</Label>
-              <Input inputMode="decimal" value={juros} onChange={(e) => setJuros(e.target.value)} />
+              <Label>Juros por mês (%)</Label>
+              <Input inputMode="decimal" value={juros} onChange={(e) => setJuros(e.target.value)} placeholder="Ex.: 5" />
             </div>
           </div>
         </div>
