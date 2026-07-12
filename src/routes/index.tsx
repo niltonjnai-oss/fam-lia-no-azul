@@ -10,6 +10,7 @@ import {
   Lock,
   BadgeCheck,
   Users,
+  BellRing,
 } from "lucide-react";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
 import heroPhoto from "@/assets/lp/foto_banner.jpg.asset.json";
@@ -90,6 +91,11 @@ const benefits = [
     icon: Users,
     title: "Vocês dois no mesmo time",
     desc: "Convide seu cônjuge: cada um com sua conta, os dois vendo o mesmo orçamento. Sem gasto escondido, sem briga no fim do mês.",
+  },
+  {
+    icon: BellRing,
+    title: "Nunca mais esqueça um boleto",
+    desc: "Cadastre suas contas fixas e receba um aviso por e-mail 2 dias antes e no dia do vencimento.",
   },
 ];
 
@@ -287,7 +293,7 @@ function LandingPage() {
         </div>
 
         {/* Foto ambiente + app no celular lado a lado (desktop) / empilhados (mobile) */}
-        <div className="mx-auto mt-16 grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-10">
+        <div className="mx-auto mt-10 md:mt-16 grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-10">
           {/* Foto da família */}
           <div className="relative overflow-hidden rounded-[2rem] border border-white/60 shadow-2xl">
             <img
@@ -316,7 +322,7 @@ function LandingPage() {
 
       {/* POR QUE FUNCIONA */}
       <section className="border-y border-white/60 bg-white/40 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-6 py-20">
+        <div className="mx-auto max-w-6xl px-6 py-14 md:py-20">
           <div className="mx-auto max-w-2xl text-center">
             <span className="t-eyebrow">Por que funciona</span>
             <h2 className="font-display mt-3 text-3xl tracking-tight md:text-4xl">
@@ -343,14 +349,14 @@ function LandingPage() {
       </section>
 
       {/* BENEFÍCIOS */}
-      <section id="beneficios" className="mx-auto max-w-6xl px-6 py-28">
+      <section id="beneficios" className="mx-auto max-w-6xl px-6 py-16 md:py-28">
         <div className="mx-auto max-w-2xl text-center">
           <span className="t-eyebrow">Benefícios</span>
           <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
-            Cinco coisas que o App Família no Azul <span className="italic text-orange-500">resolve pra você.</span>
+            Seis coisas que o App Família no Azul <span className="italic text-orange-500">resolve pra você.</span>
           </h2>
         </div>
-        <div className="mt-16 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 md:mt-16 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {benefits.map(({ icon: Icon, title, desc }, i) => {
             // Padrão bento: alterna azul preenchido e cinza claro
             const filled = i % 2 === 1;
@@ -403,14 +409,14 @@ function LandingPage() {
 
       {/* COMO FUNCIONA */}
       <section id="como-funciona" className="border-t border-white/60 bg-white/30 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-6 py-28">
+        <div className="mx-auto max-w-6xl px-6 py-16 md:py-28">
           <div className="mx-auto max-w-2xl text-center">
             <span className="t-eyebrow">Como funciona</span>
             <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
               Três passos até <em className="italic" style={{ color: ORANGE }}>respirar aliviado.</em>
             </h2>
           </div>
-          <div className="mt-20 grid gap-8 md:grid-cols-3">
+          <div className="mt-12 md:mt-20 grid gap-8 md:grid-cols-3">
             {steps.map((s) => (
               <div
                 key={s.n}
@@ -440,14 +446,14 @@ function LandingPage() {
       </section>
 
       {/* POR DENTRO DO APP */}
-      <section id="app" className="mx-auto max-w-6xl px-6 py-28">
+      <section id="app" className="mx-auto max-w-6xl px-6 py-16 md:py-28">
         <div className="mx-auto max-w-2xl text-center">
           <span className="t-eyebrow">Por dentro do app</span>
           <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
             Tudo o que importa, <em className="italic" style={{ color: ORANGE }}>numa tela só.</em>
           </h2>
         </div>
-        <div className="mt-16 space-y-16">
+        <div className="mt-10 md:mt-16 space-y-12 md:space-y-16">
           {appScreens.map((screen, i) => (
             <div
               key={screen.title}
@@ -476,7 +482,7 @@ function LandingPage() {
 
       {/* NOSSA HISTÓRIA */}
       <section id="historia" className="border-t border-white/60 bg-white/30 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-6 py-28">
+        <div className="mx-auto max-w-6xl px-6 py-16 md:py-28">
           <div className="mx-auto max-w-2xl text-center">
             <span className="t-eyebrow">De família pra família</span>
             <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
@@ -521,7 +527,7 @@ function LandingPage() {
       </section>
 
       {/* GARANTIA */}
-      <section className="mx-auto max-w-6xl px-6 py-20">
+      <section className="mx-auto max-w-6xl px-6 py-14 md:py-20">
         <div className="mx-auto max-w-4xl rounded-[2rem] border border-white/70 bg-white/85 p-10 shadow-xl md:p-14">
           <div className="grid gap-8 md:grid-cols-[auto_1fr] md:items-center md:gap-10">
             <img
@@ -548,7 +554,7 @@ function LandingPage() {
 
       {/* PLANOS */}
       <section id="planos" className="border-t border-white/60 bg-white/30 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-6 py-28">
+        <div className="mx-auto max-w-6xl px-6 py-16 md:py-28">
           <div className="mx-auto max-w-2xl text-center">
             <span className="t-eyebrow">Plano</span>
             <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
@@ -620,7 +626,7 @@ function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="mx-auto max-w-4xl px-6 py-28">
+      <section id="faq" className="mx-auto max-w-4xl px-6 py-16 md:py-28">
         <div className="mx-auto max-w-2xl text-center">
           <span className="t-eyebrow">Perguntas frequentes</span>
           <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
