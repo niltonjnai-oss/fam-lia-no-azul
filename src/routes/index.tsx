@@ -9,6 +9,7 @@ import {
   Check,
   Lock,
   BadgeCheck,
+  Users,
 } from "lucide-react";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
 import heroPhoto from "@/assets/lp/foto_banner.jpg.asset.json";
@@ -88,7 +89,12 @@ const benefits = [
   {
     icon: CreditCard,
     title: "Saia das dívidas com um plano",
-    desc: "Organize o que deve, defina a ordem de pagamento e veja quitar uma por uma.",
+    desc: "Descubra o custo real de cada dívida, saiba qual pagar primeiro e chegue preparado na negociação.",
+  },
+  {
+    icon: Users,
+    title: "Vocês dois no mesmo time",
+    desc: "Convide seu cônjuge: cada um com sua conta, os dois vendo o mesmo orçamento. Sem gasto escondido, sem briga no fim do mês.",
   },
 ];
 
@@ -110,7 +116,7 @@ const steps = [
   {
     n: "03",
     title: "Respire fundo",
-    desc: "O painel mostra onde você está e qual o próximo passo. Só isso já muda o clima lá em casa.",
+    desc: "O painel mostra onde você está e qual o próximo passo — e o casal acompanha tudo junto. Só isso já muda o clima lá em casa.",
     image: assetUrl(step3Photo),
     alt: "Pai sorrindo aliviado enquanto olha para o painel financeiro no celular em casa",
   },
@@ -163,7 +169,7 @@ const faqs = [
   },
   {
     q: "Quantas pessoas da família podem usar?",
-    a: "A assinatura é da família: vocês acessam com a mesma conta no celular, tablet e computador. O orçamento é um só — que é justamente a ideia.",
+    a: "Duas: você e seu cônjuge, cada um com sua própria conta e senha — é só convidar pelo app. Os dois veem e registram no mesmo orçamento, de qualquer aparelho. Organizar o dinheiro a dois é justamente a ideia.",
   },
   {
     q: "A assinatura renova sozinha?",
@@ -179,7 +185,7 @@ const faqs = [
   },
   {
     q: "Meus dados financeiros estão seguros?",
-    a: "Sim. O app apenas registra o que você digita — não conecta na sua conta bancária e nunca movimenta dinheiro. Cada família só enxerga os próprios dados, e a gente nunca vende nem compartilha suas informações. Tratamos tudo conforme a LGPD.",
+    a: "Sim. O app apenas registra o que você digita — não conecta na sua conta bancária e nunca movimenta dinheiro (no máximo, você importa um arquivo de extrato, se quiser). Cada família só enxerga os próprios dados, e a gente nunca vende nem compartilha suas informações. Tratamos tudo conforme a LGPD.",
   },
   {
     q: "Quais as formas de pagamento?",
@@ -455,10 +461,10 @@ function LandingPage() {
         <div className="mx-auto max-w-2xl text-center">
           <span className="t-eyebrow">Benefícios</span>
           <h2 className="font-display mt-3 text-4xl tracking-tight md:text-5xl">
-            Quatro coisas que o App Família no Azul <span className="italic text-orange-500">resolve pra você.</span>
+            Cinco coisas que o App Família no Azul <span className="italic text-orange-500">resolve pra você.</span>
           </h2>
         </div>
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {benefits.map(({ icon: Icon, title, desc }) => (
             <div
               key={title}
@@ -673,7 +679,10 @@ function LandingPage() {
                 {[
                   "Painel de orçamento completo, no celular e no computador",
                   "Método 50-30-20 dividindo sua renda no automático",
-                  "Reserva de emergência e plano de quitação de dívidas",
+                  "Modo Casal: 2 contas, um orçamento só — sem pagar a mais",
+                  "Assistente de dívidas: entenda os juros e avalie propostas de acordo",
+                  "Reserva de emergência com plano em etapas",
+                  "Avisos por e-mail antes das contas vencerem",
                   "12 meses de acesso — paga uma vez, usa o ano inteiro",
                   "Suporte por e-mail que responde gente como gente",
                 ].map((item) => (
