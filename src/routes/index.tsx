@@ -156,6 +156,11 @@ const appScreens = [
     desc: "A barrinha que mais dá orgulho de ver crescer.",
     variant: "reserva" as const,
   },
+  {
+    title: "Modo Casal",
+    desc: "Você e seu cônjuge no mesmo orçamento, cada um com sua conta. Os dois registram, os dois enxergam tudo — nada de gasto escondido.",
+    variant: "casal" as const,
+  },
 ];
 
 const faqs = [
@@ -194,7 +199,7 @@ const faqs = [
 ];
 
 // TODO: substituir por prints reais do app quando disponíveis
-function AppMock({ variant }: { variant: "painel" | "metodo" | "reserva" }) {
+function AppMock({ variant }: { variant: "painel" | "metodo" | "reserva" | "casal" }) {
   if (variant === "painel") {
     return (
       <div className="aspect-[4/3] w-full bg-gradient-to-br from-[#F5F9FC] to-[#EAF4FC] p-6">
@@ -250,6 +255,68 @@ function AppMock({ variant }: { variant: "painel" | "metodo" | "reserva" }) {
                   style={{ width: `${r.pct}%`, backgroundColor: r.color }}
                 />
               </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  if (variant === "casal") {
+    return (
+      <div className="aspect-[4/3] w-full bg-gradient-to-br from-[#F5F9FC] to-[#EAF4FC] p-6">
+        <div className="flex items-center justify-between">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-[#0F2A47]/60">
+            Nosso orçamento
+          </div>
+          <span className="rounded-full bg-white/80 px-2 py-0.5 text-[9px] font-semibold text-[#0F2A47]/70">
+            2 pessoas
+          </span>
+        </div>
+
+        {/* Avatares do casal */}
+        <div className="mt-3 flex items-center gap-2">
+          <div className="flex -space-x-2">
+            <span
+              className="grid h-8 w-8 place-items-center rounded-full border-2 border-white text-[11px] font-bold text-white"
+              style={{ backgroundColor: NAVY }}
+            >
+              A
+            </span>
+            <span
+              className="grid h-8 w-8 place-items-center rounded-full border-2 border-white text-[11px] font-bold text-white"
+              style={{ backgroundColor: ORANGE }}
+            >
+              J
+            </span>
+          </div>
+          <span className="text-[11px] text-[#0F2A47]/70">Ana &amp; João</span>
+        </div>
+
+        <div className="mt-3 text-[10px] text-[#0F2A47]/60">Saldo do mês</div>
+        <div className="text-2xl font-semibold tracking-tight text-[#0F2A47] tabular-nums">
+          R$ 2.480,00
+        </div>
+
+        {/* Últimos lançamentos, cada um com quem registrou */}
+        <div className="mt-3 space-y-1.5">
+          {[
+            { ini: "A", cor: NAVY, desc: "Mercado", val: "R$ 320" },
+            { ini: "J", cor: ORANGE, desc: "Farmácia", val: "R$ 85" },
+          ].map((t) => (
+            <div
+              key={t.desc}
+              className="flex items-center gap-2 rounded-lg bg-white/80 px-2.5 py-1.5"
+            >
+              <span
+                className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-[9px] font-bold text-white"
+                style={{ backgroundColor: t.cor }}
+              >
+                {t.ini}
+              </span>
+              <span className="flex-1 text-[11px] text-[#0F2A47]/80">{t.desc}</span>
+              <span className="text-[11px] font-semibold tabular-nums text-[#0F2A47]">
+                {t.val}
+              </span>
             </div>
           ))}
         </div>
