@@ -298,9 +298,10 @@ function LandingPage() {
             <span className="whitespace-nowrap">Pagamento seguro</span>
           </div>
         </div>
+        </div>
 
         {/* Foto ambiente + app no celular lado a lado (desktop) / empilhados (mobile) */}
-        <div className="mx-auto mt-10 md:mt-16 grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-10">
+        <div className="order-3 md:order-4 mx-auto mt-10 md:mt-16 grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-10">
           {/* Foto da família */}
           <div className="relative overflow-hidden rounded-[2rem] border border-white/60 shadow-2xl">
             <img
