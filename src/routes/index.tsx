@@ -441,8 +441,8 @@ function LandingPage() {
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="p-8">
-                  <div className="font-display text-6xl leading-none text-[#0F2A47]/20">
+                <div className="p-8 max-sm:text-center">
+                  <div className="font-display text-6xl leading-none text-[#0F2A47]/20 max-sm:text-center">
                     {s.n}
                   </div>
                   <h3 className="font-display mt-4 text-2xl tracking-tight">{s.title}</h3>
