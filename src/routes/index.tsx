@@ -616,15 +616,27 @@ function LandingPage() {
               <ul className="mt-8 space-y-3 text-sm text-[#0F2A47]/80 max-sm:mt-6">
                 {[
                   "Painel de orçamento completo, no celular e no computador",
-                  "Método 50-30-20 dividindo sua renda no automático",
-                  "Modo Casal: 2 contas, um orçamento só - sem pagar a mais",
-                  "Assistente de dívidas: entenda os juros e avalie propostas de acordo",
+                  <>
+                    <strong className="text-[#0F2A47]">Método 50-30-20</strong>{" "}
+                    dividindo sua renda no automático
+                  </>,
+                  <>
+                    <strong className="text-[#0F2A47]">Modo Casal:</strong> 2 contas, um
+                    orçamento só - sem pagar a mais
+                  </>,
+                  <>
+                    <strong className="text-[#0F2A47]">Assistente de dívidas:</strong>{" "}
+                    entenda os juros e avalie propostas de acordo
+                  </>,
                   "Reserva de emergência com plano em etapas",
                   "Avisos por e-mail antes das contas vencerem",
-                  "12 meses de acesso - paga uma vez, usa o ano inteiro",
+                  <>
+                    <strong className="text-[#0F2A47]">12 meses de acesso</strong> - paga uma
+                    vez, usa o ano inteiro
+                  </>,
                   "Suporte por e-mail que responde gente como gente",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2">
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
                     <span className="mt-0.5 grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[#E8F3EA] text-[#2F7A3E]">
                       <Check className="h-3 w-3" />
                     </span>
