@@ -281,18 +281,18 @@ function LandingPage() {
         </div>
 
         {/* Faixa de confiança */}
-        <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center justify-center gap-3 text-xs text-[#0F2A47]/70 sm:flex-row sm:gap-8">
-          <div className="flex items-center gap-2">
-            <Lock className="h-4 w-4 text-[#0F2A47]/60" />
-            <span>Dados protegidos</span>
+        <div className="mx-auto mt-6 flex max-w-2xl flex-row flex-nowrap items-center justify-center gap-2 text-[10px] text-[#0F2A47]/70 sm:gap-8 sm:text-xs">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <Lock className="h-3.5 w-3.5 shrink-0 text-[#0F2A47]/60 sm:h-4 sm:w-4" />
+            <span className="whitespace-nowrap">Dados protegidos</span>
           </div>
-          <div className="flex items-center gap-2">
-            <BadgeCheck className="h-4 w-4 text-[#0F2A47]/60" />
-            <span>Garantia de 7 dias</span>
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-[#0F2A47]/60 sm:h-4 sm:w-4" />
+            <span className="whitespace-nowrap">Garantia de 7 dias</span>
           </div>
-          <div className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-[#0F2A47]/60" />
-            <span>Pagamento seguro</span>
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <CreditCard className="h-3.5 w-3.5 shrink-0 text-[#0F2A47]/60 sm:h-4 sm:w-4" />
+            <span className="whitespace-nowrap">Pagamento seguro</span>
           </div>
         </div>
 
