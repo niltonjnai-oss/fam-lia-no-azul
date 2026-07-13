@@ -1,7 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Mic, TrendingUp, TrendingDown, Minus, Upload } from "lucide-react";
+import {
+  Plus,
+  Mic,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  Upload,
+  HelpCircle,
+  ArrowUp,
+} from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -89,6 +98,15 @@ function diffLabel(diff: number): string {
 function OrcamentoPage() {
   const { mes } = useMes();
   const qc = useQueryClient();
+  const topoRef = useRef<HTMLDivElement>(null);
+  const explicacaoRef = useRef<HTMLDivElement>(null);
+
+  const scrollToExplicacao = () => {
+    explicacaoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  const scrollToTopo = () => {
+    topoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const catsQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
   const subsQ = useQuery({ queryKey: qk.subitens, queryFn: fetchSubitens });
@@ -149,7 +167,7 @@ function OrcamentoPage() {
 
   return (
     <div className="space-y-5">
-      <header className="space-y-3">
+      <header ref={topoRef} className="space-y-3">
         <div className="flex flex-wrap items-end justify-between gap-2">
           <div>
             <PageTitle>Orçamento</PageTitle>
@@ -165,6 +183,13 @@ function OrcamentoPage() {
             Importar extrato
           </Link>
         </div>
+        <button
+          onClick={scrollToExplicacao}
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/20"
+        >
+          <HelpCircle className="h-4 w-4" />
+          Passo a passo para seu planejamento
+        </button>
         <MesSelector />
       </header>
 
@@ -236,6 +261,94 @@ function OrcamentoPage() {
       )}
 
       <NovaCategoriaDialog proximaOrdem={(catsQ.data?.length ?? 0) + 1} />
+
+      {/* Passo a passo do planejamento */}
+      <section
+        ref={explicacaoRef}
+        className="rounded-2xl border border-border bg-card p-6 shadow-soft"
+      >
+        <h2 className="text-lg font-bold text-foreground">Passo a passo para seu planejamento</h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          Esta tela é o plano de gastos da sua família para o mês. Cada linha é um{" "}
+          <strong className="text-foreground">item</strong> (aluguel, mercado, luz...), agrupado
+          por categoria. Para cada item você define o que pretende gastar e acompanha o que gastou
+          de verdade. É só seguir os 4 passos:
+        </p>
+
+        <ol className="mt-5 space-y-4 text-sm text-muted-foreground">
+          <li className="flex gap-3">
+            <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+              1
+            </span>
+            <span>
+              <strong className="text-foreground">Item:</strong> encontre o gasto na lista (ex.:
+              &quot;Conta de luz&quot; dentro de Moradia). Não achou? Toque em{" "}
+              <strong className="text-foreground">&quot;novo item&quot;</strong> dentro da
+              categoria, ou crie uma categoria nova no botão lá embaixo.
+            </span>
+          </li>
+          <li className="flex gap-3">
+            <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+              2
+            </span>
+            <span>
+              <strong className="text-foreground">Planejado:</strong> no começo do mês, preencha
+              quanto você <em>pretende</em> gastar em cada item. Não precisa ser exato — use o
+              valor do mês passado ou um chute honesto. Esse número é a sua meta.
+            </span>
+          </li>
+          <li className="flex gap-3">
+            <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+              3
+            </span>
+            <span>
+              <strong className="text-foreground">Realizado:</strong> é o que você gastou de
+              verdade. Ele cresce sozinho quando você usa o{" "}
+              <strong className="text-foreground">&quot;Anotar um gasto&quot;</strong> do Painel —
+              mas você também pode digitar direto aqui, no campo do item.
+            </span>
+          </li>
+          <li className="flex gap-3">
+            <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+              4
+            </span>
+            <span>
+              <strong className="text-foreground">Diferença:</strong> o app calcula sozinho:
+              Planejado − Realizado. <strong className="text-success">Verde</strong> = sobrou
+              dinheiro nesse item. <strong className="text-danger">Vermelho</strong> = passou do
+              planejado — vale olhar com carinho no próximo mês.
+            </span>
+          </li>
+        </ol>
+
+        <h3 className="mt-6 text-sm font-semibold text-foreground">Um exemplo rápido:</h3>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          Você planejou <strong className="text-foreground">R$ 800</strong> para Mercado. Durante o
+          mês, foi anotando as compras e o Realizado chegou a{" "}
+          <strong className="text-foreground">R$ 650</strong>. A Diferença mostra{" "}
+          <strong className="text-success">+R$ 150 em verde</strong>: sobrou! Se tivesse gastado R$
+          900, mostraria <strong className="text-danger">−R$ 100 em vermelho</strong>.
+        </p>
+
+        <div className="mt-4 rounded-xl bg-primary/5 p-4">
+          <p className="text-sm font-medium text-foreground">Dica</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            O resumo fixo no topo (Planejado · Gasto · Sobrou) soma todos os itens do mês. Revise
+            uma vez por semana: 3 minutos bastam pra não ter surpresa no dia 30.
+          </p>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={scrollToTopo}
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <ArrowUp className="h-4 w-4" />
+            Voltar ao topo
+          </button>
+        </div>
+      </section>
+
       <NovoGastoFab />
     </div>
   );
