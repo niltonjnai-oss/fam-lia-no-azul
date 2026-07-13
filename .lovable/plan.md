@@ -1,32 +1,18 @@
 ## Objetivo
-Adicionar o efeito de "desenho animado" (line-drawing) nos ícones da seção **Benefícios** de `/inicio`, sem alterar textos, títulos, ordem dos cards, cores ou layout bento existente.
+Deixar o efeito de "desenho" (line drawing) dos ícones Lucide na seção "Benefícios" mais lento e legível, sem alterar o layout, textos ou cores dos cards.
 
-## O que muda
-Apenas os ícones dos 6 cards da seção `#beneficios` ganham animação de traço contínuo (draw in/out em loop), usando a lib `animejs` com os ícones `lucide-react` que já estão lá.
+## Alteração proposta
+Ajustar `src/components/ui/lucide-icon-drawer.tsx`:
 
-## Passos
+1. **Aumentar a duração total** da animação de `2000ms` para `4000ms`.
+2. **Simplificar o traço** para `draw: ["0 0", "1 1"]` — desenha o ícone do início ao fim de forma contínua, sem efeitos de "piscar".
+3. **Adicionar pausa entre repetições** com `loopDelay: 1000` para que o ícone fique visível e completo por um tempo antes de recomeçar.
+4. Manter `loop: true` e o fallback silencioso caso algum ícone não suporte `createDrawable`.
 
-1. **Instalar dependência**
-   - `bun add animejs` (lucide-react já existe no projeto).
+## Resultado esperado
+- O usuário consegue acompanhar o desenho de cada ícone sem pressa.
+- O ícone permanece visível por 1 segundo no estado final antes do loop reiniciar.
+- Nenhuma alteração visual nos cards: textos, cores, centralização mobile e tamanho dos ícones permanecem iguais.
 
-2. **Criar hook `src/components/ui/lucide-icon-drawer.tsx`**
-   - Exporta `useLucideDrawerAnimation()`:
-     - `ref` para o container.
-     - No `useEffect`, seleciona `svg path, svg circle, svg polyline` dentro do ref, aplica classe `.line` e chama `animate(svg.createDrawable('.line'), { draw: ['0 0.05', '0.05 1'], ease: 'inOutQuad', duration: 1000, loop: true, alternate: true })`.
-     - Cleanup: `pause()` da animação no unmount pra não vazar em rota-out.
-
-3. **Aplicar no `src/routes/index.tsx` — apenas seção `#beneficios`**
-   - Importar o hook.
-   - Envolver o grid de 6 cards de benefícios com um `<div ref={drawerRef}>` (sem alterar classes do grid nem dos cards).
-   - Manter os mesmos ícones Lucide já usados hoje, os mesmos textos, títulos, cores (azul-marinho/cinza alternado) e min-height.
-   - Ajuste mínimo de CSS inline nos ícones: `strokeLinecap="round"` / `strokeLinejoin="round"` só se necessário para o traço ficar bonito (sem trocar `size` nem `color`).
-
-4. **Garantir SSR-safe**
-   - O hook roda só em `useEffect` (client), sem `typeof window` no `useState`, seguindo a regra do TanStack Start.
-
-5. **Validação**
-   - Rodar preview e conferir na seção Benefícios: os 6 ícones desenham/apagam em loop suave; nenhum texto/card/cor mudou; restante da LP intacto.
-
-## Fora do escopo
-- Não mexer em Hero, "Como funciona", "Por que funciona", História, Planos, FAQ, CTA final, tipografia global, nem em outras rotas.
-- Não trocar ícones nem paleta.
+## Arquivo envolvido
+- `src/components/ui/lucide-icon-drawer.tsx`
