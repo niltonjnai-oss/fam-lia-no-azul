@@ -714,7 +714,7 @@ function LandingPage() {
       <footer className="border-t border-white/60 pb-24 md:pb-10">
         <div className="mx-auto max-w-6xl px-6 py-10 text-xs text-[#0F2A47]/70">
           <div className="grid gap-6 md:grid-cols-2 md:items-start">
-            <div className="space-y-1.5">
+            <div className="order-2 space-y-1.5 max-sm:text-center md:order-1">
               <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
               <div>Família no Azul é uma marca do Grupo Romana.</div>
               <div>CNPJ 48.570.356/0001-97</div>
@@ -728,7 +728,7 @@ function LandingPage() {
                 </a>
               </div>
             </div>
-            <div className="flex flex-wrap gap-x-6 gap-y-2 md:justify-end">
+            <div className="order-1 flex flex-wrap gap-x-6 gap-y-2 max-sm:justify-center md:order-2 md:justify-end">
               <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
               <a href="#planos" className="hover:text-[#0F2A47]">Planos</a>
               <a href="#faq" className="hover:text-[#0F2A47]">FAQ</a>
