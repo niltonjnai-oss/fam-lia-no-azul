@@ -617,11 +617,11 @@ function LandingPage() {
                 {[
                   "Painel de orçamento completo, no celular e no computador",
                   "Método 50-30-20 dividindo sua renda no automático",
-                  "Modo Casal: 2 contas, um orçamento só — sem pagar a mais",
+                  "Modo Casal: 2 contas, um orçamento só - sem pagar a mais",
                   "Assistente de dívidas: entenda os juros e avalie propostas de acordo",
                   "Reserva de emergência com plano em etapas",
                   "Avisos por e-mail antes das contas vencerem",
-                  "12 meses de acesso — paga uma vez, usa o ano inteiro",
+                  "12 meses de acesso - paga uma vez, usa o ano inteiro",
                   "Suporte por e-mail que responde gente como gente",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2">
