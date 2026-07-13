@@ -261,24 +261,22 @@ function LandingPage() {
           O Família no Azul divide sua renda no método 50-30-20 automaticamente -{" "}
           <em className="font-display text-[1.2em] italic font-bold" style={{ color: "#1d69ad" }}>3 minutos por dia e sua família volta pro azul.</em>
         </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href="#planos"
-            className="inline-flex min-h-[48px] items-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
-            style={{ backgroundColor: ORANGE }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
-          >
-            {CTA_PRIMARY}
-            <ArrowRight className="h-4 w-4" />
-          </a>
-          <a
-            href="#como-funciona"
-            className="inline-flex min-h-[48px] items-center gap-2 rounded-full border border-[#0F2A47]/15 bg-white/70 px-8 py-4 text-base font-medium text-[#0F2A47] hover:bg-white"
-          >
-            Me mostra como funciona
-          </a>
-        </div>
+        <a
+          href="#planos"
+          className="order-3 mt-10 inline-flex min-h-[48px] items-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 md:mb-3"
+          style={{ backgroundColor: ORANGE }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
+        >
+          {CTA_PRIMARY}
+          <ArrowRight className="h-4 w-4" />
+        </a>
+        <a
+          href="#como-funciona"
+          className="order-5 mt-3 inline-flex min-h-[48px] items-center gap-2 rounded-full border border-[#0F2A47]/15 bg-white/70 px-8 py-4 text-base font-medium text-[#0F2A47] hover:bg-white md:order-4 md:mt-0"
+        >
+          Me mostra como funciona
+        </a>
 
         {/* Faixa de confiança */}
         <div className="mx-auto mt-6 flex max-w-2xl flex-row flex-nowrap items-center justify-center gap-2 text-[10px] text-[#0F2A47]/70 sm:gap-8 sm:text-xs">
