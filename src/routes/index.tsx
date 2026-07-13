@@ -745,7 +745,7 @@ function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/60 pb-24 md:pb-10">
+      <footer className="border-t border-white/60 pb-10">
         <div className="mx-auto max-w-6xl px-6 py-10 text-xs text-[#0F2A47]/70">
           <div className="grid gap-6 md:grid-cols-2 md:items-start">
             <div className="order-2 space-y-1.5 max-sm:text-center md:order-1">
@@ -773,23 +773,6 @@ function LandingPage() {
           </div>
         </div>
       </footer>
-
-      {/* Sticky CTA (mobile only) */}
-      <div
-        className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 px-4 py-3 shadow-2xl md:hidden"
-        style={{ backgroundColor: NAVY }}
-      >
-        <a
-          href={KIWIFY_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex min-h-[48px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-3 text-xs font-semibold text-white shadow-md sm:px-6 sm:text-sm"
-          style={{ backgroundColor: ORANGE }}
-        >
-          Começar agora — R$ 67,90/ano
-          <ArrowRight className="h-4 w-4 shrink-0" />
-        </a>
-      </div>
     </div>
   );
 }
