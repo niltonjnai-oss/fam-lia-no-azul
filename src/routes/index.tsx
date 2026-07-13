@@ -22,6 +22,8 @@ import jantarPhoto from "@/assets/lp/img-06-jantar.webp.asset.json";
 import ogImage from "@/assets/lp/img-07-og.webp.asset.json";
 import seloGarantia from "@/assets/lp/selo-garantia.png.asset.json";
 import { assetUrl } from "@/lib/asset-url";
+import { useLucideDrawerAnimation } from "@/components/ui/lucide-icon-drawer";
+
 import {
   Accordion,
   AccordionContent,
