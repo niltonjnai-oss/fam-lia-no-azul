@@ -22,6 +22,8 @@ import jantarPhoto from "@/assets/lp/img-06-jantar.webp.asset.json";
 import ogImage from "@/assets/lp/img-07-og.webp.asset.json";
 import seloGarantia from "@/assets/lp/selo-garantia.png.asset.json";
 import { assetUrl } from "@/lib/asset-url";
+import { useLucideDrawerAnimation } from "@/components/ui/lucide-icon-drawer";
+
 import {
   Accordion,
   AccordionContent,
@@ -204,7 +206,9 @@ const faqs = [
 ];
 
 function LandingPage() {
+  const beneficiosDrawerRef = useLucideDrawerAnimation<HTMLDivElement>();
   return (
+
     <div
       className="min-h-screen text-[#0F2A47] font-sans antialiased motion-safe:[&_section]:animate-fade-in"
       style={{
@@ -356,7 +360,10 @@ function LandingPage() {
             Seis coisas que o App Família no Azul <span className="italic text-orange-500">resolve pra você.</span>
           </h2>
         </div>
-        <div className="mt-10 md:mt-16 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          ref={beneficiosDrawerRef}
+          className="mt-10 md:mt-16 grid gap-2 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {benefits.map(({ icon: Icon, title, desc }, i) => {
             // Padrão bento: alterna azul preenchido e cinza claro
             const filled = i % 2 === 1;
@@ -375,7 +382,7 @@ function LandingPage() {
                   className={`grid h-11 w-11 place-items-center rounded-lg ${iconWrap}`}
                   style={iconStyle}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-5 w-5" strokeLinecap="round" strokeLinejoin="round" />
                 </div>
                 <div
                   className="mt-6 text-xl font-semibold leading-snug"
@@ -393,6 +400,7 @@ function LandingPage() {
             );
           })}
         </div>
+
         <div className="mt-12 text-center">
           <a
             href="#planos"
