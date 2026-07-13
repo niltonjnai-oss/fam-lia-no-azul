@@ -257,9 +257,9 @@ function LandingPage() {
         </h1>
         <p className="order-2 mx-auto mt-8 max-w-2xl text-base text-[#0F2A47]/75 md:text-xl">
           Todo dia 28 bate aquela sensação:{" "}
-          <em className="font-display text-[1.2em] italic font-bold" style={{ color: "#1d69ad" }}>"o dinheiro entrou... e sumiu".</em>{" "}
+          <strong className="text-[1.2em] font-bold" style={{ color: "#1d69ad" }}>"o dinheiro entrou... e sumiu".</strong>{" "}
           O Família no Azul divide sua renda no método 50-30-20 automaticamente -{" "}
-          <em className="font-display text-[1.2em] italic font-bold" style={{ color: "#1d69ad" }}>3 minutos por dia e sua família volta pro azul.</em>
+          <strong className="text-[1.2em] font-bold" style={{ color: "#1d69ad" }}>3 minutos por dia e sua família volta pro azul.</strong>
         </p>
 
         {/* CTA + faixa de confiança — depois das imagens no mobile, antes no desktop */}
