@@ -683,8 +683,8 @@ function LandingPage() {
               Este mês <em className="italic" style={{ color: ORANGE }}>ainda dá tempo.</em>
             </h2>
             <p className="mx-auto mt-6 max-w-xl text-base text-white/85">
-              Cadastre a renda hoje, registre os gastos da semana e chegue no dia 30 sabendo — talvez
-              pela primeira vez — pra onde foi cada real.
+              Cadastre a renda hoje, registre os gastos da semana e chegue no dia 30 sabendo - talvez
+              pela primeira vez - pra onde foi cada real.
             </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <a
