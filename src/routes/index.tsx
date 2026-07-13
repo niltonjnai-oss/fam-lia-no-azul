@@ -379,14 +379,14 @@ function LandingPage() {
             return (
               <div
                 key={title}
-                className="flex min-h-[240px] flex-col p-8 transition-transform hover:-translate-y-0.5"
+                className="flex min-h-[240px] flex-col p-8 transition-transform hover:-translate-y-0.5 max-sm:items-center max-sm:text-center"
                 style={{ backgroundColor: bg }}
               >
                 <div
-                  className={`grid h-11 w-11 place-items-center rounded-lg ${iconWrap}`}
+                  className={`grid h-11 w-11 place-items-center rounded-lg max-sm:h-14 max-sm:w-14 ${iconWrap}`}
                   style={iconStyle}
                 >
-                  <Icon className="h-5 w-5" strokeLinecap="round" strokeLinejoin="round" />
+                  <Icon className="h-5 w-5 max-sm:h-8 max-sm:w-8" strokeLinecap="round" strokeLinejoin="round" />
                 </div>
                 <div
                   className="mt-6 text-xl font-semibold leading-snug"
