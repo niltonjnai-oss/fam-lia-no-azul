@@ -551,8 +551,7 @@ function LandingPage() {
                 Faça o teste por 7 dias.
               </h2>
               <p className="mt-4 text-base text-[#0F2A47]/70">
-                Experimente sem riscos. Se em 7 dias achar que não é o ideal para sua família,
-                devolvemos o seu dinheiro.
+                Se em 7 dias achar que não é o ideal para sua família, devolvemos o seu dinheiro.
               </p>
             </div>
           </div>
