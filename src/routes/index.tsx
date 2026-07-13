@@ -749,11 +749,11 @@ function LandingPage() {
           href={KIWIFY_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-md"
+          className="flex min-h-[48px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-3 text-xs font-semibold text-white shadow-md sm:px-6 sm:text-sm"
           style={{ backgroundColor: ORANGE }}
         >
           Começar agora — R$ 67,90/ano
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-4 w-4 shrink-0" />
         </a>
       </div>
     </div>
