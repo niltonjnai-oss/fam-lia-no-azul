@@ -247,41 +247,44 @@ function LandingPage() {
       </header>
 
       {/* HERO */}
-      <section className="mx-auto max-w-5xl px-6 pt-3 pb-20 text-center md:pt-12 md:pb-28">
-        <h1 className="font-display mx-auto mt-1 max-w-4xl text-4xl leading-[1.05] tracking-tight md:mt-4 md:text-6xl lg:text-7xl">
+      <section className="mx-auto flex max-w-5xl flex-col px-6 pt-3 pb-20 text-center md:pt-12 md:pb-28">
+        <h1 className="font-display order-1 mx-auto mt-1 max-w-4xl text-4xl leading-[1.05] tracking-tight md:mt-4 md:text-6xl lg:text-7xl">
           Termine o mês sabendo pra onde foi cada real.
           <br />
           <em className="font-normal italic" style={{ color: ORANGE }}>
             Sem planilha. Sem briga. Sem susto.
           </em>
         </h1>
-        <p className="mx-auto mt-8 max-w-2xl text-base text-[#0F2A47]/75 md:text-xl">
+        <p className="order-2 mx-auto mt-8 max-w-2xl text-base text-[#0F2A47]/75 md:text-xl">
           Todo dia 28 bate aquela sensação:{" "}
           <em className="font-display text-[1.2em] italic font-bold" style={{ color: "#1d69ad" }}>"o dinheiro entrou... e sumiu".</em>{" "}
           O Família no Azul divide sua renda no método 50-30-20 automaticamente -{" "}
           <em className="font-display text-[1.2em] italic font-bold" style={{ color: "#1d69ad" }}>3 minutos por dia e sua família volta pro azul.</em>
         </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href="#planos"
-            className="inline-flex min-h-[48px] items-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
-            style={{ backgroundColor: ORANGE }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
-          >
-            {CTA_PRIMARY}
-            <ArrowRight className="h-4 w-4" />
-          </a>
-          <a
-            href="#como-funciona"
-            className="inline-flex min-h-[48px] items-center gap-2 rounded-full border border-[#0F2A47]/15 bg-white/70 px-8 py-4 text-base font-medium text-[#0F2A47] hover:bg-white"
-          >
-            Me mostra como funciona
-          </a>
-        </div>
 
-        {/* Faixa de confiança */}
-        <div className="mx-auto mt-6 flex max-w-2xl flex-row flex-nowrap items-center justify-center gap-2 text-[10px] text-[#0F2A47]/70 sm:gap-8 sm:text-xs">
+        {/* CTA + faixa de confiança — depois das imagens no mobile, antes no desktop */}
+        <div className="order-4 md:order-3">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="#planos"
+              className="inline-flex min-h-[48px] items-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
+              style={{ backgroundColor: ORANGE }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
+            >
+              {CTA_PRIMARY}
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <a
+              href="#como-funciona"
+              className="inline-flex min-h-[48px] items-center gap-2 rounded-full border border-[#0F2A47]/15 bg-white/70 px-8 py-4 text-base font-medium text-[#0F2A47] hover:bg-white"
+            >
+              Me mostra como funciona
+            </a>
+          </div>
+
+          {/* Faixa de confiança */}
+          <div className="mx-auto mt-6 flex max-w-2xl flex-row flex-nowrap items-center justify-center gap-2 text-[10px] text-[#0F2A47]/70 sm:gap-8 sm:text-xs">
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             <Lock className="h-3.5 w-3.5 shrink-0 text-[#0F2A47]/60 sm:h-4 sm:w-4" />
             <span className="whitespace-nowrap">Dados protegidos</span>
