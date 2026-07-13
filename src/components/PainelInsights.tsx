@@ -37,40 +37,35 @@ export function ProjecaoMes({
   const inicioDoMes = diaAtual <= 3;
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+    <div className="rounded-2xl border border-border bg-card p-3 shadow-soft">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground sm:text-sm">
-          Previsão do mês
-        </span>
+        <span className="text-xs font-medium text-muted-foreground">Previsão do mês</span>
         <span
-          className={`grid h-7 w-7 place-items-center rounded-lg ${dentro ? "bg-success/10" : "bg-danger/10"}`}
+          className={`grid h-6 w-6 place-items-center rounded-lg ${dentro ? "bg-success/10" : "bg-danger/10"}`}
         >
           {dentro ? (
-            <TrendingUp className="h-4 w-4 text-success" />
+            <TrendingUp className="h-3.5 w-3.5 text-success" />
           ) : (
-            <TrendingDown className="h-4 w-4 text-danger" />
+            <TrendingDown className="h-3.5 w-3.5 text-danger" />
           )}
         </span>
       </div>
       {carregando ? (
-        <Skeleton className="mt-2 h-10 w-full" />
+        <Skeleton className="mt-2 h-9 w-full" />
       ) : totalReal <= 0 ? (
         <p className="mt-2 text-xs text-muted-foreground">
           Registre seus gastos para ver a previsão do fim do mês.
         </p>
       ) : (
         <>
-          <div className="tabular mt-2 text-base font-bold sm:text-xl">{formatBRL(projecao)}</div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Se continuar assim, seu gasto total do mês será esse.{" "}
+          <div className="tabular mt-1 text-base font-bold sm:text-lg">{formatBRL(projecao)}</div>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
             {base > 0 && (
               <span className={dentro ? "font-medium text-success" : "font-medium text-danger"}>
-                {dentro
-                  ? `No ritmo atual, ainda sobram ${formatBRL(delta)}. 🎉`
-                  : `${formatBRL(delta)} acima ${baseLabel}.`}
+                {dentro ? `Ainda sobram ${formatBRL(delta)}. 🎉` : `${formatBRL(delta)} acima ${baseLabel}.`}
               </span>
             )}
-            {inicioDoMes && " (Início do mês: a previsão ainda é imprecisa.)"}
+            {inicioDoMes && " Início do mês: previsão imprecisa."}
           </p>
         </>
       )}
@@ -104,28 +99,26 @@ export function DiasNoAzul() {
   const registrouHoje = dias.has(hojeISO());
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+    <div className="rounded-2xl border border-border bg-card p-3 shadow-soft">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground sm:text-sm">Dias no Azul</span>
-        <span className="grid h-7 w-7 place-items-center rounded-lg bg-primary/10">
-          <Flame className="h-4 w-4 text-primary" />
+        <span className="text-xs font-medium text-muted-foreground">Dias no Azul</span>
+        <span className="grid h-6 w-6 place-items-center rounded-lg bg-primary/10">
+          <Flame className="h-3.5 w-3.5 text-primary" />
         </span>
       </div>
       {isLoading ? (
-        <Skeleton className="mt-2 h-10 w-full" />
+        <Skeleton className="mt-2 h-9 w-full" />
       ) : streak === 0 ? (
         <p className="mt-2 text-xs text-muted-foreground">
           Registre um gasto hoje e comece sua sequência. 💙
         </p>
       ) : (
         <>
-          <div className="tabular mt-2 text-base font-bold sm:text-xl">
+          <div className="tabular mt-1 text-base font-bold sm:text-lg">
             {streak} {streak === 1 ? "dia" : "dias"} 🔥
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {registrouHoje
-              ? "Sequência de dias registrando os gastos. Continue assim!"
-              : "Mantenha a sequência registrando seus gastos."}
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            {registrouHoje ? "Continue assim! 👏" : "Registre hoje pra manter a sequência."}
           </p>
         </>
       )}

@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Component, useState, type ErrorInfo, type ReactNode } from "react";
 import {
   Cell,
-  Legend,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -301,92 +300,79 @@ function PainelPage() {
       <DashboardSectionBoundary
         fallback={<DashboardSectionError titulo="Não foi possível carregar os gráficos do mês." />}
       >
-      <section className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-          <h2 className="text-sm font-semibold">Para onde foi seu dinheiro</h2>
-          <p className="text-xs text-muted-foreground">Como sua renda foi gasta este mês.</p>
-          <div className="mt-3 h-56" role="img" aria-label={
-            (() => {
-              const total = blocos.reduce((a, b) => a + numeroSeguro(b.realizado), 0);
-              if (total === 0) return "Sem gastos registrados neste mês.";
-              return "Divisão por classificação: " + blocos.map((b) => {
-                const v = numeroSeguro(b.realizado);
-                const pct = total > 0 ? Math.round((v / total) * 100) : 0;
-                return `${b.classificacao} ${formatBRL(v)} (${pct}%)`;
-              }).join(", ") + ".";
-            })()
-          }>
-            {carregando ? (
-              <Skeleton className="h-full w-full rounded-xl" />
-            ) : blocos.every((b) => Number(b.realizado) === 0) ? (
-              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                Nenhum gasto registrado neste mês ainda.
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={blocos.map((b) => ({
-                      nome: b.classificacao,
-                      valor: numeroSeguro(b.realizado),
-                      cor: CHART_COLORS[b.classificacao],
-                    }))}
-                    dataKey="valor"
-                    nameKey="nome"
-                    innerRadius={55}
-                    outerRadius={85}
-                    paddingAngle={2}
-                    stroke="var(--color-background)"
-                    strokeWidth={3}
-                  >
-                    {blocos.map((b) => (
-                      <Cell key={b.classificacao} fill={CHART_COLORS[b.classificacao]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(v: number) => formatBRL(v)}
-                    contentStyle={{
-                      background: "var(--color-popover)",
-                      border: "1px solid var(--color-border)",
-                      borderRadius: 12,
-                      fontSize: 12,
-                    }}
-                  />
-                  <Legend iconType="circle" wrapperStyle={{ fontSize: 12, color: "var(--color-muted-foreground)" }} />
-                </PieChart>
-              </ResponsiveContainer>
+      <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="text-sm font-semibold">Para onde foi seu dinheiro</h2>
+        <p className="text-xs text-muted-foreground">Veja a divisão e se cada parte está dentro do combinado.</p>
+        <div className="mt-4 grid gap-5 sm:grid-cols-2 sm:items-center">
+          <div>
+            <div className="h-40" role="img" aria-label={
+              (() => {
+                const total = blocos.reduce((a, b) => a + numeroSeguro(b.realizado), 0);
+                if (total === 0) return "Sem gastos registrados neste mês.";
+                return "Divisão por classificação: " + blocos.map((b) => {
+                  const v = numeroSeguro(b.realizado);
+                  const pct = total > 0 ? Math.round((v / total) * 100) : 0;
+                  return `${b.classificacao} ${formatBRL(v)} (${pct}%)`;
+                }).join(", ") + ".";
+              })()
+            }>
+              {carregando ? (
+                <Skeleton className="h-full w-full rounded-xl" />
+              ) : blocos.every((b) => Number(b.realizado) === 0) ? (
+                <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                  Nenhum gasto registrado neste mês ainda.
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={blocos.map((b) => ({
+                        nome: b.classificacao,
+                        valor: numeroSeguro(b.realizado),
+                        cor: CHART_COLORS[b.classificacao],
+                      }))}
+                      dataKey="valor"
+                      nameKey="nome"
+                      innerRadius={42}
+                      outerRadius={64}
+                      paddingAngle={2}
+                      stroke="var(--color-background)"
+                      strokeWidth={3}
+                    >
+                      {blocos.map((b) => (
+                        <Cell key={b.classificacao} fill={CHART_COLORS[b.classificacao]} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(v: number) => formatBRL(v)}
+                      contentStyle={{
+                        background: "var(--color-popover)",
+                        border: "1px solid var(--color-border)",
+                        borderRadius: 12,
+                        fontSize: 12,
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+            {!carregando && blocos.some((b) => Number(b.realizado) > 0) && (
+              <ul className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px]">
+                {blocos.map((b) => (
+                  <li key={b.classificacao} className="flex items-center gap-1.5">
+                    <span
+                      className="inline-block h-2 w-2 rounded-full"
+                      style={{ backgroundColor: CHART_COLORS[b.classificacao] }}
+                      aria-hidden="true"
+                    />
+                    <span className="text-muted-foreground">{b.classificacao}</span>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
-          {!carregando && blocos.some((b) => Number(b.realizado) > 0) && (
-            <ul className="mt-3 space-y-1 text-xs">
-              {blocos.map((b) => {
-                const v = numeroSeguro(b.realizado);
-                const total = blocos.reduce((a, x) => a + numeroSeguro(x.realizado), 0);
-                const pct = total > 0 ? Math.round((v / total) * 100) : 0;
-                return (
-                  <li key={b.classificacao} className="flex items-center justify-between gap-2">
-                    <span className="flex items-center gap-2">
-                      <span
-                        className="inline-block h-2.5 w-2.5 rounded-full"
-                        style={{ backgroundColor: CHART_COLORS[b.classificacao] }}
-                        aria-hidden="true"
-                      />
-                      <span className="text-muted-foreground">{b.classificacao}</span>
-                    </span>
-                    <span className="tabular font-medium">
-                      {formatBRL(v)} <span className="text-muted-foreground">({pct}%)</span>
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
 
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-          <h2 className="text-sm font-semibold">Método 50-30-20</h2>
-          <p className="text-xs text-muted-foreground">Veja se cada parte está dentro do combinado.</p>
-          <div className="mt-4 space-y-4">
+          <div className="space-y-3">
             {(["Essencial", "Estilo de Vida", "Reserva/Dívidas"] as Classificacao[]).map((cls) => {
               const linha = blocos.find((b) => b.classificacao === cls);
               const realizado = numeroSeguro(linha?.realizado);
