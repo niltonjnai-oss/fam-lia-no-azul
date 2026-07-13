@@ -615,32 +615,47 @@ function LandingPage() {
 
               <ul className="mt-8 space-y-3 text-sm text-[#0F2A47]/80 max-sm:mt-6">
                 {[
-                  "Painel de orçamento completo, no celular e no computador",
-                  <>
-                    <strong className="text-[#0F2A47]">Método 50-30-20</strong>{" "}
-                    dividindo sua renda no automático
-                  </>,
-                  <>
-                    <strong className="text-[#0F2A47]">Modo Casal:</strong> 2 contas, um
-                    orçamento só - sem pagar a mais
-                  </>,
-                  <>
-                    <strong className="text-[#0F2A47]">Assistente de dívidas:</strong>{" "}
-                    entenda os juros e avalie propostas de acordo
-                  </>,
-                  "Reserva de emergência com plano em etapas",
-                  "Avisos por e-mail antes das contas vencerem",
-                  <>
-                    <strong className="text-[#0F2A47]">12 meses de acesso</strong> - paga uma
-                    vez, usa o ano inteiro
-                  </>,
-                  "Suporte por e-mail que responde gente como gente",
+                  {
+                    title: "Painel completo:",
+                    desc: "no celular e no computador",
+                  },
+                  {
+                    title: "Método 50-30-20:",
+                    desc: "dividindo sua renda no automático",
+                  },
+                  {
+                    title: "Modo Casal:",
+                    desc: "2 contas, um orçamento só - sem pagar a mais",
+                  },
+                  {
+                    title: "Assistente de dívidas:",
+                    desc: "entenda os juros e avalie propostas de acordo",
+                  },
+                  {
+                    title: "Reserva de emergência:",
+                    desc: "com plano em etapas",
+                  },
+                  {
+                    title: "Avisos por e-mail:",
+                    desc: "antes das contas vencerem",
+                  },
+                  {
+                    title: "12 meses de acesso:",
+                    desc: "paga uma vez, usa o ano inteiro",
+                  },
+                  {
+                    title: "Suporte por e-mail:",
+                    desc: "que responde gente como gente",
+                  },
                 ].map((item, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className="mt-0.5 grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[#E8F3EA] text-[#2F7A3E]">
+                  <li key={index} className="grid grid-cols-[auto_1fr] gap-2">
+                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#E8F3EA] text-[#2F7A3E]">
                       <Check className="h-3 w-3" />
                     </span>
-                    {item}
+                    <span className="flex flex-wrap items-baseline gap-x-1 leading-snug">
+                      <strong className="shrink-0 text-[#0F2A47]">{item.title}</strong>
+                      <span className="min-w-0">{item.desc}</span>
+                    </span>
                   </li>
                 ))}
               </ul>
