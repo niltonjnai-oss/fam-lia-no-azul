@@ -470,11 +470,11 @@ function LandingPage() {
                 i % 2 === 1 ? "md:[&>div:first-child]:order-2" : ""
               }`}
             >
-              <div>
+              <div className="max-sm:text-center">
                 <h3 className="font-display text-3xl tracking-tight md:text-4xl">
                   {screen.title}
                 </h3>
-                <p className="mt-4 max-w-md text-base text-[#0F2A47]/70">{screen.desc}</p>
+                <p className="mt-4 max-w-md text-base text-[#0F2A47]/70 max-sm:mx-auto">{screen.desc}</p>
               </div>
               <div className="flex justify-center">
                 <img
@@ -510,7 +510,7 @@ function LandingPage() {
                   className="w-full max-w-[220px] md:max-w-[280px]"
                 />
               </div>
-              <div className="order-2">
+              <div className="order-2 max-sm:text-center">
                 <p className="font-display text-xl leading-snug tracking-tight md:text-2xl">
                   A gente sabe como é terminar o mês sem saber pra onde o dinheiro foi. Já passamos pelo
                   caderninho, pela planilha que durou três semanas, pelo aplicativo complicado demais.
