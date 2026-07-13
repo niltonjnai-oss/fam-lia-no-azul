@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Component, useState, type ErrorInfo, type ReactNode } from "react";
+import { Component, useEffect, useState, type ErrorInfo, type ReactNode } from "react";
 import {
   Cell,
   Pie,
@@ -19,7 +19,6 @@ import {
   RotateCcw,
   ChevronLeft,
   ChevronRight,
-  MoreVertical,
   Settings2,
 } from "lucide-react";
 
@@ -38,12 +37,6 @@ import { useAuth } from "@/lib/auth-context";
 
 import { formatBRL, formatPct } from "@/lib/format";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 import {
   PersonalizarPainelSheet,
   PainelExtras,
@@ -138,10 +131,31 @@ class DashboardSectionBoundary extends Component<
   }
 }
 
+/** Data e hora atuais, atualizadas a cada minuto — dá noção de "agora" no painel. */
+function useAgora(): Date {
+  const [agora, setAgora] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setAgora(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+  return agora;
+}
+
+function formatDataHoraAgora(d: Date): string {
+  const data = d.toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+  const hora = d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  return `${data.charAt(0).toUpperCase()}${data.slice(1)} · ${hora}`;
+}
+
 function PainelPage() {
   const { mes, setMes } = useMes();
   const { user } = useAuth();
   const [personalizarOpen, setPersonalizarOpen] = useState(false);
+  const agora = useAgora();
   const primeiroNome = (
     (user?.user_metadata as { full_name?: string } | undefined)?.full_name ?? ""
   )
@@ -173,9 +187,12 @@ function PainelPage() {
 
   return (
     <div className="space-y-4">
-      <header className="flex items-center justify-between gap-2">
-        <PageTitle>{primeiroNome ? `Olá, ${primeiroNome}!` : "Olá, família!"}</PageTitle>
-        <div className="flex items-center gap-2">
+      <header className="space-y-3">
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <PageTitle>{primeiroNome ? `Olá, ${primeiroNome}!` : "Olá, família!"}</PageTitle>
+            <p className="text-xs text-muted-foreground">{formatDataHoraAgora(agora)}</p>
+          </div>
           <div className="flex items-center gap-0.5 rounded-full border border-border bg-card p-1 shadow-soft">
             <button
               type="button"
@@ -195,27 +212,23 @@ function PainelPage() {
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-card shadow-soft hover:bg-muted"
-                aria-label="Mais opções"
-              >
-                <MoreVertical className="h-4 w-4" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setPersonalizarOpen(true)}>
-                <Settings2 className="mr-2 h-4 w-4" /> Personalizar painel
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/onboarding">
-                  <RotateCcw className="mr-2 h-4 w-4" /> Refazer meu orçamento
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPersonalizarOpen(true)}
+            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium hover:bg-muted"
+          >
+            <Settings2 className="h-4 w-4" />
+            Personalizar
+          </button>
+          <Link
+            to="/onboarding"
+            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            <RotateCcw className="h-4 w-4" />
+            Refazer meu orçamento
+          </Link>
         </div>
       </header>
 
