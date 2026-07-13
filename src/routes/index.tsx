@@ -204,7 +204,9 @@ const faqs = [
 ];
 
 function LandingPage() {
+  const beneficiosDrawerRef = useLucideDrawerAnimation<HTMLDivElement>();
   return (
+
     <div
       className="min-h-screen text-[#0F2A47] font-sans antialiased motion-safe:[&_section]:animate-fade-in"
       style={{
