@@ -481,7 +481,7 @@ function LandingPage() {
                   src={screen.image}
                   alt={screen.alt}
                   loading="lazy"
-                  className="w-full max-w-[360px] drop-shadow-xl"
+                  className="w-full max-w-[288px] drop-shadow-xl md:max-w-[360px]"
                 />
               </div>
             </div>
