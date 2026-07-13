@@ -2,7 +2,6 @@ import { useMemo, useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Settings2,
   TrendingDown,
   TrendingUp,
   Trophy,
@@ -20,7 +19,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -69,24 +67,19 @@ function loadPrefs(): Record<CardKey, boolean> {
   }
 }
 
-export function PersonalizarPainelButton({
+export function PersonalizarPainelSheet({
+  open,
+  onOpenChange,
   prefs,
   setPrefs,
 }: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   prefs: Record<CardKey, boolean>;
   setPrefs: (p: Record<CardKey, boolean>) => void;
 }) {
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <button
-          type="button"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium hover:bg-muted"
-          aria-label="Personalizar painel"
-        >
-          <Settings2 className="h-4 w-4" /> Personalizar
-        </button>
-      </SheetTrigger>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-md">
         <SheetHeader>
           <SheetTitle>Personalizar painel</SheetTitle>

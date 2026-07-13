@@ -5,8 +5,6 @@ import { Wallet, ArrowUpRight, Sparkles, Info } from "lucide-react";
 
 import {
   qk,
-  fetchRenda,
-  fetchGastosMes,
   fetchLancamentos,
   fetchSubitens,
   fetchCategorias,
@@ -15,19 +13,11 @@ import { formatBRL } from "@/lib/format";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function DespesasFixasDisponivel({ mes }: { mes: string }) {
-  const rendaQ = useQuery({ queryKey: qk.renda(mes), queryFn: () => fetchRenda(mes) });
-  const gastosQ = useQuery({ queryKey: qk.gastosMes(mes), queryFn: () => fetchGastosMes(mes) });
   const lancsQ = useQuery({ queryKey: qk.lancamentos(mes), queryFn: () => fetchLancamentos(mes) });
   const subsQ = useQuery({ queryKey: qk.subitens, queryFn: fetchSubitens });
   const catsQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
 
-  const carregando =
-    rendaQ.isLoading || gastosQ.isLoading || lancsQ.isLoading || subsQ.isLoading || catsQ.isLoading;
-
-  const renda = (rendaQ.data ?? []).reduce((a, r) => a + Number(r.valor), 0);
-  const comprometido = Number(gastosQ.data?.total_comprometido ?? 0);
-  const disponivel = renda - comprometido;
-  const negativo = disponivel < 0;
+  const carregando = lancsQ.isLoading || subsQ.isLoading || catsQ.isLoading;
 
   const fixas = useMemo(() => {
     const subById = new Map<string, { nome: string; categoria_id: string }>();
@@ -59,49 +49,24 @@ export function DespesasFixasDisponivel({ mes }: { mes: string }) {
           <Wallet className="h-4 w-4" />
         </span>
         <div className="min-w-0">
-          <h2 className="text-sm font-semibold">Despesas fixas e disponível</h2>
+          <h2 className="text-sm font-semibold">Despesas fixas</h2>
           <p className="text-xs text-muted-foreground">
-            Saldo disponível após despesas fixas.
+            O que já está comprometido este mês.
           </p>
         </div>
       </header>
 
-      <div className="rounded-xl bg-primary/5 p-4">
-        <div className="text-xs font-medium text-muted-foreground">Disponível</div>
-        {carregando ? (
-          <Skeleton className="mt-1 h-8 w-40" />
-        ) : (
-          <div
-            className={`tabular mt-1 text-2xl font-bold sm:text-3xl ${
-              negativo ? "text-danger" : "text-primary"
-            }`}
-          >
-            {formatBRL(disponivel)}
-          </div>
-        )}
-        {carregando ? (
-          <Skeleton className="mt-2 h-3 w-56" />
-        ) : (
-          <div className="tabular mt-1 text-xs text-muted-foreground">
-            Você ganha {formatBRL(renda)} − gasta {formatBRL(comprometido)}
-          </div>
-        )}
-      </div>
-
-      <div className="mt-4">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Despesas fixas
-          </h3>
-          {fixas.length > 0 && (
+      <div>
+        {fixas.length > 0 && (
+          <div className="mb-2 flex justify-end">
             <Link
               to="/orcamento"
               className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
             >
               Ver todas <ArrowUpRight className="h-3 w-3" />
             </Link>
-          )}
-        </div>
+          </div>
+        )}
 
         {carregando ? (
           <div className="space-y-2">
@@ -153,10 +118,12 @@ export function DespesasFixasDisponivel({ mes }: { mes: string }) {
         )}
       </div>
 
-      <p className="mt-3 flex items-start gap-1.5 text-[11px] text-muted-foreground">
-        <Info className="mt-0.5 h-3 w-3 shrink-0" />
-        <span>Cada gasto que você registra reduz o valor disponível.</span>
-      </p>
+      {fixas.length > 0 && (
+        <p className="mt-3 flex items-start gap-1.5 text-[11px] text-muted-foreground">
+          <Info className="mt-0.5 h-3 w-3 shrink-0" />
+          <span>Cada gasto que você registra reduz o valor livre pra gastar.</span>
+        </p>
+      )}
     </section>
   );
 }

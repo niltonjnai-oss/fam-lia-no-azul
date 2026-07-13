@@ -26,6 +26,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 function parseValorBRL(s: string): number {
   const n = Number(s.replace(/\./g, "").replace(",", "."));
@@ -33,8 +40,53 @@ function parseValorBRL(s: string): number {
 }
 
 export function LancamentoRapido() {
-  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
   const hoje = hojeISO();
+
+  const transacoesQ = useQuery({
+    queryKey: qk.transacoesHoje(hoje),
+    queryFn: () => fetchTransacoesDoDia(hoje),
+  });
+  const totalHoje = (transacoesQ.data ?? []).reduce((acc, t) => acc + Number(t.valor), 0);
+  const qtdHoje = (transacoesQ.data ?? []).length;
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-4 text-left shadow-soft transition-colors hover:border-primary/40 hover:bg-primary/5"
+      >
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
+          <Plus className="h-5 w-5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-semibold">Anotar um gasto</div>
+          <div className="text-xs text-muted-foreground">
+            {transacoesQ.isLoading ? (
+              "Carregando..."
+            ) : qtdHoje === 0 ? (
+              "Nenhum gasto anotado hoje"
+            ) : (
+              <>
+                {formatBRL(totalHoje)} hoje · {qtdHoje} {qtdHoje === 1 ? "gasto" : "gastos"}
+              </>
+            )}
+          </div>
+        </div>
+      </button>
+
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto rounded-t-2xl">
+          <LancamentoRapidoConteudo hoje={hoje} />
+        </SheetContent>
+      </Sheet>
+    </>
+  );
+}
+
+function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
+  const qc = useQueryClient();
   const mes = mesAtual();
 
   const valorRef = useRef<HTMLInputElement>(null);
@@ -112,19 +164,21 @@ export function LancamentoRapido() {
   const totalHoje = (transacoesQ.data ?? []).reduce((acc, t) => acc + Number(t.valor), 0);
 
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
-      <header className="mb-3 flex items-center gap-2">
-        <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary/10 text-primary">
-          <Zap className="h-4 w-4" />
-        </span>
-        <div>
-          <h2 className="text-sm font-semibold">Anotar um gasto</h2>
-          <p className="text-xs text-muted-foreground">Registre seus gastos de hoje.</p>
+    <div className="mx-auto w-full max-w-lg">
+      <SheetHeader className="text-left">
+        <div className="flex items-center gap-2">
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary/10 text-primary">
+            <Zap className="h-4 w-4" />
+          </span>
+          <div>
+            <SheetTitle>Anotar um gasto</SheetTitle>
+            <SheetDescription>Registre seus gastos de hoje.</SheetDescription>
+          </div>
         </div>
-      </header>
+      </SheetHeader>
 
       <form
-        className="grid gap-3 sm:grid-cols-2"
+        className="mt-4 grid gap-3 sm:grid-cols-2"
         onSubmit={(e) => {
           e.preventDefault();
           addMut.mutate();
@@ -258,6 +312,6 @@ export function LancamentoRapido() {
           </ul>
         )}
       </div>
-    </section>
+    </div>
   );
 }

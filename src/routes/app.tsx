@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Component, useState, type ErrorInfo, type ReactNode } from "react";
 import {
   Cell,
   Legend,
@@ -18,6 +18,10 @@ import {
   CheckCircle2,
   AlertTriangle,
   RotateCcw,
+  ChevronLeft,
+  ChevronRight,
+  MoreVertical,
+  Settings2,
 } from "lucide-react";
 
 import {
@@ -27,16 +31,22 @@ import {
   fetch503020,
   fetchGastosMes,
   formatMes,
+  shiftMes,
   type Classificacao,
 } from "@/lib/db";
 import { useMes } from "@/lib/mes-context";
 import { useAuth } from "@/lib/auth-context";
 
 import { formatBRL, formatPct } from "@/lib/format";
-import { MesSelector } from "@/components/MesSelector";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  PersonalizarPainelButton,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import {
+  PersonalizarPainelSheet,
   PainelExtras,
   usePainelPrefs,
 } from "@/components/PainelExtras";
@@ -130,8 +140,9 @@ class DashboardSectionBoundary extends Component<
 }
 
 function PainelPage() {
-  const { mes } = useMes();
+  const { mes, setMes } = useMes();
   const { user } = useAuth();
+  const [personalizarOpen, setPersonalizarOpen] = useState(false);
   const primeiroNome = (
     (user?.user_metadata as { full_name?: string } | undefined)?.full_name ?? ""
   )
@@ -156,37 +167,88 @@ function PainelPage() {
   const gastosTotal = numeroSeguro(gastosQ.data?.total_comprometido);
   const saldo = rendaTotal - gastosTotal;
 
-  const cards = [
-    { label: "Renda", valor: rendaTotal, Icon: ArrowUpRight, tone: "text-success", bg: "bg-success/10" },
-    { label: "Gastos", valor: gastosTotal, Icon: ArrowDownRight, tone: "text-danger", bg: "bg-danger/10" },
-    { label: "Saldo", valor: saldo, Icon: Sparkles, tone: "text-primary", bg: "bg-primary/10" },
-  ];
-
   const orcamentoVazio =
     !carregando &&
     Number(resumoQ.data?.total_previsto ?? 0) === 0 &&
     Number(resumoQ.data?.total_real ?? 0) === 0;
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <p className="text-sm text-muted-foreground">{formatMes(mes)}</p>
-          <PageTitle>{primeiroNome ? `Olá, ${primeiroNome}!` : "Olá, família!"}</PageTitle>
-        </div>
+    <div className="space-y-4">
+      <header className="flex items-center justify-between gap-2">
+        <PageTitle>{primeiroNome ? `Olá, ${primeiroNome}!` : "Olá, família!"}</PageTitle>
         <div className="flex items-center gap-2">
-          <PersonalizarPainelButton prefs={prefs} setPrefs={setPrefs} />
-          <Link
-            to="/onboarding"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 min-h-[44px]"
-          >
-            <RotateCcw className="h-4 w-4" />
-            Refazer meu orçamento
-          </Link>
+          <div className="flex items-center gap-0.5 rounded-full border border-border bg-card p-1 shadow-soft">
+            <button
+              type="button"
+              onClick={() => setMes(shiftMes(mes, -1))}
+              className="grid h-8 w-8 place-items-center rounded-full hover:bg-muted"
+              aria-label="Mês anterior"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="tabular px-1 text-xs font-semibold">{formatMes(mes)}</span>
+            <button
+              type="button"
+              onClick={() => setMes(shiftMes(mes, 1))}
+              className="grid h-8 w-8 place-items-center rounded-full hover:bg-muted"
+              aria-label="Próximo mês"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-card shadow-soft hover:bg-muted"
+                aria-label="Mais opções"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setPersonalizarOpen(true)}>
+                <Settings2 className="mr-2 h-4 w-4" /> Personalizar painel
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/onboarding">
+                  <RotateCcw className="mr-2 h-4 w-4" /> Refazer meu orçamento
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
-      <MesSelector />
+      <PersonalizarPainelSheet
+        open={personalizarOpen}
+        onOpenChange={setPersonalizarOpen}
+        prefs={prefs}
+        setPrefs={setPrefs}
+      />
+
+      <section
+        className="rounded-2xl p-5 text-white shadow-soft"
+        style={{ background: "linear-gradient(135deg, #0F2A47 0%, #1E4A78 100%)" }}
+      >
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-medium text-white/70">Livre pra gastar</span>
+          <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-semibold">
+            {saldo >= 0 ? "No azul" : "Atenção"}
+          </span>
+        </div>
+        <div className="tabular mt-1 text-3xl font-bold sm:text-4xl">
+          {carregando ? <Skeleton className="h-9 w-40 bg-white/10" /> : formatBRL(saldo)}
+        </div>
+        <div className="mt-3 flex items-center gap-4 text-xs text-white/70">
+          <span className="flex items-center gap-1">
+            <ArrowUpRight className="h-3.5 w-3.5" /> Renda {formatBRL(rendaTotal)}
+          </span>
+          <span className="flex items-center gap-1">
+            <ArrowDownRight className="h-3.5 w-3.5" /> Gastos {formatBRL(gastosTotal)}
+          </span>
+        </div>
+      </section>
 
       <InstalarAppCard />
 
@@ -207,23 +269,6 @@ function PainelPage() {
           <ArrowUpRight className="h-4 w-4 text-primary" />
         </Link>
       )}
-
-
-      <section className="grid grid-cols-3 gap-3">
-        {cards.map(({ label, valor, Icon, tone, bg }) => (
-          <div key={label} className="rounded-2xl border border-border bg-card p-3 shadow-soft sm:p-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-muted-foreground sm:text-sm">{label}</span>
-              <span className={`grid h-7 w-7 place-items-center rounded-lg ${bg}`}>
-                <Icon className={`h-4 w-4 ${tone}`} />
-              </span>
-            </div>
-            <div className="tabular mt-2 text-base font-bold sm:text-xl">
-              {carregando ? <Skeleton className="h-6 w-24" /> : formatBRL(valor)}
-            </div>
-          </div>
-        ))}
-      </section>
 
       <DashboardSectionBoundary
         fallback={<DashboardSectionError titulo="Não foi possível carregar os insights do mês." />}
