@@ -637,7 +637,10 @@ function LandingPage() {
                 href={KIWIFY_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-8 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 max-sm:      }
+                className="mt-8 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
+                style={{ backgroundColor: ORANGE }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
               >
                 {CTA_ASSINAR}
                 <ArrowRight className="h-4 w-4" />
