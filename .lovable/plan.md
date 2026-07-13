@@ -1,18 +1,32 @@
-Atualizar apenas os textos da seção `<section id="beneficios">` em `src/routes/inicio.tsx`, mantendo layout, ícones, grid, CTA, navegação e o eyebrow "BENEFÍCIOS" intactos.
+## Objetivo
+Adicionar o efeito de "desenho animado" (line-drawing) nos ícones da seção **Benefícios** de `/inicio`, sem alterar textos, títulos, ordem dos cards, cores ou layout bento existente.
 
-**Título da seção**
-- De: "Tudo que uma família precisa, nada que ela não precise."
-- Para: "Quatro coisas que o Família no Azul resolve pra você."
+## O que muda
+Apenas os ícones dos 6 cards da seção `#beneficios` ganham animação de traço contínuo (draw in/out em loop), usando a lib `animejs` com os ícones `lucide-react` que já estão lá.
 
-**Cards do array `benefits` (mesma ordem, mesmos ícones)**
-1. Título: "Veja pra onde vai o dinheiro" / Descrição: "Renda, gastos e saldo do mês numa tela só — sem planilha pra manter."
-2. Título: "Saiba quanto pode gastar sem culpa" / Descrição: "O app divide sua renda automaticamente: essencial, vida e futuro. Você não decide no chute."
-3. Título: "Monte sua reserva sem sofrer" / Descrição: "O app mostra quanto guardar por mês e você acompanha o valor crescer."
-4. Título: "Saia das dívidas com um plano" / Descrição: "Organize o que deve, defina a ordem de pagamento e veja quitar uma por uma."
+## Passos
 
-**Não alterar**
-- Layout, estrutura, ícones, grid, CTA "Quero ver meu dinheiro no azul", link âncora `#beneficios`, eyebrow "BENEFÍCIOS" e demais seções da página.
+1. **Instalar dependência**
+   - `bun add animejs` (lucide-react já existe no projeto).
 
-**Validação**
-- Build do projeto passa sem erros.
-- Visual da seção permanece inalterado, apenas com os novos textos.
+2. **Criar hook `src/components/ui/lucide-icon-drawer.tsx`**
+   - Exporta `useLucideDrawerAnimation()`:
+     - `ref` para o container.
+     - No `useEffect`, seleciona `svg path, svg circle, svg polyline` dentro do ref, aplica classe `.line` e chama `animate(svg.createDrawable('.line'), { draw: ['0 0.05', '0.05 1'], ease: 'inOutQuad', duration: 1000, loop: true, alternate: true })`.
+     - Cleanup: `pause()` da animação no unmount pra não vazar em rota-out.
+
+3. **Aplicar no `src/routes/index.tsx` — apenas seção `#beneficios`**
+   - Importar o hook.
+   - Envolver o grid de 6 cards de benefícios com um `<div ref={drawerRef}>` (sem alterar classes do grid nem dos cards).
+   - Manter os mesmos ícones Lucide já usados hoje, os mesmos textos, títulos, cores (azul-marinho/cinza alternado) e min-height.
+   - Ajuste mínimo de CSS inline nos ícones: `strokeLinecap="round"` / `strokeLinejoin="round"` só se necessário para o traço ficar bonito (sem trocar `size` nem `color`).
+
+4. **Garantir SSR-safe**
+   - O hook roda só em `useEffect` (client), sem `typeof window` no `useState`, seguindo a regra do TanStack Start.
+
+5. **Validação**
+   - Rodar preview e conferir na seção Benefícios: os 6 ícones desenham/apagam em loop suave; nenhum texto/card/cor mudou; restante da LP intacto.
+
+## Fora do escopo
+- Não mexer em Hero, "Como funciona", "Por que funciona", História, Planos, FAQ, CTA final, tipografia global, nem em outras rotas.
+- Não trocar ícones nem paleta.
