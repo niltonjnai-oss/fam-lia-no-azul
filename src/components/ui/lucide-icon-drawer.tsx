@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { animate, svg } from "animejs";
 
 /**
@@ -7,6 +7,8 @@ import { animate, svg } from "animejs";
  */
 export function useLucideDrawerAnimation<T extends HTMLElement = HTMLDivElement>() {
   const root = useRef<T | null>(null);
+  const id = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const cls = `line-${id}`;
 
   useEffect(() => {
     if (!root.current) return;
@@ -14,15 +16,14 @@ export function useLucideDrawerAnimation<T extends HTMLElement = HTMLDivElement>
       "svg path, svg circle, svg polyline, svg line, svg rect, svg polygon",
     );
     if (elements.length === 0) return;
-    elements.forEach((el) => el.classList.add("line"));
+    elements.forEach((el) => el.classList.add(cls));
 
     let animation: ReturnType<typeof animate> | undefined;
     try {
-      animation = animate(svg.createDrawable(".line", root.current), {
+      animation = animate(svg.createDrawable(`.${cls}`), {
         draw: ["0 0.05", "0.05 1", "1 1"],
         ease: "inOutQuad",
         duration: 2000,
-        delay: (_: unknown, i: number) => i * 40,
         loop: true,
       });
     } catch {
@@ -32,7 +33,7 @@ export function useLucideDrawerAnimation<T extends HTMLElement = HTMLDivElement>
     return () => {
       animation?.pause?.();
     };
-  }, []);
+  }, [cls]);
 
   return root;
 }
