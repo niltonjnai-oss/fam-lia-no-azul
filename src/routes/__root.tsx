@@ -235,8 +235,10 @@ function AuthGate() {
       return;
     }
 
+    // Sem login em rota protegida (ex.: PWA abre em /app): direto pro login,
+    // não pra landing page — quem chegou aqui já é cliente.
     if (!session && !isPublicRoute) {
-      navigate({ to: "/", replace: true });
+      navigate({ to: "/auth", replace: true });
       return;
     }
 
