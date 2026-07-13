@@ -572,26 +572,48 @@ function LandingPage() {
           </div>
 
           <div className="mx-auto mt-14 max-w-md">
-            <div className="relative overflow-hidden rounded-3xl border-2 border-[#F97316]/30 bg-white/95 p-10 shadow-xl backdrop-blur">
+            <div className="relative overflow-hidden rounded-3xl border-2 border-[#F97316]/30 bg-white/95 p-10 shadow-xl backdrop-blur max-sm:p-6">
+              {/* Badge desktop */}
               <div
-                className="absolute right-6 top-6 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white"
+                className="absolute right-6 top-6 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white max-sm:hidden"
                 style={{ backgroundColor: ORANGE }}
               >
                 Anual
               </div>
-              <div className="text-sm font-semibold text-[#0F2A47]/70">Família no Azul</div>
-              <div className="mt-4 flex items-baseline gap-1">
+
+              {/* Header mobile */}
+              <div className="mb-5 flex items-center justify-between md:hidden">
+                <span className="text-sm font-semibold text-[#0F2A47]/70">Família no Azul</span>
                 <span
-                  className="font-display text-6xl font-bold tracking-tight tabular-nums"
+                  className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white"
+                  style={{ backgroundColor: ORANGE }}
+                >
+                  Anual
+                </span>
+              </div>
+
+              {/* Título desktop */}
+              <div className="hidden text-sm font-semibold text-[#0F2A47]/70 md:block">
+                Família no Azul
+              </div>
+
+              <div className="mt-4 flex items-baseline gap-1 max-sm:mt-0 max-sm:block">
+                <span
+                  className="font-display text-6xl font-bold tracking-tight tabular-nums max-sm:text-5xl"
                   style={{ color: ORANGE }}
                 >
                   R$ 67,90
                 </span>
-                <span className="text-sm text-[#0F2A47]/60">/ano</span>
+                <span className="text-sm text-[#0F2A47]/60 max-sm:hidden">/ano</span>
               </div>
-              <p className="mt-1 text-xs text-[#0F2A47]/60 tabular-nums">Dá R$ 5,66 por mês</p>
+              <div className="hidden text-lg font-bold leading-tight text-[#0F2A47] max-sm:block">
+                ao ano
+              </div>
+              <p className="mt-1 text-xs text-[#0F2A47]/60 tabular-nums max-sm:mt-2">
+                Dá R$ 5,66 por mês
+              </p>
 
-              <ul className="mt-8 space-y-3 text-sm text-[#0F2A47]/80">
+              <ul className="mt-8 space-y-3 text-sm text-[#0F2A47]/80 max-sm:mt-6">
                 {[
                   "Painel de orçamento completo, no celular e no computador",
                   "Método 50-30-20 dividindo sua renda no automático",
@@ -615,10 +637,7 @@ function LandingPage() {
                 href={KIWIFY_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-8 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
-                style={{ backgroundColor: ORANGE }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
+                className="mt-8 inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 max-sm:      }
               >
                 {CTA_ASSINAR}
                 <ArrowRight className="h-4 w-4" />
