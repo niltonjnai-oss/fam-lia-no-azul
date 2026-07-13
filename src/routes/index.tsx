@@ -247,8 +247,8 @@ function LandingPage() {
       </header>
 
       {/* HERO */}
-      <section className="mx-auto max-w-5xl px-6 pt-8 pb-20 text-center md:pt-12 md:pb-28">
-        <h1 className="font-display mx-auto mt-4 max-w-4xl text-4xl leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
+      <section className="mx-auto max-w-5xl px-6 pt-3 pb-20 text-center md:pt-12 md:pb-28">
+        <h1 className="font-display mx-auto mt-1 max-w-4xl text-4xl leading-[1.05] tracking-tight md:mt-4 md:text-6xl lg:text-7xl">
           Termine o mês sabendo pra onde foi cada real.
           <br />
           <em className="font-normal italic" style={{ color: ORANGE }}>
