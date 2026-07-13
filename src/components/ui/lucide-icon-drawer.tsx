@@ -21,10 +21,11 @@ export function useLucideDrawerAnimation<T extends HTMLElement = HTMLDivElement>
     let animation: ReturnType<typeof animate> | undefined;
     try {
       animation = animate(svg.createDrawable(`.${cls}`), {
-        draw: ["0 0.05", "0.05 1", "1 1"],
+        draw: ["0 0", "1 1"],
         ease: "inOutQuad",
-        duration: 2000,
+        duration: 4000,
         loop: true,
+        loopDelay: 1000,
       });
     } catch {
       // silencioso: se algum ícone não suportar drawable, apenas ignora
