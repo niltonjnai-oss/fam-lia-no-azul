@@ -22,6 +22,8 @@ import jantarPhoto from "@/assets/lp/img-06-jantar.webp.asset.json";
 import ogImage from "@/assets/lp/img-07-og.webp.asset.json";
 import seloGarantia from "@/assets/lp/selo-garantia.png.asset.json";
 import { assetUrl } from "@/lib/asset-url";
+
+
 import {
   Accordion,
   AccordionContent,
@@ -204,7 +206,9 @@ const faqs = [
 ];
 
 function LandingPage() {
+  
   return (
+
     <div
       className="min-h-screen text-[#0F2A47] font-sans antialiased motion-safe:[&_section]:animate-fade-in"
       style={{
@@ -243,57 +247,61 @@ function LandingPage() {
       </header>
 
       {/* HERO */}
-      <section className="mx-auto max-w-5xl px-6 pt-8 pb-20 text-center md:pt-12 md:pb-28">
-        <h1 className="font-display mx-auto mt-4 max-w-4xl text-4xl leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
+      <section className="mx-auto flex max-w-5xl flex-col px-6 pt-3 pb-20 text-center md:pt-12 md:pb-28">
+        <h1 className="font-display order-1 mx-auto mt-1 max-w-4xl text-4xl leading-[1.05] tracking-tight md:mt-4 md:text-6xl lg:text-7xl">
           Termine o mês sabendo pra onde foi cada real.
           <br />
           <em className="font-normal italic" style={{ color: ORANGE }}>
             Sem planilha. Sem briga. Sem susto.
           </em>
         </h1>
-        <p className="mx-auto mt-8 max-w-2xl text-base text-[#0F2A47]/75 md:text-xl">
+        <p className="order-2 mx-auto mt-8 max-w-2xl text-base text-[#0F2A47]/75 md:text-xl">
           Todo dia 28 bate aquela sensação:{" "}
-          <em className="font-display text-[1.2em] italic font-bold text-orange-500">"o dinheiro entrou... e sumiu".</em>{" "}
+          <strong className="font-bold" style={{ color: "#1d69ad" }}>"o dinheiro entrou... e sumiu".</strong>{" "}
           O Família no Azul divide sua renda no método 50-30-20 automaticamente -{" "}
-          <em className="font-display text-[1.2em] italic font-bold text-orange-500">3 minutos por dia e sua família volta pro azul.</em>
+          <strong className="font-bold" style={{ color: "#1d69ad" }}>3 minutos por dia e sua família volta pro azul.</strong>
         </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href="#planos"
-            className="inline-flex min-h-[48px] items-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
-            style={{ backgroundColor: ORANGE }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
-          >
-            {CTA_PRIMARY}
-            <ArrowRight className="h-4 w-4" />
-          </a>
-          <a
-            href="#como-funciona"
-            className="inline-flex min-h-[48px] items-center gap-2 rounded-full border border-[#0F2A47]/15 bg-white/70 px-8 py-4 text-base font-medium text-[#0F2A47] hover:bg-white"
-          >
-            Me mostra como funciona
-          </a>
-        </div>
 
-        {/* Faixa de confiança */}
-        <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center justify-center gap-3 text-xs text-[#0F2A47]/70 sm:flex-row sm:gap-8">
-          <div className="flex items-center gap-2">
-            <Lock className="h-4 w-4 text-[#0F2A47]/60" />
-            <span>Dados protegidos</span>
+        {/* CTA + faixa de confiança — depois das imagens no mobile, antes no desktop */}
+        <div className="order-4 md:order-3">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="#planos"
+              className="inline-flex min-h-[48px] items-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:-translate-y-0.5"
+              style={{ backgroundColor: ORANGE }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
+            >
+              {CTA_PRIMARY}
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <a
+              href="#como-funciona"
+              className="inline-flex min-h-[48px] items-center gap-2 rounded-full border border-[#0F2A47]/15 bg-white/70 px-8 py-4 text-base font-medium text-[#0F2A47] hover:bg-white"
+            >
+              Me mostra como funciona
+            </a>
           </div>
-          <div className="flex items-center gap-2">
-            <BadgeCheck className="h-4 w-4 text-[#0F2A47]/60" />
-            <span>Garantia de 7 dias</span>
+
+          {/* Faixa de confiança */}
+          <div className="mx-auto mt-6 flex max-w-2xl flex-row flex-nowrap items-center justify-center gap-2 text-[10px] text-[#0F2A47]/70 sm:gap-8 sm:text-xs">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <Lock className="h-3.5 w-3.5 shrink-0 text-[#0F2A47]/60 sm:h-4 sm:w-4" />
+            <span className="whitespace-nowrap">Dados protegidos</span>
           </div>
-          <div className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-[#0F2A47]/60" />
-            <span>Pagamento seguro</span>
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-[#0F2A47]/60 sm:h-4 sm:w-4" />
+            <span className="whitespace-nowrap">Garantia de 7 dias</span>
           </div>
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <CreditCard className="h-3.5 w-3.5 shrink-0 text-[#0F2A47]/60 sm:h-4 sm:w-4" />
+            <span className="whitespace-nowrap">Pagamento seguro</span>
+          </div>
+        </div>
         </div>
 
         {/* Foto ambiente + app no celular lado a lado (desktop) / empilhados (mobile) */}
-        <div className="mx-auto mt-10 md:mt-16 grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-10">
+        <div className="order-3 md:order-4 mx-auto mt-10 md:mt-16 grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-10">
           {/* Foto da família */}
           <div className="relative overflow-hidden rounded-[2rem] border border-white/60 shadow-2xl">
             <img
@@ -368,14 +376,14 @@ function LandingPage() {
             return (
               <div
                 key={title}
-                className="flex min-h-[240px] flex-col p-8 transition-transform hover:-translate-y-0.5"
+                className="flex min-h-[240px] flex-col p-8 transition-transform hover:-translate-y-0.5 max-sm:items-center max-sm:text-center"
                 style={{ backgroundColor: bg }}
               >
                 <div
-                  className={`grid h-11 w-11 place-items-center rounded-lg ${iconWrap}`}
+                  className={`grid h-11 w-11 place-items-center rounded-lg max-sm:h-14 max-sm:w-14 ${iconWrap}`}
                   style={iconStyle}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-5 w-5 max-sm:h-8 max-sm:w-8" strokeLinecap="round" strokeLinejoin="round" />
                 </div>
                 <div
                   className="mt-6 text-xl font-semibold leading-snug"
@@ -393,6 +401,7 @@ function LandingPage() {
             );
           })}
         </div>
+
         <div className="mt-12 text-center">
           <a
             href="#planos"
@@ -432,8 +441,8 @@ function LandingPage() {
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="p-8">
-                  <div className="font-display text-6xl leading-none text-[#0F2A47]/20">
+                <div className="p-8 max-sm:text-center">
+                  <div className="font-display text-6xl leading-none text-[#0F2A47]/20 max-sm:text-center">
                     {s.n}
                   </div>
                   <h3 className="font-display mt-4 text-2xl tracking-tight">{s.title}</h3>
@@ -461,18 +470,18 @@ function LandingPage() {
                 i % 2 === 1 ? "md:[&>div:first-child]:order-2" : ""
               }`}
             >
-              <div>
+              <div className="max-sm:text-center">
                 <h3 className="font-display text-3xl tracking-tight md:text-4xl">
                   {screen.title}
                 </h3>
-                <p className="mt-4 max-w-md text-base text-[#0F2A47]/70">{screen.desc}</p>
+                <p className="mt-4 max-w-md text-base text-[#0F2A47]/70 max-sm:mx-auto">{screen.desc}</p>
               </div>
               <div className="flex justify-center">
                 <img
                   src={screen.image}
                   alt={screen.alt}
                   loading="lazy"
-                  className="w-full max-w-[360px] drop-shadow-xl"
+                  className="w-full max-w-[288px] drop-shadow-xl md:max-w-[360px]"
                 />
               </div>
             </div>
@@ -501,7 +510,7 @@ function LandingPage() {
                   className="w-full max-w-[220px] md:max-w-[280px]"
                 />
               </div>
-              <div className="order-2">
+              <div className="order-2 max-sm:text-center">
                 <p className="font-display text-xl leading-snug tracking-tight md:text-2xl">
                   A gente sabe como é terminar o mês sem saber pra onde o dinheiro foi. Já passamos pelo
                   caderninho, pela planilha que durou três semanas, pelo aplicativo complicado demais.
@@ -542,8 +551,7 @@ function LandingPage() {
                 Faça o teste por 7 dias.
               </h2>
               <p className="mt-4 text-base text-[#0F2A47]/70">
-                Experimente sem riscos. Se em 7 dias achar que não é o ideal para sua família,
-                devolvemos o seu dinheiro.
+                Se em 7 dias achar que não é o ideal para sua família, devolvemos o seu dinheiro.
               </p>
             </div>
           </div>
@@ -564,37 +572,71 @@ function LandingPage() {
           </div>
 
           <div className="mx-auto mt-14 max-w-md">
-            <div className="relative overflow-hidden rounded-3xl border-2 border-[#F97316]/30 bg-white/95 p-10 shadow-xl backdrop-blur">
+            <div className="relative overflow-hidden rounded-3xl border-2 border-[#F97316]/30 bg-white/95 p-10 shadow-xl backdrop-blur max-sm:p-6">
+              {/* Badge desktop */}
               <div
-                className="absolute right-6 top-6 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white"
+                className="absolute right-6 top-6 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white max-sm:hidden"
                 style={{ backgroundColor: ORANGE }}
               >
                 Anual
               </div>
-              <div className="text-sm font-semibold text-[#0F2A47]/70">Família no Azul</div>
-              <div className="mt-4 flex items-baseline gap-1">
+
+              {/* Header mobile */}
+              <div className="mb-5 flex items-center justify-between md:hidden">
+                <span className="text-sm font-semibold text-[#0F2A47]/70">Família no Azul</span>
                 <span
-                  className="font-display text-6xl font-bold tracking-tight tabular-nums"
+                  className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white"
+                  style={{ backgroundColor: ORANGE }}
+                >
+                  Anual
+                </span>
+              </div>
+
+              {/* Título desktop */}
+              <div className="hidden text-sm font-semibold text-[#0F2A47]/70 md:block">
+                Família no Azul
+              </div>
+
+              <div className="mt-4 flex items-baseline gap-1 max-sm:mt-0 max-sm:block">
+                <span
+                  className="font-display text-6xl font-bold tracking-tight tabular-nums max-sm:text-5xl"
                   style={{ color: ORANGE }}
                 >
                   R$ 67,90
                 </span>
-                <span className="text-sm text-[#0F2A47]/60">/ano</span>
+                <span className="text-sm text-[#0F2A47]/60 max-sm:hidden">/ano</span>
               </div>
-              <p className="mt-1 text-xs text-[#0F2A47]/60 tabular-nums">Dá R$ 5,66 por mês</p>
+              <div className="hidden text-lg font-bold leading-tight text-[#0F2A47] max-sm:block">
+                ao ano
+              </div>
+              <p className="mt-1 text-xs text-[#0F2A47]/60 tabular-nums max-sm:mt-2">
+                Dá R$ 5,66 por mês
+              </p>
 
-              <ul className="mt-8 space-y-3 text-sm text-[#0F2A47]/80">
+              <ul className="mt-8 space-y-3 text-sm text-[#0F2A47]/80 max-sm:mt-6">
                 {[
                   "Painel de orçamento completo, no celular e no computador",
-                  "Método 50-30-20 dividindo sua renda no automático",
-                  "Modo Casal: 2 contas, um orçamento só — sem pagar a mais",
-                  "Assistente de dívidas: entenda os juros e avalie propostas de acordo",
+                  <>
+                    <strong className="text-[#0F2A47]">Método 50-30-20</strong>{" "}
+                    dividindo sua renda no automático
+                  </>,
+                  <>
+                    <strong className="text-[#0F2A47]">Modo Casal:</strong> 2 contas, um
+                    orçamento só - sem pagar a mais
+                  </>,
+                  <>
+                    <strong className="text-[#0F2A47]">Assistente de dívidas:</strong>{" "}
+                    entenda os juros e avalie propostas de acordo
+                  </>,
                   "Reserva de emergência com plano em etapas",
                   "Avisos por e-mail antes das contas vencerem",
-                  "12 meses de acesso — paga uma vez, usa o ano inteiro",
+                  <>
+                    <strong className="text-[#0F2A47]">12 meses de acesso</strong> - paga uma
+                    vez, usa o ano inteiro
+                  </>,
                   "Suporte por e-mail que responde gente como gente",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2">
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
                     <span className="mt-0.5 grid h-5 w-5 flex-shrink-0 place-items-center rounded-full bg-[#E8F3EA] text-[#2F7A3E]">
                       <Check className="h-3 w-3" />
                     </span>
@@ -675,8 +717,8 @@ function LandingPage() {
               Este mês <em className="italic" style={{ color: ORANGE }}>ainda dá tempo.</em>
             </h2>
             <p className="mx-auto mt-6 max-w-xl text-base text-white/85">
-              Cadastre a renda hoje, registre os gastos da semana e chegue no dia 30 sabendo — talvez
-              pela primeira vez — pra onde foi cada real.
+              Cadastre a renda hoje, registre os gastos da semana e chegue no dia 30 sabendo - talvez
+              pela primeira vez - pra onde foi cada real.
             </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <a
@@ -706,7 +748,7 @@ function LandingPage() {
       <footer className="border-t border-white/60 pb-24 md:pb-10">
         <div className="mx-auto max-w-6xl px-6 py-10 text-xs text-[#0F2A47]/70">
           <div className="grid gap-6 md:grid-cols-2 md:items-start">
-            <div className="space-y-1.5">
+            <div className="order-2 space-y-1.5 max-sm:text-center md:order-1">
               <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
               <div>Família no Azul é uma marca do Grupo Romana.</div>
               <div>CNPJ 48.570.356/0001-97</div>
@@ -720,7 +762,7 @@ function LandingPage() {
                 </a>
               </div>
             </div>
-            <div className="flex flex-wrap gap-x-6 gap-y-2 md:justify-end">
+            <div className="order-1 flex flex-wrap gap-x-6 gap-y-2 max-sm:justify-center md:order-2 md:justify-end">
               <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
               <a href="#planos" className="hover:text-[#0F2A47]">Planos</a>
               <a href="#faq" className="hover:text-[#0F2A47]">FAQ</a>
@@ -741,11 +783,11 @@ function LandingPage() {
           href={KIWIFY_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-md"
+          className="flex min-h-[48px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-3 text-xs font-semibold text-white shadow-md sm:px-6 sm:text-sm"
           style={{ backgroundColor: ORANGE }}
         >
           Começar agora — R$ 67,90/ano
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-4 w-4 shrink-0" />
         </a>
       </div>
     </div>
