@@ -8,7 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { BlogLayout, InlineText } from "@/components/BlogLayout";
-import { getBlogPost, type BlogPost } from "@/lib/blog-posts";
+import { getBlogPost, type BlogPost, type BlogSection, type BlogFaqItem } from "@/lib/blog-posts";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
 import { assetUrl } from "@/lib/asset-url";
 
