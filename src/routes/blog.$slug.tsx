@@ -127,11 +127,11 @@ function BlogPostPage() {
         </p>
 
         <div className="mt-8 space-y-8">
-          {post.sections.map((section) => (
+          {post.sections.map((section: BlogSection) => (
             <section key={section.heading}>
               <h2 className="font-display text-2xl tracking-tight">{section.heading}</h2>
               <div className="mt-3 space-y-3 text-base leading-relaxed text-[#0F2A47]/85">
-                {section.paragraphs.map((p, i) => (
+                {section.paragraphs.map((p: string, i: number) => (
                   <p key={i}>
                     <InlineText text={p} />
                   </p>
@@ -143,7 +143,7 @@ function BlogPostPage() {
                     section.list.ordered ? "list-decimal" : "list-disc"
                   } pl-5`}
                 >
-                  {section.list.items.map((item, i) => (
+                  {section.list.items.map((item: string, i: number) => (
                     <li key={i}>
                       <InlineText text={item} />
                     </li>
