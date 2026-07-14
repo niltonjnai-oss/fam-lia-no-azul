@@ -23,7 +23,10 @@ export const Route = createFileRoute("/blog/")({
       },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/blog` }],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/blog` },
+      { rel: "alternate", type: "application/rss+xml", title: "Blog — Família no Azul", href: "/blog/rss.xml" },
+    ],
   }),
   component: BlogIndexPage,
 });

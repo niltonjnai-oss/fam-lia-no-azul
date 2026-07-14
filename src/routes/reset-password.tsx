@@ -13,6 +13,12 @@ import { assetUrl } from "@/lib/asset-url";
 
 export const Route = createFileRoute("/reset-password")({
   ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Redefinir senha — Família no Azul" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: ResetPasswordPage,
 });
 

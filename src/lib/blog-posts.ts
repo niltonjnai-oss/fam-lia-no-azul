@@ -2,6 +2,9 @@
 // dados estruturados — mesmo padrão já usado na landing page (arrays de
 // benefícios, FAQ etc.) — e cada campo mapeia direto pra um pedaço de HTML
 // semântico e pro Article/FAQPage schema da página do post.
+//
+// Ao adicionar um post novo, atualizar manualmente também:
+// public/sitemap.xml (nova <url>) e public/blog/rss.xml (novo <item>).
 
 export interface BlogFaqItem {
   q: string;

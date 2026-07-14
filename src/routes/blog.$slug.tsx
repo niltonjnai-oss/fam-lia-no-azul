@@ -10,12 +10,14 @@ import {
 import { BlogLayout, InlineText } from "@/components/BlogLayout";
 import { getBlogPost, type BlogPost } from "@/lib/blog-posts";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import ogImage from "@/assets/lp/img-07-og.webp.asset.json";
 import { assetUrl } from "@/lib/asset-url";
 
 const SITE_URL = "https://azul.educarbem.com.br";
 const ORANGE = "#F97316";
 const ORANGE_HOVER = "#EA580C";
 const logoHorizontalUrl = assetUrl(logoHorizontal);
+const ogImageUrl = assetUrl(ogImage);
 
 function buildJsonLdScripts(post: BlogPost) {
   const url = `${SITE_URL}/blog/${post.slug}`;
@@ -83,7 +85,10 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:title", content: post.title },
         { property: "og:description", content: post.metaDescription },
         { property: "og:type", content: "article" },
+        { property: "og:image", content: ogImageUrl },
         { property: "article:published_time", content: post.publishedISO },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: ogImageUrl },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: buildJsonLdScripts(post),

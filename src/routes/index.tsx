@@ -149,25 +149,25 @@ const appScreens = [
   {
     title: "Painel do mês",
     desc: "Saldo e destino de cada real, numa tela. Abriu, entendeu, fechou.",
-    image: "/lp/app/painel.png",
+    image: "/lp/app/painel.webp",
     alt: "Tela do Painel do mês do app Família no Azul, mostrando o saldo do mês e a divisão entre Essencial, Estilo de vida e Futuro.",
   },
   {
     title: "Método 50-30-20",
     desc: "Suas três fatias, sempre atualizadas. Verde quando tá no azul, alerta quando precisa segurar.",
-    image: "/lp/app/metodo.png",
+    image: "/lp/app/metodo.webp",
     alt: "Tela do Método 50-30-20 do app Família no Azul, com três barras de progresso: Essencial, Estilo de vida e Reserva & Dívidas.",
   },
   {
     title: "Reserva de emergência",
     desc: "A barrinha que mais dá orgulho de ver crescer.",
-    image: "/lp/app/reserva.png",
+    image: "/lp/app/reserva.webp",
     alt: "Tela da Reserva de emergência do app Família no Azul, mostrando R$ 4.320 de R$ 12.000 e o progresso ao longo dos meses.",
   },
   {
     title: "Modo Casal",
     desc: "Você e seu cônjuge no mesmo orçamento, cada um com sua conta. Os dois registram, os dois enxergam tudo — nada de gasto escondido.",
-    image: "/lp/app/casal.png",
+    image: "/lp/app/casal.webp",
     alt: "Tela do Modo Casal do app Família no Azul, com os avatares de Ana e João no mesmo orçamento e os lançamentos de cada um.",
   },
 ];
@@ -372,7 +372,7 @@ function LandingPage() {
           {/* App no notebook e no celular */}
           <div className="flex justify-center">
             <img
-              src="/lp/app/hero.png"
+              src="/lp/app/hero.webp"
               alt="App Família no Azul aberto num notebook e num celular ao mesmo tempo, mostrando o painel do mês com o saldo e a divisão 50-30-20."
               loading="eager"
               width={1200}

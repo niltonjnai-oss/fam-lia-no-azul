@@ -18,6 +18,12 @@ import { CONVITE_PENDENTE_KEY, CONVITE_EMAIL_KEY } from "@/routes/convite.$token
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Entrar — Família no Azul" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: AuthPage,
 });
 

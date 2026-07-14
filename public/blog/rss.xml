@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog — Família no Azul</title>
+    <link>https://azul.educarbem.com.br/blog</link>
+    <description>Artigos sobre organização financeira familiar, método 50-30-20, dívidas e reserva de emergência, sem jargão e sem planilha.</description>
+    <language>pt-BR</language>
+    <atom:link href="https://azul.educarbem.com.br/blog/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Como organizar as finanças da família (guia completo)</title>
+      <link>https://azul.educarbem.com.br/blog/como-organizar-as-financas-da-familia</link>
+      <guid>https://azul.educarbem.com.br/blog/como-organizar-as-financas-da-familia</guid>
+      <description>Passo a passo prático para organizar as finanças da família pelo método 50-30-20, sem planilha: como dividir a renda, cortar o gasto invisível e sair do aperto no fim do mês.</description>
+      <pubDate>Mon, 13 Jul 2026 12:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

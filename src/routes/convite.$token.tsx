@@ -17,7 +17,10 @@ export const CONVITE_EMAIL_KEY = "fna_convite_email";
 export const Route = createFileRoute("/convite/$token")({
   ssr: false,
   head: () => ({
-    meta: [{ title: "Convite para a família — Família no Azul" }],
+    meta: [
+      { title: "Convite para a família — Família no Azul" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
   }),
   component: ConvitePage,
 });
