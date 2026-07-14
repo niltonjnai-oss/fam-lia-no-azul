@@ -29,12 +29,17 @@ export interface BlogPost {
   publishedISO: string;
   updatedISO?: string;
   readingMinutes: number;
+  /** Categoria/eyebrow curto exibido acima do título nos cards. */
+  category: string;
+  /** URL da imagem de capa (via .asset.json + assetUrl). */
+  coverImage: string;
   /** Parágrafo de abertura: responde a pergunta do título em 1-2 frases —
    *  é o trecho que mecanismos de busca por IA mais citam. */
   directAnswer: string;
   sections: BlogSection[];
   faq?: BlogFaqItem[];
 }
+
 
 export const blogPosts: BlogPost[] = [
   {
