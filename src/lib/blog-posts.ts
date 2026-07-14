@@ -49,7 +49,7 @@ export const blogPosts: BlogPost[] = [
       "Passo a passo prático para organizar as finanças da família pelo método 50-30-20, sem planilha: como dividir a renda, cortar o gasto invisível e sair do aperto no fim do mês.",
     excerpt:
       "O passo a passo pra sair do 'o dinheiro entrou e sumiu' e passar a saber, todo mês, pra onde foi cada real da família.",
-    publishedISO: "2026-07-13",
+    publishedISO: "2026-06-01",
     readingMinutes: 7,
     category: "Guia prático",
     coverImage: "organizar-financas",
@@ -148,7 +148,7 @@ export const blogPosts: BlogPost[] = [
       "Passo a passo prático para sair das dívidas: como listar o que deve, descobrir o custo real de cada uma, priorizar pelo juro (não pelo valor) e negociar com informação na mão.",
     excerpt:
       "Dívida não some sozinha, mas também não precisa de milagre. O caminho é listar, entender o juro de cada uma e atacar na ordem certa.",
-    publishedISO: "2026-07-14",
+    publishedISO: "2026-04-14",
     readingMinutes: 8,
     category: "Dívidas",
     coverImage: "sair-dividas",
@@ -259,7 +259,7 @@ export const blogPosts: BlogPost[] = [
       "Entenda como funciona o método 50-30-20 de verdade: como calcular sua divisão exata, o que entra em cada categoria, os casos que geram dúvida e o que fazer quando a renda não cabe.",
     excerpt:
       "50% essencial, 30% estilo de vida, 20% futuro. Simples de explicar, mas cheio de dúvida na hora de aplicar — este artigo resolve as duas coisas.",
-    publishedISO: "2026-07-14",
+    publishedISO: "2026-05-13",
     readingMinutes: 7,
     category: "Método",
     coverImage: "metodo-50-30-20",
