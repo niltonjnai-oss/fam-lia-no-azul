@@ -317,8 +317,8 @@ function LandingPage() {
           <strong className="font-bold" style={{ color: "#1d69ad" }}>3 minutos por dia e sua família volta pro azul.</strong>
         </p>
 
-        {/* CTA + faixa de confiança — depois das imagens no mobile, antes no desktop */}
-        <div className="order-4 md:order-3">
+        {/* CTA + faixa de confiança — depois das imagens no mobile e desktop */}
+        <div className="order-4 md:order-4">
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <a
               href="#planos"
@@ -356,7 +356,7 @@ function LandingPage() {
         </div>
 
         {/* Foto ambiente + app no celular lado a lado (desktop) / empilhados (mobile) */}
-        <div className="order-3 md:order-4 mx-auto mt-10 md:mt-16 grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-10">
+        <div className="order-3 md:order-3 mx-auto mt-10 md:mt-16 grid max-w-6xl gap-8 md:grid-cols-2 md:items-center md:gap-10">
           {/* Foto da família */}
           <div className="relative overflow-hidden rounded-[2rem] border border-white/60 shadow-2xl">
             <img

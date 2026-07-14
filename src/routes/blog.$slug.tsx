@@ -8,7 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { BlogLayout, InlineText } from "@/components/BlogLayout";
-import { getBlogPost, type BlogPost } from "@/lib/blog-posts";
+import { getBlogPost, type BlogPost, type BlogSection, type BlogFaqItem } from "@/lib/blog-posts";
 import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
 import { assetUrl } from "@/lib/asset-url";
 
@@ -127,11 +127,11 @@ function BlogPostPage() {
         </p>
 
         <div className="mt-8 space-y-8">
-          {post.sections.map((section) => (
+          {post.sections.map((section: BlogSection) => (
             <section key={section.heading}>
               <h2 className="font-display text-2xl tracking-tight">{section.heading}</h2>
               <div className="mt-3 space-y-3 text-base leading-relaxed text-[#0F2A47]/85">
-                {section.paragraphs.map((p, i) => (
+                {section.paragraphs.map((p: string, i: number) => (
                   <p key={i}>
                     <InlineText text={p} />
                   </p>
@@ -143,7 +143,7 @@ function BlogPostPage() {
                     section.list.ordered ? "list-decimal" : "list-disc"
                   } pl-5`}
                 >
-                  {section.list.items.map((item, i) => (
+                  {section.list.items.map((item: string, i: number) => (
                     <li key={i}>
                       <InlineText text={item} />
                     </li>
@@ -177,7 +177,7 @@ function BlogPostPage() {
           <section className="mt-10">
             <h2 className="font-display text-2xl tracking-tight">Perguntas frequentes</h2>
             <Accordion type="single" collapsible className="mt-4 space-y-2">
-              {post.faq.map((f, i) => (
+              {post.faq.map((f: BlogFaqItem, i: number) => (
                 <AccordionItem
                   key={i}
                   value={`faq-${i}`}
