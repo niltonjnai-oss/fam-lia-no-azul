@@ -137,6 +137,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Controle de orçamento familiar para pais brasileiros. Acompanhe gastos, dívidas, reserva de emergência e o método 50-30-20.",
       },
       { name: "author", content: "Família no Azul" },
+      { name: "google-site-verification", content: "yBbJA5VykzoJkdmmM2-D2Sf_abeE5upcYFgITKKK7MU" },
       { property: "og:title", content: "Família no Azul" },
       {
         property: "og:description",
