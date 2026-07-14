@@ -601,8 +601,7 @@ function LandingPage() {
               loading="lazy"
             />
             <div className="text-center md:text-left">
-              <span className="t-eyebrow">Sem risco</span>
-              <h2 className="font-display mt-2 text-3xl tracking-tight md:text-4xl">
+              <h2 className="font-display text-3xl tracking-tight text-orange-500 md:text-4xl">
                 Faça o teste por 7 dias.
               </h2>
               <p className="mt-4 text-base text-[#0F2A47]/70">
