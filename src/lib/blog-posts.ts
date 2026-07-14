@@ -29,12 +29,17 @@ export interface BlogPost {
   publishedISO: string;
   updatedISO?: string;
   readingMinutes: number;
+  /** Categoria/eyebrow curto exibido acima do título nos cards. */
+  category: string;
+  /** URL da imagem de capa (via .asset.json + assetUrl). */
+  coverImage: string;
   /** Parágrafo de abertura: responde a pergunta do título em 1-2 frases —
    *  é o trecho que mecanismos de busca por IA mais citam. */
   directAnswer: string;
   sections: BlogSection[];
   faq?: BlogFaqItem[];
 }
+
 
 export const blogPosts: BlogPost[] = [
   {
@@ -46,6 +51,9 @@ export const blogPosts: BlogPost[] = [
       "O passo a passo pra sair do 'o dinheiro entrou e sumiu' e passar a saber, todo mês, pra onde foi cada real da família.",
     publishedISO: "2026-07-13",
     readingMinutes: 7,
+    category: "Guia prático",
+    coverImage: "organizar-financas",
+
     directAnswer:
       "Organizar as finanças da família começa por três passos: somar toda a renda do mês, dividir esse valor entre essencial, estilo de vida e reserva (o método 50-30-20), e registrar os gastos do dia a dia pra comparar com o planejado. O segredo não é fazer uma planilha perfeita — é repetir esses três passos toda semana, em poucos minutos.",
     sections: [
