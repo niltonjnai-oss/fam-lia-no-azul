@@ -241,6 +241,113 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: "metodo-50-30-20-como-funciona",
+    title: "Método 50-30-20: como funciona e como calcular o seu",
+    metaDescription:
+      "Entenda como funciona o método 50-30-20 de verdade: como calcular sua divisão exata, o que entra em cada categoria, os casos que geram dúvida e o que fazer quando a renda não cabe.",
+    excerpt:
+      "50% essencial, 30% estilo de vida, 20% futuro. Simples de explicar, mas cheio de dúvida na hora de aplicar — este artigo resolve as duas coisas.",
+    publishedISO: "2026-07-14",
+    readingMinutes: 7,
+    directAnswer:
+      "O método 50-30-20 divide a renda mensal líquida da família em três partes fixas: 50% para despesas essenciais, 30% para estilo de vida e 20% para reserva de emergência e dívidas. Para calcular o seu, multiplique sua renda líquida do mês por 0,5, por 0,3 e por 0,2 — esses três valores são os limites de cada categoria.",
+    sections: [
+      {
+        heading: "De onde vem o método 50-30-20",
+        paragraphs: [
+          "O 50-30-20 não é modismo recente: foi popularizado em 2005 pela senadora americana Elizabeth Warren, quando ainda era professora de Harvard, no livro sobre finanças pessoais que escreveu com a filha. A proposta original era simples — resolver o problema de que a maioria das pessoas não consegue manter um controle financeiro detalhado por muito tempo.",
+          "A força do método está justamente aí: em vez de decidir gasto por gasto, você decide só três limites. Menos decisões, mais consistência — é por isso que ele resiste ao teste do tempo em qualquer época.",
+        ],
+      },
+      {
+        heading: "Como calcular a sua divisão exata",
+        paragraphs: [
+          "O cálculo usa a **renda líquida** (o que realmente entra na conta, depois de descontos) — não a renda bruta. Para cada R$ 1.000 de renda líquida:",
+        ],
+        list: {
+          ordered: false,
+          items: [
+            "**Essencial**: multiplique por 0,5 → R$ 500 a cada R$ 1.000.",
+            "**Estilo de vida**: multiplique por 0,3 → R$ 300 a cada R$ 1.000.",
+            "**Reserva e dívidas**: multiplique por 0,2 → R$ 200 a cada R$ 1.000.",
+          ],
+        },
+      },
+      {
+        heading: "O que entra em cada categoria (e os casos que geram dúvida)",
+        paragraphs: [
+          "As pontas são fáceis: moradia e mercado são sempre essenciais, viagem e presente são sempre estilo de vida. A dúvida real mora no meio — nesses casos, uma pergunta resolve: **\"se a renda caísse pela metade amanhã, eu continuaria pagando isso?\"** Se sim, é essencial. Se não, é estilo de vida, mesmo que pareça necessário hoje.",
+        ],
+        list: {
+          ordered: false,
+          items: [
+            "**Internet**: essencial se for usada para trabalho ou escola; estilo de vida se for só lazer.",
+            "**Streaming**: quase sempre estilo de vida — corta primeiro numa emergência.",
+            "**Academia**: depende. Se for prescrição médica, essencial; se for bem-estar geral, estilo de vida.",
+            "**Plano de saúde**: essencial — é seguro contra um risco que a família não pode bancar sozinha.",
+            "**Transporte**: a parte pra trabalhar é essencial; Uber de sábado à noite é estilo de vida.",
+          ],
+        },
+      },
+      {
+        heading: "Por que dividir por categoria funciona melhor que \"guardar o que sobrar\"",
+        paragraphs: [
+          "A abordagem mais comum — gastar o mês inteiro e guardar o que sobrar no fim — costuma resultar em zero de reserva, porque quase sempre não sobra nada. O 50-30-20 inverte a lógica: os 20% de reserva e dívidas são um limite mínimo definido antes de gastar, não uma esperança para depois.",
+          "É a mesma diferença entre \"vou economizar o que der\" e \"tenho R$ 400 reservados este mês, ponto final\" — o segundo é o que realmente sai do papel.",
+        ],
+      },
+      {
+        heading: "Quando os 50-30-20 não cabem na sua realidade",
+        paragraphs: [
+          "É comum, principalmente em famílias com aluguel caro ou dívidas em aberto, o essencial passar dos 50% no primeiro mês. Isso não invalida o método — é o próprio método mostrando onde está o aperto real. Duas saídas práticas:",
+        ],
+        list: {
+          ordered: true,
+          items: [
+            "**Revisar o essencial primeiro**: contratos de internet e plano de saúde às vezes têm opções mais baratas com a mesma cobertura; vale comparar antes de cortar o resto.",
+            "**Usar uma variação temporária**: famílias com renda mais apertada às vezes usam 60-20-20 (60% essencial, 20% estilo de vida, 20% reserva) até o essencial caber melhor — o importante é nunca abrir mão dos 20% de reserva e dívidas, mesmo reduzindo o estilo de vida a zero por um tempo.",
+          ],
+        },
+      },
+      {
+        heading: "Um exemplo prático com números",
+        paragraphs: [
+          "Uma família com renda líquida de R$ 4.500 por mês aplicaria assim:",
+        ],
+        list: {
+          ordered: false,
+          items: [
+            "Essencial (50%): até R$ 2.250 — aluguel, contas, mercado, transporte para o trabalho.",
+            "Estilo de vida (30%): até R$ 1.350 — lazer, streaming, restaurante.",
+            "Reserva e dívidas (20%): pelo menos R$ 900 — divididos entre guardar e pagar dívidas ativas.",
+          ],
+        },
+      },
+    ],
+    faq: [
+      {
+        q: "O cálculo usa renda bruta ou líquida?",
+        a: "Líquida — o valor que realmente cai na conta depois de descontos como INSS e imposto de renda. Usar a renda bruta infla os três limites e faz o essencial parecer que cabe quando na prática não cabe.",
+      },
+      {
+        q: "E se a renda da família for variável (freelas, comissão)?",
+        a: "Calcule os três limites com base na média dos últimos 3 a 6 meses, não no mês mais alto. Em meses acima da média, o excedente deve reforçar principalmente a reserva de emergência — ela é o que sustenta os meses mais fracos.",
+      },
+      {
+        q: "É normal o essencial passar de 50% da renda?",
+        a: "É comum, especialmente com aluguel alto ou dívidas em aberto, mas é um sinal para agir — seja revisando contas, seja usando uma divisão temporária mais generosa no essencial até a situação melhorar.",
+      },
+      {
+        q: "Os 20% de reserva e dívidas são só para guardar dinheiro?",
+        a: "Não — essa fatia cobre tanto guardar para a reserva de emergência quanto pagar dívidas ativas. Se há dívida cara em aberto, a prioridade dentro desses 20% costuma ser quitar a dívida antes de acumular reserva, porque o juro da dívida geralmente supera qualquer rendimento de investimento.",
+      },
+      {
+        q: "Preciso acertar os três números com exatidão todo mês?",
+        a: "Não. O 50-30-20 é uma referência para decidir onde focar, não uma meta que precisa fechar centavo a centavo. O que importa é a tendência ao longo dos meses, não a perfeição em um mês isolado.",
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
