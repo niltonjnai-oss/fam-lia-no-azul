@@ -51,6 +51,9 @@ export const blogPosts: BlogPost[] = [
       "O passo a passo pra sair do 'o dinheiro entrou e sumiu' e passar a saber, todo mês, pra onde foi cada real da família.",
     publishedISO: "2026-07-13",
     readingMinutes: 7,
+    category: "Guia prático",
+    coverImage: "organizar-financas",
+
     directAnswer:
       "Organizar as finanças da família começa por três passos: somar toda a renda do mês, dividir esse valor entre essencial, estilo de vida e reserva (o método 50-30-20), e registrar os gastos do dia a dia pra comparar com o planejado. O segredo não é fazer uma planilha perfeita — é repetir esses três passos toda semana, em poucos minutos.",
     sections: [
