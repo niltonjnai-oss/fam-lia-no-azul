@@ -9,35 +9,36 @@ const ORANGE_HOVER = "#EA580C";
 const logoHorizontalUrl = assetUrl(logoHorizontal);
 
 /** Header + footer padrão da landing page, reaproveitados nas páginas do blog. */
-export function BlogLayout({ children }: { children: ReactNode }) {
+export function BlogLayout({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   return (
     <div
       className="min-h-screen text-[#0F2A47] font-sans antialiased"
-      style={{
-        backgroundImage: "linear-gradient(180deg, #E6F2FB 0%, #D6EAF8 40%, #EAF4FC 100%)",
-      }}
+      style={{ backgroundColor: "#FAF7F1" }}
     >
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <Link to="/" className="flex items-center">
-          <img src={logoHorizontalUrl} alt="Família no Azul" className="h-10 w-auto" />
-        </Link>
-        <div className="flex items-center gap-3">
-          <Link to="/" className="hidden text-sm font-medium text-[#0F2A47] hover:opacity-70 sm:block">
-            Voltar pro site
+      <header className="border-b border-[#0F2A47]/10 bg-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+          <Link to="/" className="flex items-center">
+            <img src={logoHorizontalUrl} alt="Família no Azul" className="h-9 w-auto" />
           </Link>
-          <Link
-            to="/auth"
-            className="inline-flex min-h-[48px] items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors"
-            style={{ backgroundColor: ORANGE }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
-          >
-            Entrar
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link to="/" className="hidden text-sm font-medium text-[#0F2A47] hover:opacity-70 sm:block">
+              Voltar pro site
+            </Link>
+            <Link
+              to="/auth"
+              className="inline-flex min-h-[44px] items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors"
+              style={{ backgroundColor: ORANGE }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = ORANGE_HOVER)}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = ORANGE)}
+            >
+              Entrar
+            </Link>
+          </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-6 pb-24 pt-4">{children}</main>
+      <main className={`mx-auto px-6 pb-24 pt-8 ${wide ? "max-w-7xl" : "max-w-3xl"}`}>{children}</main>
+
 
       <footer className="border-t border-white/60 pb-10">
         <div className="mx-auto max-w-6xl px-6 py-10 text-xs text-[#0F2A47]/70">
