@@ -177,7 +177,7 @@ function BlogPostPage() {
           <section className="mt-10">
             <h2 className="font-display text-2xl tracking-tight">Perguntas frequentes</h2>
             <Accordion type="single" collapsible className="mt-4 space-y-2">
-              {post.faq.map((f, i) => (
+              {post.faq.map((f: BlogFaqItem, i: number) => (
                 <AccordionItem
                   key={i}
                   value={`faq-${i}`}
