@@ -259,6 +259,12 @@ function AuthGate() {
     }
   }, [session, loading, pathname, isPublicRoute, navigate]);
 
+  // Blog e páginas legais não têm nenhum redirect condicionado à sessão —
+  // podem renderizar direto no servidor (SSR), sem esperar o loading do
+  // Supabase resolver (que só existe no navegador). Isso é o que faz o
+  // conteúdo aparecer no HTML puro para crawlers que não executam JS.
+  if (isBlog || isLegal) return <Outlet />;
+
   if (loading || isHandlingEmailConfirmation || isHandlingAuthError) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
