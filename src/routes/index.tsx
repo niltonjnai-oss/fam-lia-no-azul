@@ -51,6 +51,8 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: assetUrl(ogImage) },
     ],
+    links: [{ rel: "canonical", href: SITE_URL }],
+    scripts: buildJsonLdScripts(),
   }),
   component: LandingPage,
 });
@@ -204,6 +206,58 @@ const faqs = [
     a: "O pagamento é processado com segurança pela Kiwify, que aceita cartão de crédito, Pix e boleto.",
   },
 ];
+
+const SITE_URL = "https://azul.educarbem.com.br";
+
+// Dados estruturados (JSON-LD) para SEO e mecanismos de busca por IA
+// (Google AI Mode, Gemini, etc.). O FAQPage reaproveita o array `faqs`
+// acima — uma única fonte, sempre sincronizada com o que aparece na tela.
+function buildJsonLdScripts() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
+  const softwareSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Família no Azul",
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "Web, Android, iOS",
+    description:
+      "Aplicativo de orçamento familiar que divide a renda automaticamente pelo método 50-30-20, organiza dívidas e ajuda a montar reserva de emergência — sem planilha.",
+    url: SITE_URL,
+    image: assetUrl(ogImage),
+    brand: { "@type": "Brand", name: "Família no Azul" },
+    offers: {
+      "@type": "Offer",
+      price: "67.90",
+      priceCurrency: "BRL",
+      url: `${SITE_URL}/#planos`,
+      availability: "https://schema.org/InStock",
+    },
+  };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Família no Azul",
+    url: SITE_URL,
+    logo: logoHorizontalUrl,
+    email: "sac.familianoazul@educarbem.com.br",
+    parentOrganization: { "@type": "Organization", name: "Grupo Romana" },
+  };
+
+  return [faqSchema, softwareSchema, organizationSchema].map((schema) => ({
+    type: "application/ld+json",
+    children: JSON.stringify(schema),
+  }));
+}
 
 function LandingPage() {
   

@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+Allow: /termos
+Allow: /privacidade
+
+Disallow: /app
+Disallow: /orcamento
+Disallow: /metodo
+Disallow: /dividas
+Disallow: /contas
+Disallow: /reserva
+Disallow: /familia
+Disallow: /assinatura
+Disallow: /indicacao
+Disallow: /onboarding
+Disallow: /importar
+Disallow: /admin
+Disallow: /auth
+Disallow: /reset-password
+Disallow: /convite
+
+Sitemap: https://azul.educarbem.com.br/sitemap.xml
