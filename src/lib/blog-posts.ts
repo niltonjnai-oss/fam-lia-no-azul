@@ -150,6 +150,9 @@ export const blogPosts: BlogPost[] = [
       "Dívida não some sozinha, mas também não precisa de milagre. O caminho é listar, entender o juro de cada uma e atacar na ordem certa.",
     publishedISO: "2026-07-14",
     readingMinutes: 8,
+    category: "Dívidas",
+    coverImage: "sair-dividas",
+
     directAnswer:
       "Sair das dívidas começa por listar todas elas com o valor, a parcela e o juro de cada uma — não só o total que você deve. Depois, priorize o pagamento pela dívida com o juro mais alto primeiro (não a maior em valor), porque é ela que mais cresce enquanto espera. O restante das dívidas você mantém só na parcela mínima até a prioritária ser quitada.",
     sections: [
@@ -258,6 +261,9 @@ export const blogPosts: BlogPost[] = [
       "50% essencial, 30% estilo de vida, 20% futuro. Simples de explicar, mas cheio de dúvida na hora de aplicar — este artigo resolve as duas coisas.",
     publishedISO: "2026-07-14",
     readingMinutes: 7,
+    category: "Método",
+    coverImage: "metodo-50-30-20",
+
     directAnswer:
       "O método 50-30-20 divide a renda mensal líquida da família em três partes fixas: 50% para despesas essenciais, 30% para estilo de vida e 20% para reserva de emergência e dívidas. Para calcular o seu, multiplique sua renda líquida do mês por 0,5, por 0,3 e por 0,2 — esses três valores são os limites de cada categoria.",
     sections: [
