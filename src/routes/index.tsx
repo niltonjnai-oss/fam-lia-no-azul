@@ -280,6 +280,7 @@ function LandingPage() {
           <a href="#app" className="hover:text-[#0F2A47]">Por dentro</a>
           <a href="#planos" className="hover:text-[#0F2A47]">Planos</a>
           <a href="#faq" className="hover:text-[#0F2A47]">FAQ</a>
+          <Link to="/blog" className="hover:text-[#0F2A47]">Blog</Link>
         </nav>
         <div className="flex items-center gap-3">
           <a
@@ -835,6 +836,7 @@ function LandingPage() {
               <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
               <a href="#planos" className="hover:text-[#0F2A47]">Planos</a>
               <a href="#faq" className="hover:text-[#0F2A47]">FAQ</a>
+              <Link to="/blog" className="hover:text-[#0F2A47]">Blog</Link>
               <Link to="/termos" className="hover:text-[#0F2A47]">Termos de Uso</Link>
               <Link to="/privacidade" className="hover:text-[#0F2A47]">Política de Privacidade</Link>
               <Link to="/auth" className="hover:text-[#0F2A47]">Entrar</Link>

@@ -218,7 +218,9 @@ function AuthGate() {
   const isLegal = pathname === "/termos" || pathname === "/privacidade";
   // Convite do Modo Casal: acessível logado ou não (a própria página decide).
   const isConvite = pathname.startsWith("/convite/");
-  const isPublicRoute = isAuthRoute || isResetPassword || isLanding || isLegal || isConvite;
+  // Blog é conteúdo público (SEO) — acessível logado ou não.
+  const isBlog = pathname.startsWith("/blog");
+  const isPublicRoute = isAuthRoute || isResetPassword || isLanding || isLegal || isConvite || isBlog;
   const isOnboarding = pathname.startsWith("/onboarding");
   const authErrorNotice = !loading ? getAuthErrorNotice(pathname) : null;
   const isHandlingEmailConfirmation = !loading && shouldSendConfirmedEmailUserToAuth(pathname, session);
