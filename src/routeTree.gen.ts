@@ -26,7 +26,9 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssinaturaRouteImport } from './routes/assinatura'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as ConviteTokenRouteImport } from './routes/convite.$token'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as ApiFamiliaConvidarRouteImport } from './routes/api/familia/convidar'
 import { Route as ApiEmailsSendRouteImport } from './routes/api/emails/send'
@@ -118,9 +120,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConviteTokenRoute = ConviteTokenRouteImport.update({
   id: '/convite/$token',
   path: '/convite/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminEmailsRoute = AdminEmailsRouteImport.update({
@@ -168,7 +180,9 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/convite/$token': typeof ConviteTokenRoute
+  '/blog/': typeof BlogIndexRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
   '/api/familia/convidar': typeof ApiFamiliaConvidarRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
@@ -193,7 +207,9 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/convite/$token': typeof ConviteTokenRoute
+  '/blog': typeof BlogIndexRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
   '/api/familia/convidar': typeof ApiFamiliaConvidarRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
@@ -219,7 +235,9 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/convite/$token': typeof ConviteTokenRoute
+  '/blog/': typeof BlogIndexRoute
   '/api/emails/send': typeof ApiEmailsSendRoute
   '/api/familia/convidar': typeof ApiFamiliaConvidarRoute
   '/api/public/emails/cron': typeof ApiPublicEmailsCronRoute
@@ -246,7 +264,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/admin/emails'
+    | '/blog/$slug'
     | '/convite/$token'
+    | '/blog/'
     | '/api/emails/send'
     | '/api/familia/convidar'
     | '/api/public/emails/cron'
@@ -271,7 +291,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/admin/emails'
+    | '/blog/$slug'
     | '/convite/$token'
+    | '/blog'
     | '/api/emails/send'
     | '/api/familia/convidar'
     | '/api/public/emails/cron'
@@ -296,7 +318,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/admin/emails'
+    | '/blog/$slug'
     | '/convite/$token'
+    | '/blog/'
     | '/api/emails/send'
     | '/api/familia/convidar'
     | '/api/public/emails/cron'
@@ -322,7 +346,9 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermosRoute: typeof TermosRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   ConviteTokenRoute: typeof ConviteTokenRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   ApiEmailsSendRoute: typeof ApiEmailsSendRoute
   ApiFamiliaConvidarRoute: typeof ApiFamiliaConvidarRoute
   ApiPublicEmailsCronRoute: typeof ApiPublicEmailsCronRoute
@@ -450,11 +476,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/convite/$token': {
       id: '/convite/$token'
       path: '/convite/$token'
       fullPath: '/convite/$token'
       preLoaderRoute: typeof ConviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/emails': {
@@ -514,7 +554,9 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   TermosRoute: TermosRoute,
   AdminEmailsRoute: AdminEmailsRoute,
+  BlogSlugRoute: BlogSlugRoute,
   ConviteTokenRoute: ConviteTokenRoute,
+  BlogIndexRoute: BlogIndexRoute,
   ApiEmailsSendRoute: ApiEmailsSendRoute,
   ApiFamiliaConvidarRoute: ApiFamiliaConvidarRoute,
   ApiPublicEmailsCronRoute: ApiPublicEmailsCronRoute,
@@ -523,3 +565,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
