@@ -29,12 +29,17 @@ export interface BlogPost {
   publishedISO: string;
   updatedISO?: string;
   readingMinutes: number;
+  /** Categoria/eyebrow curto exibido acima do título nos cards. */
+  category: string;
+  /** URL da imagem de capa (via .asset.json + assetUrl). */
+  coverImage: string;
   /** Parágrafo de abertura: responde a pergunta do título em 1-2 frases —
    *  é o trecho que mecanismos de busca por IA mais citam. */
   directAnswer: string;
   sections: BlogSection[];
   faq?: BlogFaqItem[];
 }
+
 
 export const blogPosts: BlogPost[] = [
   {
@@ -44,8 +49,11 @@ export const blogPosts: BlogPost[] = [
       "Passo a passo prático para organizar as finanças da família pelo método 50-30-20, sem planilha: como dividir a renda, cortar o gasto invisível e sair do aperto no fim do mês.",
     excerpt:
       "O passo a passo pra sair do 'o dinheiro entrou e sumiu' e passar a saber, todo mês, pra onde foi cada real da família.",
-    publishedISO: "2026-07-13",
+    publishedISO: "2026-06-01",
     readingMinutes: 7,
+    category: "Guia prático",
+    coverImage: "organizar-financas",
+
     directAnswer:
       "Organizar as finanças da família começa por três passos: somar toda a renda do mês, dividir esse valor entre essencial, estilo de vida e reserva (o método 50-30-20), e registrar os gastos do dia a dia pra comparar com o planejado. O segredo não é fazer uma planilha perfeita — é repetir esses três passos toda semana, em poucos minutos.",
     sections: [
@@ -140,8 +148,11 @@ export const blogPosts: BlogPost[] = [
       "Passo a passo prático para sair das dívidas: como listar o que deve, descobrir o custo real de cada uma, priorizar pelo juro (não pelo valor) e negociar com informação na mão.",
     excerpt:
       "Dívida não some sozinha, mas também não precisa de milagre. O caminho é listar, entender o juro de cada uma e atacar na ordem certa.",
-    publishedISO: "2026-07-14",
+    publishedISO: "2026-04-14",
     readingMinutes: 8,
+    category: "Dívidas",
+    coverImage: "sair-dividas",
+
     directAnswer:
       "Sair das dívidas começa por listar todas elas com o valor, a parcela e o juro de cada uma — não só o total que você deve. Depois, priorize o pagamento pela dívida com o juro mais alto primeiro (não a maior em valor), porque é ela que mais cresce enquanto espera. O restante das dívidas você mantém só na parcela mínima até a prioritária ser quitada.",
     sections: [
@@ -248,8 +259,11 @@ export const blogPosts: BlogPost[] = [
       "Entenda como funciona o método 50-30-20 de verdade: como calcular sua divisão exata, o que entra em cada categoria, os casos que geram dúvida e o que fazer quando a renda não cabe.",
     excerpt:
       "50% essencial, 30% estilo de vida, 20% futuro. Simples de explicar, mas cheio de dúvida na hora de aplicar — este artigo resolve as duas coisas.",
-    publishedISO: "2026-07-14",
+    publishedISO: "2026-05-13",
     readingMinutes: 7,
+    category: "Método",
+    coverImage: "metodo-50-30-20",
+
     directAnswer:
       "O método 50-30-20 divide a renda mensal líquida da família em três partes fixas: 50% para despesas essenciais, 30% para estilo de vida e 20% para reserva de emergência e dívidas. Para calcular o seu, multiplique sua renda líquida do mês por 0,5, por 0,3 e por 0,2 — esses três valores são os limites de cada categoria.",
     sections: [
