@@ -414,7 +414,7 @@ function CategoriaSection({
               <span className="text-right">Realizado</span>
               <span className="text-right">Diferença</span>
             </div>
-            <ul className="divide-y divide-border border-t border-border sm:divide-y-0 sm:border-t-0">
+            <ul className="divide-y divide-border border-t border-border">
               {subitens.map((s) => (
                 <SubitemRow
                   key={s.id}
