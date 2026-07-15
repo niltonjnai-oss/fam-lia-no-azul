@@ -25,6 +25,39 @@ export type SupabaseConfigIssue = {
   reason: string;
 };
 
+// Trava de segurança: uma chave SECRETA (service_role JWT ou sb_secret_...) dá
+// acesso de administrador e ignora o RLS — jamais pode ir ao navegador. Se uma
+// variável de ambiente for mal configurada com esse tipo de chave (em qualquer
+// ambiente), a detecção abaixo derruba o cliente com erro claro em vez de
+// vazá-la. Só retorna true quando IDENTIFICA POSITIVAMENTE uma chave secreta —
+// chaves publishable/anon e qualquer valor indecifrável passam (fail-open),
+// pra nunca bloquear um login legítimo por engano.
+function decodeJwtRole(jwt: string): string | null {
+  const parts = jwt.split(".");
+  if (parts.length !== 3) return null;
+  try {
+    const b64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const json =
+      typeof atob === "function"
+        ? decodeURIComponent(
+            atob(b64)
+              .split("")
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+              .join(""),
+          )
+        : Buffer.from(b64, "base64").toString("utf-8");
+    const payload = JSON.parse(json) as { role?: unknown };
+    return typeof payload.role === "string" ? payload.role : null;
+  } catch {
+    return null;
+  }
+}
+
+function isSecretKey(key: string): boolean {
+  if (/^sb_secret_/i.test(key)) return true;
+  return decodeJwtRole(key) === "service_role";
+}
+
 function validateSupabaseConfig(): SupabaseConfigIssue[] {
   const issues: SupabaseConfigIssue[] = [];
 
@@ -59,6 +92,12 @@ function validateSupabaseConfig(): SupabaseConfigIssue[] {
     issues.push({
       variable: "VITE_SUPABASE_PUBLISHABLE_KEY",
       reason: "Variável ausente. Cole a publishable/anon key do projeto Supabase.",
+    });
+  } else if (isSecretKey(SUPABASE_PUBLISHABLE_KEY)) {
+    issues.push({
+      variable: "VITE_SUPABASE_PUBLISHABLE_KEY",
+      reason:
+        "CRÍTICO: esta é uma chave SECRETA (service_role / sb_secret). Ela dá acesso de administrador e NUNCA pode ir ao navegador. Substitua pela publishable/anon key (sb_publishable_... ou JWT com role anon).",
     });
   } else {
     const isJwt = SUPABASE_PUBLISHABLE_KEY.split(".").length === 3;
