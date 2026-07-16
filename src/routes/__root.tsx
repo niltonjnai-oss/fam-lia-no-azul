@@ -19,6 +19,7 @@ import { AuthProvider, signOut, useAuth } from "../lib/auth-context";
 import { Toaster } from "../components/ui/sonner";
 import { MesProvider } from "../lib/mes-context";
 import { MetaPixel } from "../components/MetaPixel";
+import { CookieConsent } from "../components/CookieConsent";
 
 
 const AUTH_NOTICE_STORAGE_KEY = "familia_auth_notice";
@@ -204,6 +205,7 @@ function RootComponent() {
         <Toaster />
       </AuthProvider>
       <MetaPixel />
+      <CookieConsent />
     </QueryClientProvider>
   );
 }

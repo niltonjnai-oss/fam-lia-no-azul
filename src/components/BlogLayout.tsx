@@ -8,12 +8,23 @@ const ORANGE = "#F97316";
 const ORANGE_HOVER = "#EA580C";
 const logoHorizontalUrl = assetUrl(logoHorizontal);
 
-/** Header + footer padrão da landing page, reaproveitados nas páginas do blog. */
-export function BlogLayout({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
+/** Header + footer padrão da landing page, reaproveitados nas páginas do blog.
+ *  `background` permite trocar o creme padrão do blog pelo azul da LP (ex.:
+ *  páginas legais que devem combinar com o site). Aceita cor sólida ou gradiente. */
+export function BlogLayout({
+  children,
+  wide = false,
+  background = "#FAF7F1",
+}: {
+  children: ReactNode;
+  wide?: boolean;
+  background?: string;
+}) {
+  const isGradient = background.includes("gradient");
   return (
     <div
       className="min-h-screen text-[#0F2A47] font-sans antialiased"
-      style={{ backgroundColor: "#FAF7F1" }}
+      style={isGradient ? { backgroundImage: background } : { backgroundColor: background }}
     >
       <header className="border-b border-[#0F2A47]/10 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
