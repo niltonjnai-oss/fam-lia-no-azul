@@ -66,7 +66,7 @@ export function AssistenteDividaCard() {
             <Lightbulb className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-sm font-semibold">🧮 Entenda sua dívida</div>
+            <div className="text-sm font-semibold">Entenda sua dívida</div>
             <div className="text-xs text-muted-foreground">
               Descubra o custo real, quando ela acaba e como negociar melhor.
             </div>

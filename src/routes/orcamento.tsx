@@ -180,7 +180,12 @@ function OrcamentoPage() {
             className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium shadow-soft transition-colors hover:border-primary/40 hover:bg-primary/5"
           >
             <Upload className="h-4 w-4 text-primary" />
-            Importar extrato
+            <span className="flex flex-col items-start leading-tight">
+              <span>Importar extrato do banco</span>
+              <span className="text-[10px] font-normal text-muted-foreground">
+                Preenchimento automático dos gastos
+              </span>
+            </span>
           </Link>
         </div>
         <button
@@ -414,7 +419,7 @@ function CategoriaSection({
               <span className="text-right">Realizado</span>
               <span className="text-right">Diferença</span>
             </div>
-            <ul className="divide-y divide-border border-t border-border sm:divide-y-0 sm:border-t-0">
+            <ul className="divide-y divide-border border-t border-border">
               {subitens.map((s) => (
                 <SubitemRow
                   key={s.id}
