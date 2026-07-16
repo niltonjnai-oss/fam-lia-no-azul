@@ -471,6 +471,100 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: "financas-de-casal-sem-planilha",
+    title: "Finanças de casal sem planilha: como organizar o dinheiro a dois",
+    metaDescription:
+      "Como organizar as finanças de casal sem depender de planilha: os 3 modelos de divisão mais comuns, como dividir quando a renda é diferente entre os dois, e como aplicar o 50-30-20 a dois.",
+    excerpt:
+      "Dividir contas a dois não devia significar discussão nem planilha que só um dos dois sabe mexer. Veja os modelos mais usados e como aplicar o 50-30-20 quando duas rendas entram na mesma casa.",
+    publishedISO: "2026-07-16",
+    readingMinutes: 7,
+    category: "Casal",
+    coverImage: "casal-sem-planilha",
+
+    directAnswer:
+      "Organizar as finanças de casal sem planilha começa por escolher um modelo de divisão — conta conjunta total, contas separadas com uma conta comum pra despesas do casal, ou contribuição proporcional à renda de cada um — e depois aplicar o método 50-30-20 sobre a renda combinada da casa. O que substitui a planilha não é abrir mão do controle, é ter os dois lançando e vendo o mesmo painel em tempo real, sem depender de um dos dois lembrar de atualizar um arquivo.",
+    sections: [
+      {
+        heading: "Por que a planilha do casal costuma travar (e não é falta de organização)",
+        paragraphs: [
+          "Toda planilha financeira de casal começa igual: um dos dois monta, formata bonito, explica pro outro como preencher. Duas semanas depois, só uma pessoa está atualizando — e ela é quem carrega sozinha o peso de saber pra onde foi o dinheiro dos dois.",
+          "O problema não é falta de disciplina. É que uma planilha não avisa em tempo real quando o outro gasta, não notifica, não sincroniza — cada atualização depende de alguém lembrar de abrir o arquivo e digitar. Isso vira fonte de atrito: 'você não me falou que tinha gasto isso' é quase sempre um problema de visibilidade, não de confiança.",
+        ],
+      },
+      {
+        heading: "Os 3 modelos de divisão mais comuns entre casais",
+        paragraphs: [
+          "Não existe um modelo certo — existe o que se encaixa na realidade de cada casal. Os três mais usados:",
+        ],
+        list: {
+          ordered: false,
+          items: [
+            "**Conta conjunta total**: toda a renda dos dois cai numa conta só, e as despesas (do casal e pessoais) saem dela. Simples de acompanhar, mas exige alinhamento alto sobre gasto individual.",
+            "**Contas separadas + conta comum**: cada um mantém a própria conta e transfere uma parte combinada pra uma conta só de despesas do casal (aluguel, mercado, contas fixas). Preserva autonomia sobre o resto da renda.",
+            "**Contribuição proporcional à renda**: cada um contribui pra conta comum na mesma proporção que ganha, não o mesmo valor fixo. Costuma ser o modelo mais sentido como justo quando as rendas são bem diferentes.",
+          ],
+        },
+      },
+      {
+        heading: "Como aplicar o 50-30-20 quando são duas rendas",
+        paragraphs: [
+          "O método continua o mesmo, mas a base de cálculo passa a ser a renda combinada da casa, não a renda de cada um isolada. Some tudo que entra (dos dois) e divida em 50% essencial, 30% estilo de vida, 20% reserva e dívidas — só que agora o essencial e a reserva geralmente são compromissos do casal, e o estilo de vida pode ter uma parte compartilhada (lazer a dois) e uma parte individual (o que cada um gasta sozinho).",
+          "Quando as rendas são muito diferentes, vale decidir explicitamente se a divisão das despesas comuns vai ser 50/50 ou proporcional à renda — os dois funcionam, o problema é não decidir e deixar no automático, porque aí um dos dois costuma sentir que está pagando mais do que devia.",
+        ],
+      },
+      {
+        heading: "O que muda quando os dois veem o mesmo painel",
+        paragraphs: [
+          "A diferença entre planilha e um painel compartilhado em tempo real não é estética — é que o lançamento de um aparece pro outro sem precisar avisar. Isso tira a carga mental de ser 'o financeiro da relação' de cima de uma pessoa só, porque os dois enxergam o mesmo número ao mesmo tempo.",
+          "Na prática, isso evita duas brigas clássicas: descobrir um gasto grande só no extrato do banco, e discordar sobre quanto realmente sobrou no mês porque cada um fez a conta de um jeito diferente na cabeça.",
+        ],
+      },
+      {
+        heading: "Um exemplo prático com números",
+        paragraphs: [
+          "Um casal com renda combinada de R$ 8.000 (R$ 5.000 e R$ 3.000), dividindo proporcionalmente:",
+        ],
+        list: {
+          ordered: false,
+          items: [
+            "Essencial (50%): R$ 4.000 no total — quem ganha R$ 5.000 contribui com R$ 2.500 (a mesma proporção da própria renda), quem ganha R$ 3.000 contribui com R$ 1.500.",
+            "Estilo de vida (30%): R$ 2.400 no total — pode ser dividido entre uma parte comum (lazer a dois) e uma parte livre pra cada um gastar como quiser.",
+            "Reserva e dívidas (20%): R$ 1.600 — geralmente tratada como meta do casal, guardada na conta comum.",
+          ],
+        },
+      },
+      {
+        heading: "E quando um dos dois entrou na relação já com dívida?",
+        paragraphs: [
+          "É comum um dos dois chegar no relacionamento com dívida própria, anterior ao casal. Nesses casos, a prática mais usada é manter essa dívida como responsabilidade individual — sai da parte pessoal da renda de quem a contraiu, sem misturar com os 20% de reserva e dívidas do casal. Dividir essa dívida também é uma escolha válida, desde que seja combinada explicitamente pelos dois, não assumida por padrão.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Precisamos ter uma conta bancária conjunta pra dividir as finanças?",
+        a: "Não. Dá pra aplicar qualquer um dos 3 modelos com contas separadas, usando uma conta comum só pra despesas do casal, ou até sem conta conjunta nenhuma, dividindo por transferência mês a mês. O que importa é que os dois enxerguem o mesmo total, não onde o dinheiro fisicamente fica guardado.",
+      },
+      {
+        q: "Como dividir quando um ganha muito mais que o outro?",
+        a: "A divisão proporcional à renda costuma ser sentida como mais justa nesses casos: cada um contribui com a mesma porcentagem da própria renda pras despesas comuns, em vez do mesmo valor em reais. Isso evita que quem ganha menos fique proporcionalmente mais apertado que quem ganha mais.",
+      },
+      {
+        q: "Um consegue ver o gasto individual do outro no app?",
+        a: "Depende de como o casal configura — dá pra manter visibilidade total cruzada ou separar o que é despesa comum do que é gasto pessoal de cada um. O importante é os dois combinarem isso antes, não descobrirem no meio do uso.",
+      },
+      {
+        q: "Isso funciona pra namorados que ainda não moram juntos?",
+        a: "Funciona, principalmente pra quem já divide despesas recorrentes (viagens, assinaturas, saídas). Não precisa esperar morar junto pra ter visibilidade combinada — só ajuda a evitar surpresa quando chegar a hora de dividir uma conta maior.",
+      },
+      {
+        q: "E se um dos dois simplesmente não gosta de mexer em finanças?",
+        a: "É comum um dos dois puxar mais a rotina no início — o ponto é que o painel compartilhado ainda assim mostra pro outro o que está acontecendo, mesmo que ele não seja quem lança os gastos. Isso já resolve boa parte do problema de um se sentir no escuro, mesmo sem os dois participarem igualmente do dia a dia.",
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {
