@@ -26,6 +26,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://azul.educarbem.com.br/blog/quanto-guardar-reserva-emergencia</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://azul.educarbem.com.br/termos</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

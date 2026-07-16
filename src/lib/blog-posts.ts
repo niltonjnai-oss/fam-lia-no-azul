@@ -362,6 +362,115 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: "quanto-guardar-reserva-emergencia",
+    title: "Quanto guardar de reserva de emergência: o número certo pra sua família",
+    metaDescription:
+      "Descubra quanto guardar de reserva de emergência considerando sua renda, o tipo de trabalho e quantas rendas existem em casa — com fórmula prática e exemplo em reais.",
+    excerpt:
+      "3 meses? 6? 12? O número certo de reserva de emergência depende de quem trabalha na casa e como a renda chega. Veja como calcular o seu.",
+    publishedISO: "2026-07-15",
+    readingMinutes: 7,
+    category: "Reserva",
+    coverImage: "reserva-emergencia",
+
+    directAnswer:
+      "A reserva de emergência ideal cobre entre 3 e 6 meses das despesas essenciais da família — não da renda inteira. Famílias com renda fixa e duas fontes de renda podem ficar nos 3 meses; famílias com renda variável, autônomos ou com uma única fonte de renda em casa devem mirar de 6 a 12 meses. O cálculo é simples: despesas essenciais mensais × número de meses da sua situação.",
+    sections: [
+      {
+        heading: "O que é (e o que não é) uma reserva de emergência",
+        paragraphs: [
+          "Reserva de emergência é o dinheiro guardado só pra cobrir as despesas essenciais da família se a renda parar de entrar — perda de emprego, um bico que secou, um imprevisto de saúde. Ela não é a reserva pra trocar de carro, viajar ou dar entrada num imóvel: essas são metas, e metas têm prazo e planejamento próprios.",
+          "É por isso que, no método 50-30-20, ela mora dentro dos 20% do futuro, junto com o pagamento de dívidas — é dinheiro de proteção, não de projeto.",
+        ],
+      },
+      {
+        heading: "Quanto guardar: a fórmula em 2 passos",
+        paragraphs: [
+          "Não existe um valor fixo em reais que sirva pra toda família — o número certo é sempre relativo às suas despesas. O cálculo tem dois passos:",
+        ],
+        list: {
+          ordered: true,
+          items: [
+            "**Some suas despesas essenciais mensais**: moradia, contas, mercado, transporte, escola, saúde — os mesmos 50% do método 50-30-20. Não entra o estilo de vida (streaming, lazer, restaurante): numa emergência real, isso é o primeiro a ser cortado.",
+            "**Multiplique pelo número de meses da sua situação**: o número certo varia conforme quem trabalha em casa e como a renda chega (veja a tabela abaixo). O resultado é a sua meta de reserva.",
+          ],
+        },
+      },
+      {
+        heading: "Quantos meses guardar, segundo a sua situação",
+        paragraphs: [
+          "O número de meses não é igual pra todo mundo — ele depende de quão rápido a família consegue repor a renda se ela parar:",
+        ],
+        list: {
+          ordered: false,
+          items: [
+            "**Duas rendas fixas em casa (CLT ou estáveis)**: 3 meses costuma bastar — se uma renda para, a outra ainda sustenta o essencial enquanto a situação se resolve.",
+            "**Uma única renda fixa sustentando a casa**: 6 meses — não há uma segunda fonte pra segurar o essencial no meio tempo.",
+            "**Autônomo, comissionado ou freelancer**: 6 a 12 meses — a renda já é instável no dia a dia, então a reserva precisa cobrir tanto uma emergência quanto um mês fraco de vendas.",
+            "**Renda muito variável ou negócio próprio**: 12 meses — quanto mais imprevisível a entrada, maior o colchão necessário pra não entrar em pânico no primeiro mês ruim.",
+          ],
+        },
+      },
+      {
+        heading: "Onde guardar a reserva (e onde não guardar)",
+        paragraphs: [
+          "O critério pra reserva de emergência não é rendimento máximo — é liquidez e segurança. Ela precisa estar em algo que você resgata em minutos, sem perder dinheiro, no dia exato em que precisar. Por isso, aplicações com prazo de carência, ações ou fundos com risco de oscilação não servem pra esse dinheiro, mesmo que rendam mais no papel: reserva de emergência não pode estar sujeita a 'hoje não é um bom dia pra vender'.",
+          "As opções mais usadas pra isso no Brasil são as de liquidez diária e baixo risco — poupança, CDB com liquidez diária do próprio banco, ou Tesouro Selic. Cada uma tem prós e contras de rendimento, mas o ponto em comum que importa aqui é: dá pra sacar rápido, sem perder o valor guardado.",
+        ],
+      },
+      {
+        heading: "Como formar a reserva tendo dívida ativa",
+        paragraphs: [
+          "É comum a dúvida: guardo reserva ou quito dívida primeiro? Na prática, as duas coisas não são excludentes, mas a ordem importa. O caminho mais seguro costuma ser: primeiro, um colchão inicial pequeno (o equivalente a 1 mês de essencial) — só pra família não precisar recorrer a mais dívida se algo pequeno acontecer no meio do processo. Depois, direcione o esforço pra quitar a dívida mais cara (maior juro) primeiro. Só depois de zerar as dívidas caras é que faz sentido voltar a engordar a reserva até o número final da sua situação.",
+          "A lógica é simples: enquanto existe dívida com juro alto em aberto, ela está crescendo mais rápido do que qualquer rendimento da reserva parada — então quitá-la primeiro é o que mais protege o orçamento da família no médio prazo.",
+        ],
+      },
+      {
+        heading: "Um exemplo prático com números",
+        paragraphs: [
+          "Imagine uma família com renda de R$ 5.000 por mês, uma única renda fixa em casa, sem dívidas caras em aberto:",
+        ],
+        list: {
+          ordered: false,
+          items: [
+            "Despesas essenciais (50% do método): R$ 2.500 por mês.",
+            "Situação: uma única renda em casa → meta de 6 meses.",
+            "Meta de reserva: R$ 2.500 × 6 = **R$ 15.000**.",
+            "Guardando R$ 400 por mês (parte dos 20% do futuro), a família leva cerca de 3 anos e 2 meses pra formar a reserva do zero — e pode acelerar em meses de renda extra, como 13º ou restituição do imposto de renda.",
+          ],
+        },
+      },
+      {
+        heading: "Reserva formada: e depois?",
+        paragraphs: [
+          "Quando a meta é atingida, o dinheiro que ia todo mês pra reserva pode ser redirecionado — geralmente pra quitar dívidas restantes ou pra metas de médio prazo, que são guardadas separadas da reserva. Se a reserva precisar ser usada numa emergência de verdade, o passo seguinte é sempre repor o valor gasto assim que a renda normalizar, antes de voltar a gastar nos 30% de estilo de vida com folga.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "13º salário e FGTS contam como parte da reserva de emergência?",
+        a: "Não devem ser contados como reserva já formada, porque não estão disponíveis a qualquer momento — o FGTS tem acesso restrito e o 13º só cai em datas fixas. Eles são ótimos pra acelerar a formação da reserva quando caem, mas a reserva em si precisa estar em algo de liquidez imediata.",
+      },
+      {
+        q: "Reserva de emergência substitui um seguro?",
+        a: "Não — elas se complementam. A reserva cobre imprevistos menores e rápidos (um conserto, um mês sem renda). Um seguro (de vida, saúde, residencial) cobre riscos grandes que o dinheiro guardado sozinho não daria conta de bancar, como uma internação longa.",
+      },
+      {
+        q: "Preciso quitar todas as minhas dívidas antes de começar a reserva?",
+        a: "Não todas — mas vale montar um colchão inicial pequeno (1 mês de essencial) antes de focar 100% nas dívidas, pra família não precisar se endividar de novo por causa de um imprevisto pequeno no meio do caminho. Depois desse colchão, priorize as dívidas com juro mais alto e só depois volte a completar a reserva.",
+      },
+      {
+        q: "Reserva de emergência rende, ou fica parada perdendo valor?",
+        a: "As opções recomendadas pra reserva (poupança, CDB de liquidez diária, Tesouro Selic) rendem, sim — só que menos do que investimentos de maior risco, porque o critério aqui é segurança e acesso rápido, não rendimento máximo. O objetivo da reserva não é multiplicar dinheiro, é estar disponível no momento exato em que a família precisar.",
+      },
+      {
+        q: "E se a renda da família for variável (freelas, comissão)?",
+        a: "Use a média dos últimos 3 a 6 meses pra calcular as despesas essenciais, e fique na faixa de 6 a 12 meses de reserva — quanto mais instável a renda, mais perto de 12. É justamente a variação da renda que torna a reserva mais necessária, não menos.",
+      },
+    ],
+  },
 ];
 
 export function getBlogPost(slug: string): BlogPost | undefined {

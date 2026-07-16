@@ -9,7 +9,9 @@ const map: Record<string, { url: string }> = {
   "metodo-50-30-20": metodo,
 };
 
+/** Capas novas (fora do pipeline de assets do Lovable) vivem em public/blog/covers/<key>.jpg. */
 export function coverUrl(key: string): string {
   const asset = map[key];
-  return asset ? assetUrl(asset) : "";
+  if (asset) return assetUrl(asset);
+  return `/blog/covers/${key}.jpg`;
 }
