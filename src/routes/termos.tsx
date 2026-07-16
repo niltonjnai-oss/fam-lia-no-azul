@@ -216,8 +216,8 @@ function TermosPage() {
 
           <Section title="7. Preço, pagamento e renovação">
             <p>
-              a) O acesso ao Família no Azul em pagamento único, que garante 12 (doze) meses de
-              acesso contados da aprovação do pagamento.
+              a) O acesso ao Família no Azul é adquirido em pagamento único, que garante 12 (doze)
+              meses de acesso contados da aprovação do pagamento.
             </p>
             <p>
               b) Não se trata de assinatura com renovação automática recorrente. Antes do término
