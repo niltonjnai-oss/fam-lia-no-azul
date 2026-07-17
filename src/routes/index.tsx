@@ -816,21 +816,9 @@ function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-white/60 pb-10">
         <div className="mx-auto max-w-6xl px-6 py-10 text-xs text-[#0F2A47]/70">
-          <div className="grid gap-6 md:grid-cols-2 md:items-start">
-            <div className="order-2 space-y-1.5 max-sm:text-center md:order-1">
-              <img src={logoHorizontalUrl} alt="Família no Azul" className="mb-3 h-8 w-auto max-sm:mx-auto" />
-              <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
-              <div>Família no Azul é uma marca do Grupo Romana.</div>
-              <div>CNPJ 48.570.356/0001-97</div>
-              <div>
-                Contato:{" "}
-                <a
-                  href="mailto:sac.familianoazul@educarbem.com.br"
-                  className="hover:text-[#0F2A47]"
-                >
-                  sac.familianoazul@educarbem.com.br
-                </a>
-              </div>
+          <div className="grid gap-6 md:grid-cols-2 md:items-center">
+            <div className="order-2 max-sm:text-center md:order-1">
+              <img src={logoHorizontalUrl} alt="Família no Azul" className="h-8 w-auto max-sm:mx-auto" />
             </div>
             <div className="order-1 flex flex-wrap gap-x-6 gap-y-2 max-sm:justify-center md:order-2 md:justify-end">
               <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
@@ -842,7 +830,22 @@ function LandingPage() {
               <Link to="/auth" className="hover:text-[#0F2A47]">Entrar</Link>
             </div>
           </div>
+          <div className="mt-8 border-t border-white/60 pt-6 space-y-1.5 text-center">
+            <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
+            <div>Família no Azul é uma marca do Grupo Romana.</div>
+            <div>CNPJ 48.570.356/0001-97</div>
+            <div>
+              Contato:{" "}
+              <a
+                href="mailto:sac.familianoazul@educarbem.com.br"
+                className="hover:text-[#0F2A47]"
+              >
+                sac.familianoazul@educarbem.com.br
+              </a>
+            </div>
+          </div>
         </div>
+
       </footer>
     </div>
   );
