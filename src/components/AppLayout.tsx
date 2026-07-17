@@ -21,7 +21,7 @@ import { useIsAdmin } from "@/lib/use-is-admin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import logoHorizontal from "@/assets/familia-no-azul-horizontal-claro.png.asset.json";
 import { assetUrl } from "@/lib/asset-url";
 import { InstalarAppButton } from "@/components/InstalarAppButton";
 import { LancamentoRapidoSheet } from "@/components/LancamentoRapido";

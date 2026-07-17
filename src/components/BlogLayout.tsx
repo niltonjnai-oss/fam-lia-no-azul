@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
-import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import logoHorizontal from "@/assets/familia-no-azul-horizontal-claro.png.asset.json";
 import { assetUrl } from "@/lib/asset-url";
 
 const ORANGE = "#F97316";
