@@ -16,7 +16,7 @@ import {
   type BlogFaqItem,
 } from "@/lib/blog-posts";
 import { coverUrl } from "@/lib/blog-covers";
-import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import logoHorizontal from "@/assets/familia-no-azul-horizontal-claro.png.asset.json";
 import { assetUrl } from "@/lib/asset-url";
 
 const SITE_URL = "https://azul.educarbem.com.br";
