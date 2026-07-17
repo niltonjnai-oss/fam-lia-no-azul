@@ -12,7 +12,7 @@ import {
   Users,
   BellRing,
 } from "lucide-react";
-import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import logoHorizontal from "@/assets/familia-no-azul-horizontal-claro.png.asset.json";
 import heroPhoto from "@/assets/lp/foto_banner.jpg.asset.json";
 import step1Photo from "@/assets/lp/img-03-step2.jpg.asset.json";
 import step2Photo from "@/assets/lp/img-02-step1.jpg.asset.json";
@@ -818,6 +818,7 @@ function LandingPage() {
         <div className="mx-auto max-w-6xl px-6 py-10 text-xs text-[#0F2A47]/70">
           <div className="grid gap-6 md:grid-cols-2 md:items-start">
             <div className="order-2 space-y-1.5 max-sm:text-center md:order-1">
+              <img src={logoHorizontalUrl} alt="Família no Azul" className="mb-3 h-8 w-auto max-sm:mx-auto" />
               <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
               <div>Família no Azul é uma marca do Grupo Romana.</div>
               <div>CNPJ 48.570.356/0001-97</div>
