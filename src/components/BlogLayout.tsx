@@ -53,28 +53,41 @@ export function BlogLayout({
 
       <footer className="border-t border-white/60 pb-10">
         <div className="mx-auto max-w-6xl px-6 py-10 text-xs text-[#0F2A47]/70">
-          <div className="grid gap-6 md:grid-cols-2 md:items-start">
-            <div className="space-y-1.5">
-              <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
-              <div>Família no Azul é uma marca do Grupo Romana.</div>
-              <div>CNPJ 48.570.356/0001-97</div>
-              <div>
-                Contato:{" "}
-                <a href="mailto:sac.familianoazul@educarbem.com.br" className="hover:text-[#0F2A47]">
-                  sac.familianoazul@educarbem.com.br
-                </a>
-              </div>
+          <div className="flex flex-col items-center gap-6 text-center">
+            <div>
+              <img src={logoHorizontalUrl} alt="Família no Azul" className="mx-auto h-8 w-auto" />
+              <p className="mt-2 text-xs text-[#0F2A47]/70">
+                <span className="block font-semibold text-[#0F2A47]">Família no Azul</span>
+                Seu assistente de finanças para sua Família.
+              </p>
             </div>
-            <div className="flex flex-wrap gap-x-6 gap-y-2 md:justify-end">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+              <Link to="/" hash="beneficios" className="hover:text-[#0F2A47]">Benefícios</Link>
+              <Link to="/" hash="planos" className="hover:text-[#0F2A47]">Planos</Link>
+              <Link to="/" hash="faq" className="hover:text-[#0F2A47]">FAQ</Link>
               <Link to="/blog" className="hover:text-[#0F2A47]">Blog</Link>
-              <Link to="/" className="hover:text-[#0F2A47]">Início</Link>
               <Link to="/termos" className="hover:text-[#0F2A47]">Termos de Uso</Link>
               <Link to="/privacidade" className="hover:text-[#0F2A47]">Política de Privacidade</Link>
               <Link to="/auth" className="hover:text-[#0F2A47]">Entrar</Link>
             </div>
           </div>
+          <div className="mt-8 border-t border-white/60 pt-6 space-y-1.5 text-center">
+            <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
+            <div>Família no Azul é uma marca do Grupo Romana.</div>
+            <div>CNPJ 48.570.356/0001-97</div>
+            <div>
+              Contato:{" "}
+              <a
+                href="mailto:sac.familianoazul@educarbem.com.br"
+                className="hover:text-[#0F2A47]"
+              >
+                sac.familianoazul@educarbem.com.br
+              </a>
+            </div>
+          </div>
         </div>
       </footer>
+
     </div>
   );
 }
