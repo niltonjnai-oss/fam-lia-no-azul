@@ -816,12 +816,15 @@ function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-white/60 pb-10">
         <div className="mx-auto max-w-6xl px-6 py-10 text-xs text-[#0F2A47]/70">
-          <div className="grid gap-6 md:grid-cols-2 md:items-center">
-            <div className="order-2 max-sm:text-center md:order-1">
-              <img src={logoHorizontalUrl} alt="Família no Azul" className="h-8 w-auto max-sm:mx-auto" />
-              <p className="mt-2 text-xs text-[#0F2A47]/70">Seu assistente de finanças para sua Família.</p>
+          <div className="flex flex-col items-center gap-6 text-center">
+            <div>
+              <img src={logoHorizontalUrl} alt="Família no Azul" className="mx-auto h-8 w-auto" />
+              <p className="mt-2 text-xs text-[#0F2A47]/70">
+                <span className="block font-semibold text-[#0F2A47]">Família no Azul</span>
+                Seu assistente de finanças para sua Família.
+              </p>
             </div>
-            <div className="order-1 flex flex-wrap gap-x-6 gap-y-2 max-sm:justify-center md:order-2 md:justify-end">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
               <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
               <a href="#planos" className="hover:text-[#0F2A47]">Planos</a>
               <a href="#faq" className="hover:text-[#0F2A47]">FAQ</a>
