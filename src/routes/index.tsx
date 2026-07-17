@@ -819,6 +819,7 @@ function LandingPage() {
           <div className="grid gap-6 md:grid-cols-2 md:items-center">
             <div className="order-2 max-sm:text-center md:order-1">
               <img src={logoHorizontalUrl} alt="Família no Azul" className="h-8 w-auto max-sm:mx-auto" />
+              <p className="mt-2 text-xs text-[#0F2A47]/70">Seu assistente de finanças para sua Família.</p>
             </div>
             <div className="order-1 flex flex-wrap gap-x-6 gap-y-2 max-sm:justify-center md:order-2 md:justify-end">
               <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
