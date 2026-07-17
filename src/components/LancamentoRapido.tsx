@@ -39,8 +39,35 @@ function parseValorBRL(s: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-export function LancamentoRapido() {
-  const [open, setOpen] = useState(false);
+/** Sheet do "Anotar um gasto", controlável de fora — usado pelo card do
+ *  painel, pela linha de ações rápidas e pelo botão central do bottom nav. */
+export function LancamentoRapidoSheet({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const hoje = hojeISO();
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto rounded-t-2xl">
+        <LancamentoRapidoConteudo hoje={hoje} />
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+export function LancamentoRapido({
+  open: openProp,
+  onOpenChange,
+}: {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+} = {}) {
+  const [openInterno, setOpenInterno] = useState(false);
+  const open = openProp ?? openInterno;
+  const setOpen = onOpenChange ?? setOpenInterno;
   const hoje = hojeISO();
 
   const transacoesQ = useQuery({
@@ -55,9 +82,9 @@ export function LancamentoRapido() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-4 text-left shadow-soft transition-colors hover:border-primary/40 hover:bg-primary/5"
+        className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-4 text-left shadow-soft transition-colors hover:border-cta/40 hover:bg-cta/5"
       >
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-cta text-cta-foreground">
           <Plus className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
@@ -76,11 +103,7 @@ export function LancamentoRapido() {
         </div>
       </button>
 
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto rounded-t-2xl">
-          <LancamentoRapidoConteudo hoje={hoje} />
-        </SheetContent>
-      </Sheet>
+      <LancamentoRapidoSheet open={open} onOpenChange={setOpen} />
     </>
   );
 }
@@ -125,6 +148,7 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
     qc.invalidateQueries({ queryKey: qk.lancamentos(mes) });
     qc.invalidateQueries({ queryKey: qk.gastosMes(mes) });
     qc.invalidateQueries({ queryKey: qk.transacoesHoje(hoje) });
+    qc.invalidateQueries({ queryKey: qk.transacoesRecentes });
   };
 
   const addMut = useMutation({
@@ -254,7 +278,11 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
         </div>
 
         <div className="sm:col-span-2">
-          <Button type="submit" className="h-11 w-full" disabled={addMut.isPending}>
+          <Button
+            type="submit"
+            className="h-11 w-full bg-cta text-cta-foreground hover:bg-cta-hover"
+            disabled={addMut.isPending}
+          >
             <Plus className="mr-1 h-4 w-4" />
             {addMut.isPending ? "Salvando..." : "Salvar gasto"}
           </Button>

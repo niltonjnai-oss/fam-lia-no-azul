@@ -118,6 +118,7 @@ export const qk = {
   dividas: ["divida"] as const,
   reserva: ["reserva_config"] as const,
   transacoesHoje: (data: string) => ["transacao", "dia", data] as const,
+  transacoesRecentes: ["transacao", "recentes"] as const,
 };
 
 export const hojeISO = (): string => {
@@ -353,6 +354,18 @@ export async function fetchTransacoesDoDia(data: string): Promise<TransacaoDia[]
     .select("id, data, valor, descricao, subitem_id, mes_ref")
     .eq("data", data)
     .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (rows ?? []) as TransacaoDia[];
+}
+
+/** Últimos lançamentos da família (qualquer dia), pro feed do painel.
+ *  RLS garante que só vêm os da família do usuário. */
+export async function fetchTransacoesRecentes(limite = 5): Promise<TransacaoDia[]> {
+  const { data: rows, error } = await supabase
+    .from("transacao")
+    .select("id, data, valor, descricao, subitem_id, mes_ref")
+    .order("created_at", { ascending: false })
+    .limit(limite);
   if (error) throw new Error(error.message);
   return (rows ?? []) as TransacaoDia[];
 }

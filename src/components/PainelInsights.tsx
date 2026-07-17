@@ -2,9 +2,9 @@
 // Ambos usam só dados que o app já grava — nenhuma tabela nova.
 
 import { useQuery } from "@tanstack/react-query";
-import { Flame, TrendingUp, TrendingDown } from "lucide-react";
+import { Flame, TrendingUp, TrendingDown, ArrowDown, ArrowUp } from "lucide-react";
 
-import { fetchDiasComRegistro, hojeISO, mesAtual } from "@/lib/db";
+import { qk, fetchDiasComRegistro, fetchGastosMes, hojeISO, mesAtual, shiftMes } from "@/lib/db";
 import { formatBRL } from "@/lib/format";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -22,12 +22,27 @@ export function ProjecaoMes({
   rendaTotal: number;
   carregando: boolean;
 }) {
+  const mesAnterior = shiftMes(mes, -1);
+  const gastosAnteriorQ = useQuery({
+    queryKey: qk.gastosMes(mesAnterior),
+    queryFn: () => fetchGastosMes(mesAnterior),
+    enabled: mes === mesAtual(),
+  });
+
   if (mes !== mesAtual()) return null;
 
   const hoje = new Date();
   const diaAtual = hoje.getDate();
   const diasNoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
   const projecao = diaAtual > 0 ? (totalReal / diaAtual) * diasNoMes : 0;
+
+  // Tendência: projeção deste mês vs total gasto no mês passado.
+  const totalMesAnterior = Number(gastosAnteriorQ.data?.total_comprometido ?? 0);
+  const temTendencia = totalMesAnterior > 0 && totalReal > 0;
+  const variacaoPct = temTendencia
+    ? Math.round(((projecao - totalMesAnterior) / totalMesAnterior) * 100)
+    : 0;
+  const gastandoMenos = variacaoPct <= 0;
 
   // Base de comparação: o orçamento previsto; se ainda não houver, a renda.
   const base = totalPrevisto > 0 ? totalPrevisto : rendaTotal;
@@ -58,7 +73,25 @@ export function ProjecaoMes({
         </p>
       ) : (
         <>
-          <div className="tabular mt-1 text-base font-bold sm:text-lg">{formatBRL(projecao)}</div>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <span className="tabular text-base font-bold tracking-tight sm:text-lg">
+              {formatBRL(projecao)}
+            </span>
+            {temTendencia && !inicioDoMes && (
+              <span
+                className={`inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                  gastandoMenos ? "bg-success/10 text-success" : "bg-danger/10 text-danger"
+                }`}
+              >
+                {gastandoMenos ? (
+                  <ArrowDown className="h-3 w-3" />
+                ) : (
+                  <ArrowUp className="h-3 w-3" />
+                )}
+                {Math.abs(variacaoPct)}% vs mês passado
+              </span>
+            )}
+          </div>
           <p className="mt-0.5 text-[11px] text-muted-foreground">
             {base > 0 && (
               <span className={dentro ? "font-medium text-success" : "font-medium text-danger"}>

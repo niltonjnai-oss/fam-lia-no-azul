@@ -20,6 +20,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Settings2,
+  Plus,
+  CalendarClock,
 } from "lucide-react";
 
 import {
@@ -43,6 +45,7 @@ import {
   usePainelPrefs,
 } from "@/components/PainelExtras";
 import { LancamentoRapido } from "@/components/LancamentoRapido";
+import { UltimosLancamentos } from "@/components/UltimosLancamentos";
 import { ProjecaoMes, DiasNoAzul } from "@/components/PainelInsights";
 import { InstalarAppCard } from "@/components/InstalarAppCard";
 import { DespesasFixasDisponivel } from "@/components/DespesasFixasDisponivel";
@@ -155,6 +158,7 @@ function PainelPage() {
   const { mes, setMes } = useMes();
   const { user } = useAuth();
   const [personalizarOpen, setPersonalizarOpen] = useState(false);
+  const [gastoOpen, setGastoOpen] = useState(false);
   const agora = useAgora();
   const primeiroNome = (
     (user?.user_metadata as { full_name?: string } | undefined)?.full_name ?? ""
@@ -244,15 +248,15 @@ function PainelPage() {
         style={{ background: "linear-gradient(135deg, #0F2A47 0%, #1E4A78 100%)" }}
       >
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-white/70">Livre pra gastar</span>
+          <span className="text-xs font-medium text-white/60">Livre pra gastar</span>
           <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-semibold">
             {saldo >= 0 ? "No azul" : "Atenção"}
           </span>
         </div>
-        <div className="tabular mt-1 text-3xl font-bold sm:text-4xl">
-          {carregando ? <Skeleton className="h-9 w-40 bg-white/10" /> : formatBRL(saldo)}
+        <div className="tabular mt-1 text-4xl font-bold tracking-tight sm:text-5xl">
+          {carregando ? <Skeleton className="h-10 w-48 bg-white/10" /> : formatBRL(saldo)}
         </div>
-        <div className="mt-3 flex items-center gap-4 text-xs text-white/70">
+        <div className="tabular mt-3 flex items-center gap-4 text-xs text-white/60">
           <span className="flex items-center gap-1">
             <ArrowUpRight className="h-3.5 w-3.5" /> Renda {formatBRL(rendaTotal)}
           </span>
@@ -260,6 +264,47 @@ function PainelPage() {
             <ArrowDownRight className="h-3.5 w-3.5" /> Gastos {formatBRL(gastosTotal)}
           </span>
         </div>
+      </section>
+
+      {/* Ações rápidas — as 4 tarefas mais comuns a um toque do saldo. */}
+      <section aria-label="Ações rápidas" className="grid grid-cols-4 gap-2">
+        <button
+          type="button"
+          onClick={() => setGastoOpen(true)}
+          className="group flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-card px-1 py-3 shadow-soft transition-colors hover:border-cta/40 hover:bg-cta/5"
+        >
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-cta text-cta-foreground">
+            <Plus className="h-5 w-5" />
+          </span>
+          <span className="text-[11px] font-medium">Anotar gasto</span>
+        </button>
+        <Link
+          to="/contas"
+          className="group flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-card px-1 py-3 shadow-soft transition-colors hover:border-primary/40 hover:bg-primary/5"
+        >
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
+            <CalendarClock className="h-5 w-5" />
+          </span>
+          <span className="text-[11px] font-medium">Contas</span>
+        </Link>
+        <Link
+          to="/dividas"
+          className="group flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-card px-1 py-3 shadow-soft transition-colors hover:border-primary/40 hover:bg-primary/5"
+        >
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-danger/10 text-danger">
+            <CreditCard className="h-5 w-5" />
+          </span>
+          <span className="text-[11px] font-medium">Dívidas</span>
+        </Link>
+        <Link
+          to="/reserva"
+          className="group flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-card px-1 py-3 shadow-soft transition-colors hover:border-primary/40 hover:bg-primary/5"
+        >
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-success/10 text-success">
+            <PiggyBank className="h-5 w-5" />
+          </span>
+          <span className="text-[11px] font-medium">Reserva</span>
+        </Link>
       </section>
 
       <InstalarAppCard />
@@ -300,7 +345,13 @@ function PainelPage() {
       <DashboardSectionBoundary
         fallback={<DashboardSectionError titulo="Não foi possível carregar o lançamento rápido." />}
       >
-        <LancamentoRapido />
+        <LancamentoRapido open={gastoOpen} onOpenChange={setGastoOpen} />
+      </DashboardSectionBoundary>
+
+      <DashboardSectionBoundary
+        fallback={<DashboardSectionError titulo="Não foi possível carregar os últimos lançamentos." />}
+      >
+        <UltimosLancamentos />
       </DashboardSectionBoundary>
 
 
@@ -423,34 +474,8 @@ function PainelPage() {
       </section>
       </DashboardSectionBoundary>
 
-      <section className="grid gap-3 sm:grid-cols-2">
-        <Link
-          to="/reserva"
-          className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-soft transition-all duration-200 hover:border-primary/40 hover:shadow-elevated"
-        >
-          <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
-            <PiggyBank className="h-5 w-5" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-sm font-semibold">Reserva de Emergência</div>
-            <div className="text-xs text-muted-foreground">Veja seu progresso</div>
-          </div>
-          <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </Link>
-        <Link
-          to="/dividas"
-          className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-soft transition-all duration-200 hover:border-primary/40 hover:shadow-elevated"
-        >
-          <div className="grid h-11 w-11 place-items-center rounded-xl bg-danger/10 text-danger">
-            <CreditCard className="h-5 w-5" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-sm font-semibold">Dívidas</div>
-            <div className="text-xs text-muted-foreground">Acompanhe e priorize</div>
-          </div>
-          <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </Link>
-      </section>
+      {/* Os atalhos de Reserva e Dívidas moraram aqui como cards grandes;
+          subiram pra linha de ações rápidas sob o saldo. */}
 
       <DashboardSectionBoundary
         fallback={<DashboardSectionError titulo="Não foi possível carregar os cards extras." />}
