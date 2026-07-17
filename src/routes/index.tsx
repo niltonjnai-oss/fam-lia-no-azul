@@ -272,7 +272,7 @@ function LandingPage() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <Link to="/" className="flex items-center">
-          <img src={logoHorizontalUrl} alt="Família no Azul" className="h-10 w-auto" />
+          <img src={logoHorizontalUrl} alt="Família no Azul" className="h-7 w-auto" />
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium text-[#0F2A47]/70 md:flex">
           <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
