@@ -28,7 +28,7 @@ export const Route = createFileRoute("/termos")({
 
 function TermosPage() {
   return (
-    <BlogLayout>
+    <BlogLayout background={LP_BACKGROUND}>
       <article>
         <h1 className="font-display text-4xl leading-tight tracking-tight text-[#0F2A47] md:text-5xl">
           Termos de Uso
