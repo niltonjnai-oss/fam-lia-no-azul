@@ -3,6 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { BlogLayout } from "@/components/BlogLayout";
 
+const LP_BACKGROUND = "linear-gradient(180deg, #E6F2FB 0%, #D6EAF8 40%, #EAF4FC 100%)";
+
 export const Route = createFileRoute("/termos")({
   head: () => ({
     meta: [
