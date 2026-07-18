@@ -144,11 +144,11 @@ function AuthPage() {
   }, [session, authLoading, navigate]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
+    <div className="flex min-h-screen items-center justify-center bg-primary px-4 py-8">
       <div className="w-full max-w-md">
         <div className="mb-6 flex flex-col items-center text-center">
-          <img src={logoVerticalUrl} alt="Família no Azul" className="mb-3 h-32 w-auto" />
-          <p className="mt-1 text-sm text-muted-foreground">
+          <img src={logoHorizontalUrl} alt="Família no Azul" className="mb-3 h-14 w-auto" />
+          <p className="mt-1 text-sm text-white/90">
             {mode === "signup"
               ? "Comece a sua virada — crie a conta da sua família."
               : "Entre para acompanhar o orçamento da sua família."}
@@ -177,7 +177,7 @@ function AuthPage() {
           </Tabs>
         </div>
 
-        <p className="mt-4 text-center text-xs text-muted-foreground">
+        <p className="mt-4 text-center text-xs text-white/80">
           Seus dados ficam protegidos por linha (RLS). Cada família só enxerga o que é seu.
         </p>
 
