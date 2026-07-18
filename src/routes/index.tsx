@@ -12,7 +12,7 @@ import {
   Users,
   BellRing,
 } from "lucide-react";
-import logoHorizontal from "@/assets/familia_no_azul_horizontal.png.asset.json";
+import logoHorizontal from "@/assets/familia-no-azul-horizontal-claro.png.asset.json";
 import heroPhoto from "@/assets/lp/foto_banner.jpg.asset.json";
 import step1Photo from "@/assets/lp/img-03-step2.jpg.asset.json";
 import step2Photo from "@/assets/lp/img-02-step1.jpg.asset.json";
@@ -272,7 +272,7 @@ function LandingPage() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <Link to="/" className="flex items-center">
-          <img src={logoHorizontalUrl} alt="Família no Azul" className="h-10 w-auto" />
+          <img src={logoHorizontalUrl} alt="Família no Azul" className="h-7 w-auto" />
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium text-[#0F2A47]/70 md:flex">
           <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
@@ -816,22 +816,15 @@ function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-white/60 pb-10">
         <div className="mx-auto max-w-6xl px-6 py-10 text-xs text-[#0F2A47]/70">
-          <div className="grid gap-6 md:grid-cols-2 md:items-start">
-            <div className="order-2 space-y-1.5 max-sm:text-center md:order-1">
-              <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
-              <div>Família no Azul é uma marca do Grupo Romana.</div>
-              <div>CNPJ 48.570.356/0001-97</div>
-              <div>
-                Contato:{" "}
-                <a
-                  href="mailto:sac.familianoazul@educarbem.com.br"
-                  className="hover:text-[#0F2A47]"
-                >
-                  sac.familianoazul@educarbem.com.br
-                </a>
-              </div>
+          <div className="flex flex-col items-center gap-6 text-center">
+            <div>
+              <img src={logoHorizontalUrl} alt="Família no Azul" className="mx-auto h-8 w-auto" />
+              <p className="mt-2 text-xs text-[#0F2A47]/70">
+                <span className="block font-semibold text-[#0F2A47]">Família no Azul</span>
+                Seu assistente de finanças para sua Família.
+              </p>
             </div>
-            <div className="order-1 flex flex-wrap gap-x-6 gap-y-2 max-sm:justify-center md:order-2 md:justify-end">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
               <a href="#beneficios" className="hover:text-[#0F2A47]">Benefícios</a>
               <a href="#planos" className="hover:text-[#0F2A47]">Planos</a>
               <a href="#faq" className="hover:text-[#0F2A47]">FAQ</a>
@@ -841,7 +834,22 @@ function LandingPage() {
               <Link to="/auth" className="hover:text-[#0F2A47]">Entrar</Link>
             </div>
           </div>
+          <div className="mt-8 border-t border-white/60 pt-6 space-y-1.5 text-center">
+            <div>© {new Date().getFullYear()} Família no Azul. Feito com carinho.</div>
+            <div>Família no Azul é uma marca do Grupo Romana.</div>
+            <div>CNPJ 48.570.356/0001-97</div>
+            <div>
+              Contato:{" "}
+              <a
+                href="mailto:sac.familianoazul@educarbem.com.br"
+                className="hover:text-[#0F2A47]"
+              >
+                sac.familianoazul@educarbem.com.br
+              </a>
+            </div>
+          </div>
         </div>
+
       </footer>
     </div>
   );
