@@ -33,7 +33,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const KIWIFY_URL = "https://pay.kiwify.com.br/4FFlpa2";
 const AUTH_NOTICE_STORAGE_KEY = "familia_auth_notice";
 const EMAIL_CONFIRMATION_WINDOW_MS = 15 * 60 * 1000;
-const logoVerticalUrl = assetUrl(logoVertical);
+const logoHorizontalUrl = assetUrl(logoHorizontalEscuro);
 type AuthNotice = "email-confirmed" | "expired-link" | "invalid-link";
 
 function isAuthNotice(value: string | null): value is AuthNotice {
