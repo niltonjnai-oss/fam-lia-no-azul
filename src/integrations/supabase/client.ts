@@ -4,17 +4,29 @@
 //   - VITE_SUPABASE_PUBLISHABLE_KEY / VITE_SUPABASE_ANON_KEY ou APP_SUPABASE_PUBLISHABLE_KEY
 
 import { createClient } from "@supabase/supabase-js";
+import {
+  PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  PUBLIC_SUPABASE_URL,
+} from "./public-config";
 
-const SUPABASE_URL = (
-  (import.meta.env.VITE_SUPABASE_URL as string | undefined) ??
-  (import.meta.env.APP_SUPABASE_URL as string | undefined) ??
-  ""
-).trim();
-const SUPABASE_PUBLISHABLE_KEY = (
-  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined) ??
-  (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined) ??
-  (import.meta.env.APP_SUPABASE_PUBLISHABLE_KEY as string | undefined) ??
-  ""
+function firstNonEmpty(...values: Array<string | undefined>): string {
+  for (const value of values) {
+    const trimmed = value?.trim();
+    if (trimmed) return trimmed;
+  }
+  return "";
+}
+
+const SUPABASE_URL = firstNonEmpty(
+  import.meta.env.VITE_SUPABASE_URL as string | undefined,
+  import.meta.env.APP_SUPABASE_URL as string | undefined,
+  PUBLIC_SUPABASE_URL,
+);
+const SUPABASE_PUBLISHABLE_KEY = firstNonEmpty(
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined,
+  import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined,
+  import.meta.env.APP_SUPABASE_PUBLISHABLE_KEY as string | undefined,
+  PUBLIC_SUPABASE_PUBLISHABLE_KEY,
 )
   .trim()
   .replace(/^Bearer\s+/i, "")
