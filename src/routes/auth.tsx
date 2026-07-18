@@ -147,7 +147,7 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-primary px-4 py-8">
       <div className="w-full max-w-md">
         <div className="mb-6 flex flex-col items-center text-center">
-          <img src={logoHorizontalUrl} alt="Família no Azul" className="mb-3 h-14 w-auto" />
+          <img src={logoHorizontalUrl} alt="Família no Azul" className="mb-3 h-10 w-auto max-w-full object-contain" />
           <p className="mt-1 text-sm text-white/90">
             {mode === "signup"
               ? "Comece a sua virada — crie a conta da sua família."
