@@ -73,7 +73,7 @@ export function AppLayout() {
             <img
               src={logoHorizontalUrl}
               alt="Família no Azul"
-              className="h-10 w-auto"
+              className="h-8 w-auto max-w-full object-contain"
             />
           </Link>
         </div>
