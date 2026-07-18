@@ -49,11 +49,11 @@ export function InstalarAppButton() {
   return (
     <>
       <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-center">
-        <Button onClick={handleClick} className="w-full gap-2">
+        <Button onClick={handleClick} className="w-full gap-2 bg-white text-primary hover:bg-white/90">
           <MonitorSmartphone className="h-4 w-4" />
           Instalar App
         </Button>
-        <p className="mt-1.5 text-[11px] text-muted-foreground">Android · iOS · Desktop</p>
+        <p className="mt-1.5 text-[11px] text-white">Android · iOS · Desktop</p>
       </div>
 
       <GuiaInstalacaoDialog open={guiaAberto} onOpenChange={setGuiaAberto} />
