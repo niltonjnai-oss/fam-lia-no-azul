@@ -63,7 +63,8 @@ function ContasPage() {
         <div>
           <PageTitle>Contas do mês</PageTitle>
           <p className="text-sm text-muted-foreground">
-            Cadastre os vencimentos fixos — a gente avisa por email 2 dias antes e no dia.
+            Cadastre suas contas fixas (aluguel, luz, escola…) e a gente te avisa por email 2 dias
+            antes e no dia do vencimento.
           </p>
         </div>
         <NovaContaDialog />

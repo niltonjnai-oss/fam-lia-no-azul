@@ -17,6 +17,7 @@ import {
   Trash2,
   CheckCircle2,
   PartyPopper,
+  BellRing,
 } from "lucide-react";
 
 import {
@@ -30,10 +31,13 @@ import {
   upsertRendaPorDescricao,
   inserirRenda,
   inserirDivida,
+  fetchContasRecorrentes,
+  inserirContaRecorrente,
   type Categoria,
   type Subitem,
 } from "@/lib/db";
 import { formatBRL } from "@/lib/format";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -88,33 +92,46 @@ interface DespesaQ {
   label: string;
   categoria: string;
   subitem: string;
+  /** Conta com dia de vencimento por natureza (boleto/mensalidade) — candidata
+   *  a lembrete por email no passo final. Combustível, material escolar etc.
+   *  não têm vencimento, então ficam de fora. */
+  lembrete?: boolean;
 }
 
 const PASSO_MORADIA: DespesaQ[] = [
-  { label: "Aluguel ou prestação da casa", categoria: "Moradia", subitem: "Prestação ou aluguel" },
-  { label: "Conta de luz", categoria: "Moradia", subitem: "Conta de luz" },
-  { label: "Água e esgoto", categoria: "Moradia", subitem: "Água" },
-  { label: "Telefone / internet", categoria: "Moradia", subitem: "Telefone" },
-  { label: "Condomínio", categoria: "Moradia", subitem: "Condomínio" },
+  { label: "Aluguel ou prestação da casa", categoria: "Moradia", subitem: "Prestação ou aluguel", lembrete: true },
+  { label: "Conta de luz", categoria: "Moradia", subitem: "Conta de luz", lembrete: true },
+  { label: "Água e esgoto", categoria: "Moradia", subitem: "Água", lembrete: true },
+  { label: "Telefone / internet", categoria: "Moradia", subitem: "Telefone", lembrete: true },
+  { label: "Condomínio", categoria: "Moradia", subitem: "Condomínio", lembrete: true },
 ];
 const PASSO_TRANSPORTE: DespesaQ[] = [
-  { label: "Financiamento do carro", categoria: "Transporte", subitem: "Pagamento do veículo" },
+  { label: "Financiamento do carro", categoria: "Transporte", subitem: "Pagamento do veículo", lembrete: true },
   { label: "Combustível", categoria: "Transporte", subitem: "Combustível" },
   { label: "Transporte público / táxi / app", categoria: "Transporte", subitem: "Transporte público" },
 ];
 const PASSO_EDUCACAO: DespesaQ[] = [
-  { label: "Mensalidade escolar", categoria: "Educação", subitem: "Mensalidade" },
-  { label: "Transporte escolar", categoria: "Educação", subitem: "Transporte Escolar" },
+  { label: "Mensalidade escolar", categoria: "Educação", subitem: "Mensalidade", lembrete: true },
+  { label: "Transporte escolar", categoria: "Educação", subitem: "Transporte Escolar", lembrete: true },
   { label: "Material escolar", categoria: "Educação", subitem: "Material Escolar" },
 ];
 const PASSO_SAUDE: DespesaQ[] = [
-  { label: "Plano de saúde", categoria: "Seguro", subitem: "Saúde" },
-  { label: "Outros seguros (vida, carro, casa)", categoria: "Seguro", subitem: "Outros" },
+  { label: "Plano de saúde", categoria: "Seguro", subitem: "Saúde", lembrete: true },
+  { label: "Outros seguros (vida, carro, casa)", categoria: "Seguro", subitem: "Outros", lembrete: true },
 ];
 const PASSO_ESTILO: DespesaQ[] = [
   { label: "Streaming / música", categoria: "Entretenimento", subitem: "Plataformas de música" },
-  { label: "Academia", categoria: "Cuidados Pessoais", subitem: "Academia" },
+  { label: "Academia", categoria: "Cuidados Pessoais", subitem: "Academia", lembrete: true },
 ];
+
+/** Todas as perguntas candidatas a lembrete, em ordem de exibição. */
+const TODAS_LEMBRAVEIS: DespesaQ[] = [
+  ...PASSO_MORADIA,
+  ...PASSO_TRANSPORTE,
+  ...PASSO_EDUCACAO,
+  ...PASSO_SAUDE,
+  ...PASSO_ESTILO,
+].filter((q) => q.lembrete);
 
 interface DividaInput {
   nome: string;
@@ -140,6 +157,11 @@ function OnboardingPage() {
   const [dividas, setDividas] = useState<DividaInput[]>([
     { nome: "", valor_total: "", parcela_mensal: "", taxa_juros_mensal: "" },
   ]);
+  // Lembretes do passo final: escolha por conta ("Categoria::Subitem" → marcado/dia).
+  // Sem entrada no mapa = marcado por padrão, dia vazio.
+  const [lembretes, setLembretes] = useState<Record<string, { marcado: boolean; dia: string }>>(
+    {},
+  );
 
   // ----- Dados do schema -----
   const catsQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
@@ -165,6 +187,7 @@ function OnboardingPage() {
     base.push({ id: "estilo", titulo: "Assinaturas e estilo de vida", Icon: Music });
     base.push({ id: "dividas", titulo: "Dívidas", Icon: CreditCard });
     if (temDividas === "sim") base.push({ id: "dividas_detalhe", titulo: "Suas dívidas", Icon: CreditCard });
+    base.push({ id: "lembretes", titulo: "Lembretes", Icon: BellRing });
     base.push({ id: "resumo", titulo: "Tudo pronto", Icon: PartyPopper });
     return base;
   }, [temFilhos, temDividas]);
@@ -261,6 +284,35 @@ function OnboardingPage() {
           });
         }
         qc.invalidateQueries({ queryKey: qk.dividas });
+        return;
+      }
+
+      if (passoId === "lembretes") {
+        // Cria conta_recorrente pra cada conta marcada COM dia válido (1-31).
+        // Marcada sem dia fica de fora — sem vencimento não há quando avisar.
+        const aCriar = TODAS_LEMBRAVEIS.map((q) => {
+          const key = `${q.categoria}::${q.subitem}`;
+          const pref = lembretes[key] ?? { marcado: true, dia: "" };
+          const valor = parseBR(getDespesa(q.categoria, q.subitem));
+          const dia = Number.parseInt(pref.dia, 10);
+          return { q, valor, dia, marcado: pref.marcado };
+        }).filter(
+          (x) => x.valor > 0 && x.marcado && Number.isInteger(x.dia) && x.dia >= 1 && x.dia <= 31,
+        );
+        if (aCriar.length === 0) return;
+
+        // Dedupe por nome: refazer o onboarding não duplica contas já criadas.
+        let nomesExistentes = new Set<string>();
+        try {
+          nomesExistentes = new Set((await fetchContasRecorrentes()).map((c) => norm(c.nome)));
+        } catch {
+          // sem bloqueio: na dúvida cria (usuário remove na tela Contas)
+        }
+        for (const { q, valor, dia } of aCriar) {
+          if (nomesExistentes.has(norm(q.label))) continue;
+          await inserirContaRecorrente({ nome: q.label, valor, dia_vencimento: dia });
+        }
+        qc.invalidateQueries({ queryKey: ["conta_recorrente"] });
       }
     },
   });
@@ -291,6 +343,11 @@ function OnboardingPage() {
   // Resumo para a tela final
   const rendaTotalCalc = rendas.reduce((a, r) => a + parseBR(r.valor), 0);
   const fixasTotalCalc = Object.values(despesas).reduce((a, v) => a + parseBR(v), 0);
+
+  // Contas preenchidas que têm vencimento por natureza → candidatas a lembrete.
+  const candidatosLembrete = TODAS_LEMBRAVEIS.filter(
+    (q) => parseBR(getDespesa(q.categoria, q.subitem)) > 0,
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -337,10 +394,20 @@ function OnboardingPage() {
 
           {atual.id === "welcome" && (
             <>
-              <h1 className="mt-5 text-2xl font-bold tracking-tight">Comece aqui</h1>
+              <h1 className="mt-5 text-2xl font-bold tracking-tight">
+                Vamos montar o plano do seu mês
+              </h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                Em 1 minuto a gente monta o seu orçamento inicial. Você responde algumas
-                perguntas simples e o app já preenche tudo pra você.
+                Em 1 minuto, você conta pra gente o que <strong>entra</strong> e o que{" "}
+                <strong>sai</strong> da sua casa num mês normal.
+              </p>
+              <div className="mt-4 rounded-xl bg-warning/15 p-3 text-sm text-warning-foreground">
+                💡 <strong>Não precisa ser exato.</strong> Use valores aproximados — pra contas que
+                variam (luz, água), chute a média. Você ajusta tudo depois.
+              </div>
+              <p className="mt-4 text-sm text-muted-foreground">
+                No final, o app divide sua renda pelo método 50-30-20 e te mostra{" "}
+                <strong>quanto dá pra gastar sem aperto</strong>.
               </p>
               <ul className="mt-5 space-y-2 text-sm">
                 {["Sua renda", "Casa e contas fixas", "Transporte", "Saúde e seguros"].map((t) => (
@@ -423,7 +490,7 @@ function OnboardingPage() {
                         ? "Saúde e seguros"
                         : "Assinaturas e bem-estar"
               }
-              descricao="É só o que você já sabe de cabeça. Campos em branco a gente pula."
+              descricao="É só o que você já sabe de cabeça. Campos em branco a gente pula. Pode ser um valor aproximado — vale a média dos últimos meses."
               perguntas={
                 atual.id === "moradia"
                   ? PASSO_MORADIA
@@ -571,11 +638,87 @@ function OnboardingPage() {
             </>
           )}
 
+          {atual.id === "lembretes" && (
+            <>
+              <h1 className="mt-5 text-2xl font-bold tracking-tight">
+                Quer que a gente te lembre dessas contas?
+              </h1>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Avisamos por email <strong>2 dias antes e no dia do vencimento</strong>. É só
+                marcar as contas e dizer o dia que cada uma vence.
+              </p>
+
+              {candidatosLembrete.length === 0 ? (
+                <p className="mt-5 rounded-xl bg-muted/50 p-3 text-sm text-muted-foreground">
+                  Você não preencheu contas fixas nos passos anteriores. Sem problema — dá pra
+                  cadastrar depois na tela <strong>Contas</strong>.
+                </p>
+              ) : (
+                <div className="mt-5 space-y-2">
+                  {candidatosLembrete.map((q) => {
+                    const key = `${q.categoria}::${q.subitem}`;
+                    const pref = lembretes[key] ?? { marcado: true, dia: "" };
+                    return (
+                      <div
+                        key={key}
+                        className={`flex items-center gap-3 rounded-xl border p-3 transition-colors ${
+                          pref.marcado ? "border-border bg-card" : "border-border/50 bg-muted/30 opacity-70"
+                        }`}
+                      >
+                        <Checkbox
+                          checked={pref.marcado}
+                          onCheckedChange={(v) =>
+                            setLembretes((m) => ({
+                              ...m,
+                              [key]: { ...pref, marcado: v === true },
+                            }))
+                          }
+                          aria-label={`Receber lembrete de ${q.label}`}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-sm font-medium">{q.label}</div>
+                          <div className="tabular text-xs text-muted-foreground">
+                            {formatBRL(parseBR(getDespesa(q.categoria, q.subitem)))}
+                          </div>
+                        </div>
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          Dia
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={2}
+                            value={pref.dia}
+                            onChange={(e) => {
+                              const v = e.target.value.replace(/\D/g, "");
+                              setLembretes((m) => ({ ...m, [key]: { ...pref, dia: v } }));
+                            }}
+                            disabled={!pref.marcado}
+                            placeholder="10"
+                            className="tabular h-10 w-14 rounded-lg border border-input bg-background px-2 text-center text-sm font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
+                          />
+                        </label>
+                      </div>
+                    );
+                  })}
+                  <p className="text-[11px] text-muted-foreground">
+                    Conta marcada sem o dia fica de fora — sem vencimento, não sabemos quando
+                    avisar. Dá pra ajustar tudo depois na tela <strong>Contas</strong>.
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+
           {atual.id === "resumo" && (
             <>
               <h1 className="mt-5 text-2xl font-bold tracking-tight">
                 Seu orçamento inicial está pronto!
               </h1>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Esses valores são o seu <strong>plano</strong>. Agora é só anotar os gastos do dia a
+                dia — o app compara o planejado com o que realmente saiu e te avisa se algo passar
+                do combinado.
+              </p>
               <p className="mt-2 text-sm text-muted-foreground">
                 Cadastramos só as <strong>despesas fixas básicas</strong>. Para acrescentar
                 mercado, lazer, contas variáveis e outras entradas, é só ir em{" "}
