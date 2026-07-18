@@ -36,8 +36,9 @@ export function ProjecaoMes({
   const diasNoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
   const projecao = diaAtual > 0 ? (totalReal / diaAtual) * diasNoMes : 0;
 
-  // Tendência: projeção deste mês vs total gasto no mês passado.
-  const totalMesAnterior = Number(gastosAnteriorQ.data?.total_comprometido ?? 0);
+  // Tendência: projeção deste mês vs total REALIZADO no mês passado — mesma
+  // base do card "Comparativo mensal", pra os dois "mês anterior" baterem.
+  const totalMesAnterior = Number(gastosAnteriorQ.data?.total_real ?? 0);
   const temTendencia = totalMesAnterior > 0 && totalReal > 0;
   const variacaoPct = temTendencia
     ? Math.round(((projecao - totalMesAnterior) / totalMesAnterior) * 100)
@@ -80,7 +81,15 @@ export function ProjecaoMes({
             {temTendencia && !inicioDoMes && (
               <span
                 className={`inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                  gastandoMenos ? "bg-success/10 text-success" : "bg-danger/10 text-danger"
+                  // Cor só quando concorda com o veredito principal (dentro/fora
+                  // do previsto). Quando contradiz — ex.: gastando menos que mês
+                  // passado, mas acima do previsto — fica neutro, pra não dar
+                  // verde e vermelho ao mesmo tempo no mesmo card.
+                  dentro === gastandoMenos
+                    ? gastandoMenos
+                      ? "bg-success/10 text-success"
+                      : "bg-danger/10 text-danger"
+                    : "bg-muted text-muted-foreground"
                 }`}
               >
                 {gastandoMenos ? (
