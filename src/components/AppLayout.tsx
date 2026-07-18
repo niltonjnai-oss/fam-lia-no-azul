@@ -140,7 +140,7 @@ export function AppLayout() {
             <img
               src={logoHorizontalUrl}
               alt="Família no Azul"
-              className="h-7 w-auto"
+              className="h-7 w-auto max-w-full object-contain"
             />
             {isAdmin && (
               <Badge variant="default" className="h-5 px-1.5 py-0 text-[10px]">
