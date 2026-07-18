@@ -133,6 +133,7 @@ export interface TransacaoDia {
   descricao: string | null;
   subitem_id: string;
   mes_ref: string;
+  banco: string | null;
 }
 
 // ---------- Importação de extrato ----------
@@ -146,6 +147,7 @@ export async function registrarGastoImportado(args: {
   valor: number;
   descricao?: string | null;
   data: string; // YYYY-MM-DD
+  banco?: string | null;
 }): Promise<void> {
   const { error: tErr } = await supabase.from("transacao").insert({
     subitem_id: args.subitem_id,
@@ -153,6 +155,7 @@ export async function registrarGastoImportado(args: {
     valor: args.valor,
     descricao: args.descricao ?? null,
     data: args.data,
+    banco: args.banco ?? null,
   });
   if (tErr) throw new Error(tErr.message);
 
@@ -181,18 +184,21 @@ export async function registrarGastoImportado(args: {
   }
 }
 
-/** Transações num intervalo de datas (para detectar duplicatas no import). */
+/** Transações num intervalo de datas (para detectar duplicatas no import).
+ *  Traz o banco também: como cada import guarda o banco de origem, a detecção
+ *  de duplicata distingue mesma data+valor de bancos diferentes (gastos reais
+ *  distintos, não duplicata). */
 export async function fetchTransacoesPeriodo(
   de: string,
   ate: string,
-): Promise<{ data: string; valor: number }[]> {
+): Promise<{ data: string; valor: number; banco: string | null }[]> {
   const { data, error } = await supabase
     .from("transacao")
-    .select("data, valor")
+    .select("data, valor, banco")
     .gte("data", de)
     .lte("data", ate);
   if (error) throw new Error(error.message);
-  return (data ?? []) as { data: string; valor: number }[];
+  return (data ?? []) as { data: string; valor: number; banco: string | null }[];
 }
 
 // ---------- Contas recorrentes (vencimentos mensais com alerta) ----------
@@ -351,7 +357,7 @@ export async function fetchMinhaAssinatura(): Promise<MinhaAssinatura | null> {
 export async function fetchTransacoesDoDia(data: string): Promise<TransacaoDia[]> {
   const { data: rows, error } = await supabase
     .from("transacao")
-    .select("id, data, valor, descricao, subitem_id, mes_ref")
+    .select("id, data, valor, descricao, subitem_id, mes_ref, banco")
     .eq("data", data)
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
@@ -363,7 +369,7 @@ export async function fetchTransacoesDoDia(data: string): Promise<TransacaoDia[]
 export async function fetchTransacoesRecentes(limite = 5): Promise<TransacaoDia[]> {
   const { data: rows, error } = await supabase
     .from("transacao")
-    .select("id, data, valor, descricao, subitem_id, mes_ref")
+    .select("id, data, valor, descricao, subitem_id, mes_ref, banco")
     .order("created_at", { ascending: false })
     .limit(limite);
   if (error) throw new Error(error.message);

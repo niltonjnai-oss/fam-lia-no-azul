@@ -142,9 +142,16 @@ export function UltimosLancamentos() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium">{titulo}</div>
-                  <div className="truncate text-[11px] text-muted-foreground">
-                    {formatDataCurta(t.data)}
-                    {catNome ? ` · ${catNome}` : ""}
+                  <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                    <span className="truncate">
+                      {formatDataCurta(t.data)}
+                      {catNome ? ` · ${catNome}` : ""}
+                    </span>
+                    {t.banco && (
+                      <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-foreground/70">
+                        {t.banco}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <span className="tabular shrink-0 text-sm font-semibold">
