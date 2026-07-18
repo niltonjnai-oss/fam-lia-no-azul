@@ -3,9 +3,10 @@
 // (pg_cron → /api/public/emails/cron, ver supabase/sql/contas_recorrentes.sql).
 
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CalendarClock, Plus, Trash2, BellRing } from "lucide-react";
+import { CalendarClock, Plus, Trash2, BellRing, Receipt, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -20,11 +21,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
+  qk,
+  mesAtual,
+  hojeISO,
+  fetchCategorias,
+  fetchSubitens,
   fetchContasRecorrentes,
   inserirContaRecorrente,
   atualizarContaRecorrente,
   excluirContaRecorrente,
+  registrarPagamentoConta,
   type ContaRecorrente,
 } from "@/lib/db";
 import { formatBRL } from "@/lib/format";
@@ -33,6 +41,24 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageTitle } from "@/components/PageTitle";
 
 const QK_CONTAS = ["conta_recorrente"] as const;
+
+const parseValorBR = (s: string): number => {
+  const n = Number(s.replace(/\./g, "").replace(",", "."));
+  return Number.isFinite(n) && n > 0 ? n : 0;
+};
+
+/** Select de item do orçamento agrupado por categoria (padrão da importação). */
+function useSubitensPorCategoria() {
+  const catsQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
+  const subsQ = useQuery({ queryKey: qk.subitens, queryFn: fetchSubitens });
+  return useMemo(() => {
+    const cats = catsQ.data ?? [];
+    const subs = subsQ.data ?? [];
+    return cats
+      .map((c) => ({ categoria: c, subitens: subs.filter((s) => s.categoria_id === c.id) }))
+      .filter((g) => g.subitens.length > 0);
+  }, [catsQ.data, subsQ.data]);
+}
 
 export const Route = createFileRoute("/contas")({
   head: () => ({
@@ -131,6 +157,7 @@ function ContasPage() {
 
 function ContaCard({ conta: c }: { conta: ContaRecorrente }) {
   const qc = useQueryClient();
+  const pagaEsteMes = c.ultimo_mes_pago === mesAtual();
   const alternar = useMutation({
     mutationFn: () => atualizarContaRecorrente(c.id, { ativo: !c.ativo }),
     onSuccess: () => qc.invalidateQueries({ queryKey: QK_CONTAS }),
@@ -142,38 +169,185 @@ function ContaCard({ conta: c }: { conta: ContaRecorrente }) {
 
   return (
     <article
-      className={`flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 shadow-soft ${c.ativo ? "" : "opacity-60"}`}
+      className={`rounded-2xl border border-border bg-card p-4 shadow-soft ${c.ativo ? "" : "opacity-60"}`}
     >
-      <div className="min-w-0">
-        <h3 className="truncate text-sm font-semibold sm:text-base">{c.nome}</h3>
-        <p className="text-xs text-muted-foreground">
-          Vence todo dia <strong>{c.dia_vencimento}</strong>
-          {!c.ativo && " · alertas pausados"}
-        </p>
-      </div>
-      <div className="flex items-center gap-3">
-        <div className="tabular text-right text-sm font-bold sm:text-base">
-          {formatBRL(Number(c.valor))}
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="truncate text-sm font-semibold sm:text-base">{c.nome}</h3>
+          <p className="text-xs text-muted-foreground">
+            Vence todo dia <strong>{c.dia_vencimento}</strong>
+            {!c.ativo && " · alertas pausados"}
+          </p>
         </div>
-        <Switch
-          checked={c.ativo}
-          onCheckedChange={() => alternar.mutate()}
-          disabled={alternar.isPending}
-          aria-label={c.ativo ? "Pausar alertas" : "Reativar alertas"}
-        />
+        <div className="flex items-center gap-3">
+          <div className="tabular text-right text-sm font-bold sm:text-base">
+            {formatBRL(Number(c.valor))}
+          </div>
+          <Switch
+            checked={c.ativo}
+            onCheckedChange={() => alternar.mutate()}
+            disabled={alternar.isPending}
+            aria-label={c.ativo ? "Pausar alertas" : "Reativar alertas"}
+          />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              if (confirm(`Excluir "${c.nome}"?`)) excluir.mutate();
+            }}
+            disabled={excluir.isPending}
+            className="text-danger hover:bg-danger/10 hover:text-danger"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      {c.ativo && (
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
+          {pagaEsteMes ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-success/15 px-2.5 py-1 text-xs font-semibold text-success">
+              <CheckCircle2 className="h-3.5 w-3.5" /> Paga este mês
+            </span>
+          ) : (
+            <span className="text-xs text-muted-foreground">
+              Boleto chegou? Lance o valor real e o painel recalcula.
+            </span>
+          )}
+          <ChegouBoletoDialog conta={c} jaPaga={pagaEsteMes} />
+        </div>
+      )}
+    </article>
+  );
+}
+
+function ChegouBoletoDialog({ conta: c, jaPaga }: { conta: ContaRecorrente; jaPaga: boolean }) {
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [valor, setValor] = useState("");
+  const [subitemId, setSubitemId] = useState("");
+  const [atualizarPadrao, setAtualizarPadrao] = useState(false);
+  const grupos = useSubitensPorCategoria();
+
+  function aoAbrir(v: boolean) {
+    setOpen(v);
+    if (v) {
+      // Estado fresco a cada abertura: valor estimado preenchido, vínculo salvo.
+      setValor(Number(c.valor) > 0 ? Number(c.valor).toFixed(2).replace(".", ",") : "");
+      setSubitemId(c.subitem_id ?? "");
+      setAtualizarPadrao(false);
+    }
+  }
+
+  const mut = useMutation({
+    mutationFn: async () => {
+      const v = parseValorBR(valor);
+      if (v <= 0) throw new Error("Informe o valor do boleto.");
+      if (!subitemId) throw new Error("Escolha em qual item do orçamento essa conta entra.");
+      await registrarPagamentoConta({
+        conta: c,
+        subitem_id: subitemId,
+        valor: v,
+        atualizarValorPadrao: atualizarPadrao,
+      });
+    },
+    onSuccess: () => {
+      const mes = mesAtual();
+      qc.invalidateQueries({ queryKey: QK_CONTAS });
+      qc.invalidateQueries({ queryKey: qk.resumo(mes) });
+      qc.invalidateQueries({ queryKey: qk.bloco503020(mes) });
+      qc.invalidateQueries({ queryKey: qk.lancamentos(mes) });
+      qc.invalidateQueries({ queryKey: qk.gastosMes(mes) });
+      qc.invalidateQueries({ queryKey: qk.transacoesRecentes });
+      qc.invalidateQueries({ queryKey: qk.transacoesHoje(hojeISO()) });
+      setOpen(false);
+      toast.success("Lançado! O painel já mostra o valor real. 💙");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={aoAbrir}>
+      <DialogTrigger asChild>
         <Button
           size="sm"
-          variant="ghost"
-          onClick={() => {
-            if (confirm(`Excluir "${c.nome}"?`)) excluir.mutate();
-          }}
-          disabled={excluir.isPending}
-          className="text-danger hover:bg-danger/10 hover:text-danger"
+          variant={jaPaga ? "outline" : "default"}
+          className={jaPaga ? "" : "bg-cta text-cta-foreground hover:bg-cta-hover"}
         >
-          <Trash2 className="h-4 w-4" />
+          <Receipt className="h-4 w-4" />
+          {jaPaga ? "Lançar de novo" : "Chegou o boleto"}
         </Button>
-      </div>
-    </article>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Chegou o boleto de {c.nome}</DialogTitle>
+          <DialogDescription>
+            Lance o valor que veio de verdade — o painel e o 50-30-20 recalculam na hora.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3">
+          <div>
+            <Label htmlFor={`boleto-valor-${c.id}`}>Valor do boleto (R$)</Label>
+            <Input
+              id={`boleto-valor-${c.id}`}
+              inputMode="decimal"
+              value={valor}
+              onChange={(e) => setValor(e.target.value)}
+              className="tabular"
+              placeholder="0,00"
+            />
+            {Number(c.valor) > 0 && (
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Você estimou {formatBRL(Number(c.valor))} pra essa conta.
+              </p>
+            )}
+          </div>
+
+          {!c.subitem_id && (
+            <div>
+              <Label htmlFor={`boleto-sub-${c.id}`}>Em qual item do orçamento entra?</Label>
+              <select
+                id={`boleto-sub-${c.id}`}
+                className="mt-1 h-10 w-full rounded-md border border-border bg-background px-2 text-sm"
+                value={subitemId}
+                onChange={(e) => setSubitemId(e.target.value)}
+              >
+                <option value="">Escolher…</option>
+                {grupos.map((g) => (
+                  <optgroup key={g.categoria.id} label={g.categoria.nome}>
+                    {g.subitens.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.nome}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                A gente guarda essa escolha — da próxima vez não pergunta de novo.
+              </p>
+            </div>
+          )}
+
+          <label className="flex items-center gap-2 text-sm">
+            <Checkbox
+              checked={atualizarPadrao}
+              onCheckedChange={(v) => setAtualizarPadrao(v === true)}
+            />
+            Usar esse valor como o valor normal da conta
+          </label>
+        </div>
+        <DialogFooter>
+          <Button
+            disabled={mut.isPending}
+            onClick={() => mut.mutate()}
+            className="bg-cta text-cta-foreground hover:bg-cta-hover"
+          >
+            {mut.isPending ? "Lançando…" : "Lançar no orçamento"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -182,6 +356,8 @@ function NovaContaDialog() {
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
   const [dia, setDia] = useState("");
+  const [subitemId, setSubitemId] = useState("");
+  const grupos = useSubitensPorCategoria();
   const qc = useQueryClient();
   const diaNum = Math.min(31, Math.max(1, Number(dia) || 0));
   const mut = useMutation({
@@ -190,12 +366,14 @@ function NovaContaDialog() {
         nome,
         valor: Number(valor) || 0,
         dia_vencimento: diaNum,
+        subitem_id: subitemId || null,
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: QK_CONTAS });
       setNome("");
       setValor("");
       setDia("");
+      setSubitemId("");
       setOpen(false);
     },
   });
@@ -236,6 +414,31 @@ function NovaContaDialog() {
                 placeholder="1 a 31"
               />
             </div>
+          </div>
+          <div>
+            <Label htmlFor="nova-conta-sub">
+              Item do orçamento <span className="text-muted-foreground">(opcional)</span>
+            </Label>
+            <select
+              id="nova-conta-sub"
+              className="mt-1 h-10 w-full rounded-md border border-border bg-background px-2 text-sm"
+              value={subitemId}
+              onChange={(e) => setSubitemId(e.target.value)}
+            >
+              <option value="">Escolher depois…</option>
+              {grupos.map((g) => (
+                <optgroup key={g.categoria.id} label={g.categoria.nome}>
+                  {g.subitens.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.nome}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              É onde o valor entra quando você usar o "Chegou o boleto".
+            </p>
           </div>
         </div>
         <DialogFooter>

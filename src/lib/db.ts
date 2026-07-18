@@ -209,12 +209,16 @@ export interface ContaRecorrente {
   valor: number;
   dia_vencimento: number;
   ativo: boolean;
+  /** Item do orçamento onde o "Chegou o boleto" lança o gasto real. */
+  subitem_id: string | null;
+  /** "YYYY-MM" do último lançamento via "Chegou o boleto" — badge ✓ paga. */
+  ultimo_mes_pago: string | null;
 }
 
 export async function fetchContasRecorrentes(): Promise<ContaRecorrente[]> {
   const { data, error } = await supabase
     .from("conta_recorrente")
-    .select("id, nome, valor, dia_vencimento, ativo")
+    .select("id, nome, valor, dia_vencimento, ativo, subitem_id, ultimo_mes_pago")
     .order("dia_vencimento", { ascending: true });
   if (error) throw new Error(error.message);
   return (data ?? []) as ContaRecorrente[];
@@ -224,19 +228,51 @@ export async function inserirContaRecorrente(args: {
   nome: string;
   valor: number;
   dia_vencimento: number;
+  subitem_id?: string | null;
 }): Promise<void> {
   const { error } = await supabase
     .from("conta_recorrente")
-    .insert({ ...args, ativo: true });
+    .insert({ ...args, subitem_id: args.subitem_id ?? null, ativo: true });
   if (error) throw new Error(error.message);
 }
 
 export async function atualizarContaRecorrente(
   id: string,
-  patch: Partial<Pick<ContaRecorrente, "nome" | "valor" | "dia_vencimento" | "ativo">>,
+  patch: Partial<
+    Pick<
+      ContaRecorrente,
+      "nome" | "valor" | "dia_vencimento" | "ativo" | "subitem_id" | "ultimo_mes_pago"
+    >
+  >,
 ): Promise<void> {
   const { error } = await supabase.from("conta_recorrente").update(patch).eq("id", id);
   if (error) throw new Error(error.message);
+}
+
+/** "Chegou o boleto": lança o valor REAL da conta como gasto do mês corrente
+ *  (mesmo caminho da importação: transacao + acumula no lancamento, então o
+ *  painel/50-30-20 recalculam na hora) e marca a conta como paga neste mês.
+ *  Opcionalmente grava o vínculo escolhido e atualiza o valor padrão. */
+export async function registrarPagamentoConta(args: {
+  conta: ContaRecorrente;
+  subitem_id: string;
+  valor: number;
+  atualizarValorPadrao: boolean;
+}): Promise<void> {
+  const mes = mesAtual();
+  await registrarGastoImportado({
+    subitem_id: args.subitem_id,
+    mes_ref: mes,
+    valor: args.valor,
+    descricao: args.conta.nome,
+    data: hojeISO(),
+  });
+  const patch: Partial<Pick<ContaRecorrente, "subitem_id" | "ultimo_mes_pago" | "valor">> = {
+    ultimo_mes_pago: mes,
+  };
+  if (args.conta.subitem_id !== args.subitem_id) patch.subitem_id = args.subitem_id;
+  if (args.atualizarValorPadrao) patch.valor = args.valor;
+  await atualizarContaRecorrente(args.conta.id, patch);
 }
 
 export async function excluirContaRecorrente(id: string): Promise<void> {

@@ -310,7 +310,14 @@ function OnboardingPage() {
         }
         for (const { q, valor, dia } of aCriar) {
           if (nomesExistentes.has(norm(q.label))) continue;
-          await inserirContaRecorrente({ nome: q.label, valor, dia_vencimento: dia });
+          await inserirContaRecorrente({
+            nome: q.label,
+            valor,
+            dia_vencimento: dia,
+            // Conta nasce vinculada ao item do orçamento — o "Chegou o boleto"
+            // não precisa perguntar a categoria depois.
+            subitem_id: findSubitemId(cats, subs, q.categoria, q.subitem),
+          });
         }
         qc.invalidateQueries({ queryKey: ["conta_recorrente"] });
       }
