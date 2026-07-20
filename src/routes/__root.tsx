@@ -171,10 +171,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+// Captura o beforeinstallprompt o mais cedo possível: este script roda durante
+// o parse do HTML, ANTES dos bundles. O Chrome dispara esse evento uma única
+// vez, logo no load — se a gente só escutasse depois da hidratação (quando o
+// botão de instalar monta), o evento já teria passado e o app cairia sempre no
+// guia manual em vez do prompt nativo. O módulo pwa-install.ts lê deste global.
+const PWA_PROMPT_CAPTURE = `(function(){
+window.__pwaInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__pwaInstallPrompt=e;window.dispatchEvent(new Event('pwa-install-available'));});
+window.addEventListener('appinstalled',function(){window.__pwaInstallPrompt=null;window.dispatchEvent(new Event('pwa-install-available'));});
+})();`;
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: PWA_PROMPT_CAPTURE }} />
         <HeadContent />
       </head>
       <body>

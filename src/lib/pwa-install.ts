@@ -8,30 +8,52 @@ export type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 };
 
+type WindowComPrompt = Window & { __pwaInstallPrompt?: BeforeInstallPromptEvent | null };
+
 let deferredPrompt: BeforeInstallPromptEvent | null = null;
 const listeners = new Set<() => void>();
 
+/** Lê o evento capturado pelo script inline do <head> (que roda antes deste
+ *  módulo). É a fonte da verdade — cobre o caso do evento ter disparado antes
+ *  de qualquer bundle carregar. */
+function promptDoGlobal(): BeforeInstallPromptEvent | null {
+  if (typeof window === "undefined") return null;
+  return (window as WindowComPrompt).__pwaInstallPrompt ?? null;
+}
+
 if (typeof window !== "undefined") {
+  // Adota o que o script do <head> já capturou.
+  deferredPrompt = promptDoGlobal();
+
+  // O script do <head> avisa quando captura/limpa o prompt.
+  window.addEventListener("pwa-install-available", () => {
+    deferredPrompt = promptDoGlobal();
+    listeners.forEach((fn) => fn());
+  });
+  // Backup: se por algum motivo este módulo carregar antes do evento disparar.
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e as BeforeInstallPromptEvent;
+    (window as WindowComPrompt).__pwaInstallPrompt = deferredPrompt;
     listeners.forEach((fn) => fn());
   });
   window.addEventListener("appinstalled", () => {
     deferredPrompt = null;
+    (window as WindowComPrompt).__pwaInstallPrompt = null;
     listeners.forEach((fn) => fn());
   });
 }
 
 export function getInstallPrompt(): BeforeInstallPromptEvent | null {
-  return deferredPrompt;
+  return deferredPrompt ?? promptDoGlobal();
 }
 
 /** Dispara o prompt nativo. Retorna true se o usuário aceitou instalar. */
 export async function promptInstall(): Promise<boolean> {
-  if (!deferredPrompt) return false;
-  const ev = deferredPrompt;
+  const ev = deferredPrompt ?? promptDoGlobal();
+  if (!ev) return false;
   deferredPrompt = null;
+  if (typeof window !== "undefined") (window as WindowComPrompt).__pwaInstallPrompt = null;
   await ev.prompt();
   const escolha = await ev.userChoice;
   listeners.forEach((fn) => fn());
