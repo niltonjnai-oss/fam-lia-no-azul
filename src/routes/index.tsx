@@ -186,6 +186,10 @@ const faqs = [
     a: "Duas: você e seu cônjuge, cada um com sua própria conta e senha — é só convidar pelo app. Os dois veem e registram no mesmo orçamento, de qualquer aparelho. Organizar o dinheiro a dois é justamente a ideia.",
   },
   {
+    q: "Solteiros podem usar o app?",
+    a: "Podem, sim! O método 50-30-20, o controle de gastos, a reserva de emergência e o plano pra sair das dívidas funcionam pra qualquer pessoa que queira organizar o dinheiro — morando sozinho ou não. O Modo Casal é só um extra opcional: se você usa sozinho, o app é todo seu. O nome é Família no Azul, mas ficar no azul é pra todo mundo.",
+  },
+  {
     q: "A assinatura renova sozinha?",
     a: "Não tem pegadinha: você paga R$ 67,90 e tem 12 meses de acesso. Perto do fim, a gente te avisa por e-mail — você decide se continua.",
   },
