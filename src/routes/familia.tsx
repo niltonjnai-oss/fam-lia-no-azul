@@ -103,7 +103,7 @@ function FamiliaPage() {
       <div>
         <PageTitle>Modo Casal</PageTitle>
         <p className="mt-1 text-sm text-muted-foreground">
-          Vocês dois no mesmo orçamento — cada um com seu próprio login.
+          Cadastre seu cônjuge ou um familiar e gerenciem o orçamento juntos. Cada um terá seu próprio login, mantendo o controle completo das finanças em um único lugar.
         </p>
       </div>
 
