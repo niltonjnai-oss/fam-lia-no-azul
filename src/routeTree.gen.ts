@@ -9,105 +9,35 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TermosRouteImport } from './routes/termos'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ReservaRouteImport } from './routes/reserva'
-import { Route as PrivacidadeRouteImport } from './routes/privacidade'
-import { Route as OrcamentoRouteImport } from './routes/orcamento'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as MetodoRouteImport } from './routes/metodo'
-import { Route as InicioRouteImport } from './routes/inicio'
-import { Route as IndicacaoRouteImport } from './routes/indicacao'
-import { Route as ImportarRouteImport } from './routes/importar'
-import { Route as FamiliaRouteImport } from './routes/familia'
-import { Route as DividasRouteImport } from './routes/dividas'
-import { Route as ContasRouteImport } from './routes/contas'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AssinaturaRouteImport } from './routes/assinatura'
-import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as BlogIndexRouteImport } from './routes/blog.index'
-import { Route as ConviteTokenRouteImport } from './routes/convite.$token'
-import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as AssinaturaRouteImport } from './routes/assinatura'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ContasRouteImport } from './routes/contas'
+import { Route as DividasRouteImport } from './routes/dividas'
+import { Route as FamiliaRouteImport } from './routes/familia'
+import { Route as ImportarRouteImport } from './routes/importar'
+import { Route as IndicacaoRouteImport } from './routes/indicacao'
+import { Route as InicioRouteImport } from './routes/inicio'
+import { Route as MetodoRouteImport } from './routes/metodo'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as OrcamentoRouteImport } from './routes/orcamento'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
+import { Route as ReservaRouteImport } from './routes/reserva'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as TermosRouteImport } from './routes/termos'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
-import { Route as ApiFamiliaConvidarRouteImport } from './routes/api/familia/convidar'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as ConviteTokenRouteImport } from './routes/convite.$token'
 import { Route as ApiEmailsSendRouteImport } from './routes/api/emails/send'
-import { Route as ApiPublicKiwifyWebhookRouteImport } from './routes/api/public/kiwify/webhook'
+import { Route as ApiFamiliaConvidarRouteImport } from './routes/api/familia/convidar'
 import { Route as ApiPublicEmailsCronRouteImport } from './routes/api/public/emails/cron'
+import { Route as ApiPublicKiwifyWebhookRouteImport } from './routes/api/public/kiwify/webhook'
 
-const TermosRoute = TermosRouteImport.update({
-  id: '/termos',
-  path: '/termos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReservaRoute = ReservaRouteImport.update({
-  id: '/reserva',
-  path: '/reserva',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacidadeRoute = PrivacidadeRouteImport.update({
-  id: '/privacidade',
-  path: '/privacidade',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OrcamentoRoute = OrcamentoRouteImport.update({
-  id: '/orcamento',
-  path: '/orcamento',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MetodoRoute = MetodoRouteImport.update({
-  id: '/metodo',
-  path: '/metodo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InicioRoute = InicioRouteImport.update({
-  id: '/inicio',
-  path: '/inicio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndicacaoRoute = IndicacaoRouteImport.update({
-  id: '/indicacao',
-  path: '/indicacao',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImportarRoute = ImportarRouteImport.update({
-  id: '/importar',
-  path: '/importar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FamiliaRoute = FamiliaRouteImport.update({
-  id: '/familia',
-  path: '/familia',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DividasRoute = DividasRouteImport.update({
-  id: '/dividas',
-  path: '/dividas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContasRoute = ContasRouteImport.update({
-  id: '/contas',
-  path: '/contas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AssinaturaRoute = AssinaturaRouteImport.update({
-  id: '/assinatura',
-  path: '/assinatura',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -115,24 +45,79 @@ const AppRoute = AppRouteImport.update({
   path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AssinaturaRoute = AssinaturaRouteImport.update({
+  id: '/assinatura',
+  path: '/assinatura',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogIndexRoute = BlogIndexRouteImport.update({
-  id: '/blog/',
-  path: '/blog/',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConviteTokenRoute = ConviteTokenRouteImport.update({
-  id: '/convite/$token',
-  path: '/convite/$token',
+const ContasRoute = ContasRouteImport.update({
+  id: '/contas',
+  path: '/contas',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/blog/$slug',
-  path: '/blog/$slug',
+const DividasRoute = DividasRouteImport.update({
+  id: '/dividas',
+  path: '/dividas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamiliaRoute = FamiliaRouteImport.update({
+  id: '/familia',
+  path: '/familia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImportarRoute = ImportarRouteImport.update({
+  id: '/importar',
+  path: '/importar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndicacaoRoute = IndicacaoRouteImport.update({
+  id: '/indicacao',
+  path: '/indicacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InicioRoute = InicioRouteImport.update({
+  id: '/inicio',
+  path: '/inicio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MetodoRoute = MetodoRouteImport.update({
+  id: '/metodo',
+  path: '/metodo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrcamentoRoute = OrcamentoRouteImport.update({
+  id: '/orcamento',
+  path: '/orcamento',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReservaRoute = ReservaRouteImport.update({
+  id: '/reserva',
+  path: '/reserva',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminEmailsRoute = AdminEmailsRouteImport.update({
@@ -140,9 +125,19 @@ const AdminEmailsRoute = AdminEmailsRouteImport.update({
   path: '/admin/emails',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiFamiliaConvidarRoute = ApiFamiliaConvidarRouteImport.update({
-  id: '/api/familia/convidar',
-  path: '/api/familia/convidar',
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConviteTokenRoute = ConviteTokenRouteImport.update({
+  id: '/convite/$token',
+  path: '/convite/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiEmailsSendRoute = ApiEmailsSendRouteImport.update({
@@ -150,14 +145,19 @@ const ApiEmailsSendRoute = ApiEmailsSendRouteImport.update({
   path: '/api/emails/send',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicKiwifyWebhookRoute = ApiPublicKiwifyWebhookRouteImport.update({
-  id: '/api/public/kiwify/webhook',
-  path: '/api/public/kiwify/webhook',
+const ApiFamiliaConvidarRoute = ApiFamiliaConvidarRouteImport.update({
+  id: '/api/familia/convidar',
+  path: '/api/familia/convidar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicEmailsCronRoute = ApiPublicEmailsCronRouteImport.update({
   id: '/api/public/emails/cron',
   path: '/api/public/emails/cron',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicKiwifyWebhookRoute = ApiPublicKiwifyWebhookRouteImport.update({
+  id: '/api/public/kiwify/webhook',
+  path: '/api/public/kiwify/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -357,109 +357,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/termos': {
-      id: '/termos'
-      path: '/termos'
-      fullPath: '/termos'
-      preLoaderRoute: typeof TermosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reserva': {
-      id: '/reserva'
-      path: '/reserva'
-      fullPath: '/reserva'
-      preLoaderRoute: typeof ReservaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacidade': {
-      id: '/privacidade'
-      path: '/privacidade'
-      fullPath: '/privacidade'
-      preLoaderRoute: typeof PrivacidadeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/orcamento': {
-      id: '/orcamento'
-      path: '/orcamento'
-      fullPath: '/orcamento'
-      preLoaderRoute: typeof OrcamentoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/metodo': {
-      id: '/metodo'
-      path: '/metodo'
-      fullPath: '/metodo'
-      preLoaderRoute: typeof MetodoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/inicio': {
-      id: '/inicio'
-      path: '/inicio'
-      fullPath: '/inicio'
-      preLoaderRoute: typeof InicioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/indicacao': {
-      id: '/indicacao'
-      path: '/indicacao'
-      fullPath: '/indicacao'
-      preLoaderRoute: typeof IndicacaoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/importar': {
-      id: '/importar'
-      path: '/importar'
-      fullPath: '/importar'
-      preLoaderRoute: typeof ImportarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/familia': {
-      id: '/familia'
-      path: '/familia'
-      fullPath: '/familia'
-      preLoaderRoute: typeof FamiliaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dividas': {
-      id: '/dividas'
-      path: '/dividas'
-      fullPath: '/dividas'
-      preLoaderRoute: typeof DividasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contas': {
-      id: '/contas'
-      path: '/contas'
-      fullPath: '/contas'
-      preLoaderRoute: typeof ContasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/assinatura': {
-      id: '/assinatura'
-      path: '/assinatura'
-      fullPath: '/assinatura'
-      preLoaderRoute: typeof AssinaturaRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -469,32 +371,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/assinatura': {
+      id: '/assinatura'
+      path: '/assinatura'
+      fullPath: '/assinatura'
+      preLoaderRoute: typeof AssinaturaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/': {
-      id: '/blog/'
-      path: '/blog'
-      fullPath: '/blog/'
-      preLoaderRoute: typeof BlogIndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/convite/$token': {
-      id: '/convite/$token'
-      path: '/convite/$token'
-      fullPath: '/convite/$token'
-      preLoaderRoute: typeof ConviteTokenRouteImport
+    '/contas': {
+      id: '/contas'
+      path: '/contas'
+      fullPath: '/contas'
+      preLoaderRoute: typeof ContasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/$slug': {
-      id: '/blog/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
+    '/dividas': {
+      id: '/dividas'
+      path: '/dividas'
+      fullPath: '/dividas'
+      preLoaderRoute: typeof DividasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/familia': {
+      id: '/familia'
+      path: '/familia'
+      fullPath: '/familia'
+      preLoaderRoute: typeof FamiliaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/importar': {
+      id: '/importar'
+      path: '/importar'
+      fullPath: '/importar'
+      preLoaderRoute: typeof ImportarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/indicacao': {
+      id: '/indicacao'
+      path: '/indicacao'
+      fullPath: '/indicacao'
+      preLoaderRoute: typeof IndicacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inicio': {
+      id: '/inicio'
+      path: '/inicio'
+      fullPath: '/inicio'
+      preLoaderRoute: typeof InicioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/metodo': {
+      id: '/metodo'
+      path: '/metodo'
+      fullPath: '/metodo'
+      preLoaderRoute: typeof MetodoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orcamento': {
+      id: '/orcamento'
+      path: '/orcamento'
+      fullPath: '/orcamento'
+      preLoaderRoute: typeof OrcamentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reserva': {
+      id: '/reserva'
+      path: '/reserva'
+      fullPath: '/reserva'
+      preLoaderRoute: typeof ReservaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/emails': {
@@ -504,11 +483,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEmailsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/familia/convidar': {
-      id: '/api/familia/convidar'
-      path: '/api/familia/convidar'
-      fullPath: '/api/familia/convidar'
-      preLoaderRoute: typeof ApiFamiliaConvidarRouteImport
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/convite/$token': {
+      id: '/convite/$token'
+      path: '/convite/$token'
+      fullPath: '/convite/$token'
+      preLoaderRoute: typeof ConviteTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/emails/send': {
@@ -518,11 +511,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiEmailsSendRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/kiwify/webhook': {
-      id: '/api/public/kiwify/webhook'
-      path: '/api/public/kiwify/webhook'
-      fullPath: '/api/public/kiwify/webhook'
-      preLoaderRoute: typeof ApiPublicKiwifyWebhookRouteImport
+    '/api/familia/convidar': {
+      id: '/api/familia/convidar'
+      path: '/api/familia/convidar'
+      fullPath: '/api/familia/convidar'
+      preLoaderRoute: typeof ApiFamiliaConvidarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/emails/cron': {
@@ -530,6 +523,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/emails/cron'
       fullPath: '/api/public/emails/cron'
       preLoaderRoute: typeof ApiPublicEmailsCronRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/kiwify/webhook': {
+      id: '/api/public/kiwify/webhook'
+      path: '/api/public/kiwify/webhook'
+      fullPath: '/api/public/kiwify/webhook'
+      preLoaderRoute: typeof ApiPublicKiwifyWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -565,3 +565,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
