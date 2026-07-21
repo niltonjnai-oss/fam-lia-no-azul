@@ -315,9 +315,8 @@ function LandingPage() {
           </em>
         </h1>
         <p className="order-2 mx-auto mt-8 max-w-2xl text-base text-[#0F2A47]/75 md:text-xl">
-          Todo dia 28 bate aquela sensação:{" "}
-          <strong className="font-bold" style={{ color: "#1d69ad" }}>"o dinheiro entrou... e sumiu".</strong>{" "}
-          O Família no Azul divide sua renda no método 50-30-20 automaticamente -{" "}
+          <strong className="font-bold" style={{ color: "#1d69ad" }}>&ldquo;O dinheiro entrou… e sumiu?&rdquo;</strong>{" "}
+          O Família no Azul divide sua renda no método 50-30-20 automaticamente.{" "}
           <strong className="font-bold" style={{ color: "#1d69ad" }}>3 minutos por dia e sua família volta pro azul.</strong>
         </p>
 
