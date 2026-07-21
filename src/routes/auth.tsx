@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { Mail, Lock, Loader2, Eye, EyeOff, User, Check, X, AlertCircle, LifeBuoy, ShoppingCart } from "lucide-react";
+import { Mail, Lock, Loader2, Eye, EyeOff, User, Check, X, AlertCircle, LifeBuoy, ShoppingCart, ArrowLeft, MailCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoHorizontalEscuro from "@/assets/familia-no-azul-horizontal-escuro.png.asset.json";
 import { signOut, useAuth } from "@/lib/auth-context";
@@ -194,6 +194,8 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [modo, setModo] = useState<"login" | "recuperar">("login");
+  const [enviado, setEnviado] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -208,15 +210,68 @@ function LoginForm() {
     }
   }
 
-  return (
-    <>
-      <form onSubmit={handleSubmit} className="space-y-4">
+  async function handleRecuperar(e: React.FormEvent) {
+    e.preventDefault();
+    if (!EMAIL_RE.test(email.trim())) {
+      toast.error("Informe um e-mail válido.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      // Não revela se o e-mail existe (evita enumeração): o Supabase responde
+      // sucesso de qualquer forma. Mostramos sempre a mesma mensagem neutra.
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      setEnviado(true);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Não foi possível enviar o link agora.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  function voltarAoLogin() {
+    setModo("login");
+    setEnviado(false);
+  }
+
+  // ----- Recuperação de senha -----
+  if (modo === "recuperar") {
+    if (enviado) {
+      return (
+        <div className="space-y-4 text-center">
+          <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-success/10 text-success">
+            <MailCheck className="h-6 w-6" />
+          </div>
+          <div className="space-y-1">
+            <p className="font-semibold">Link a caminho</p>
+            <p className="text-sm text-muted-foreground">
+              Se existir uma conta com <strong>{email.trim()}</strong>, enviamos um link pra você
+              redefinir a senha. Confira sua caixa de entrada — e o spam, por via das dúvidas.
+            </p>
+          </div>
+          <Button variant="outline" className="w-full" onClick={voltarAoLogin}>
+            <ArrowLeft className="mr-1 h-4 w-4" /> Voltar ao login
+          </Button>
+        </div>
+      );
+    }
+    return (
+      <form onSubmit={handleRecuperar} className="space-y-4">
+        <div className="space-y-1">
+          <p className="text-sm font-semibold">Esqueceu a senha?</p>
+          <p className="text-xs text-muted-foreground">
+            Informe seu e-mail que enviamos um link pra você criar uma nova.
+          </p>
+        </div>
         <div className="space-y-1.5">
-          <Label htmlFor="login-email">E-mail</Label>
+          <Label htmlFor="recuperar-email">E-mail</Label>
           <div className="relative">
             <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              id="login-email"
+              id="recuperar-email"
               type="email"
               autoComplete="email"
               required
@@ -227,37 +282,79 @@ function LoginForm() {
             />
           </div>
         </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="login-password">Senha</Label>
-          <div className="relative">
-            <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              id="login-password"
-              type={showPassword ? "text" : "password"}
-              autoComplete="current-password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="pl-9 pr-10"
-              placeholder="••••••••"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-              className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md text-muted-foreground hover:text-foreground"
-            >
-              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-          </div>
-        </div>
         <Button type="submit" className="h-11 w-full" disabled={submitting}>
           {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Entrar
+          Enviar link de recuperação
         </Button>
+        <button
+          type="button"
+          onClick={voltarAoLogin}
+          className="flex w-full items-center justify-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" /> Voltar ao login
+        </button>
       </form>
-    </>
+    );
+  }
+
+  // ----- Login -----
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-1.5">
+        <Label htmlFor="login-email">E-mail</Label>
+        <div className="relative">
+          <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="login-email"
+            type="email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="pl-9"
+            placeholder="voce@exemplo.com"
+          />
+        </div>
+      </div>
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="login-password">Senha</Label>
+          <button
+            type="button"
+            onClick={() => setModo("recuperar")}
+            className="text-xs font-medium text-primary hover:underline"
+          >
+            Esqueci minha senha
+          </button>
+        </div>
+        <div className="relative">
+          <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="login-password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            required
+            minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="pl-9 pr-10"
+            placeholder="••••••••"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md text-muted-foreground hover:text-foreground"
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
+      <Button type="submit" className="h-11 w-full" disabled={submitting}>
+        {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        Entrar
+      </Button>
+    </form>
   );
 }
 
