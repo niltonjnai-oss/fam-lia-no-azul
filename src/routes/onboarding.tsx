@@ -322,6 +322,11 @@ function OnboardingPage() {
         qc.invalidateQueries({ queryKey: ["conta_recorrente"] });
       }
     },
+    onError: (e) => {
+      // Loga o erro real (RLS, constraint, rede) — a mensagem genérica na tela
+      // escondia a causa. Ajuda a diagnosticar falhas de gravação no onboarding.
+      console.error("[onboarding] falha ao salvar passo:", e);
+    },
   });
 
   const avancar = async () => {
@@ -764,9 +769,14 @@ function OnboardingPage() {
           )}
 
           {salvarMutation.isError && (
-            <p className="mt-3 text-xs text-danger">
-              Não foi possível salvar agora. Verifique a conexão e tente de novo.
-            </p>
+            <div className="mt-3 rounded-lg border border-danger/30 bg-danger/5 p-3 text-xs text-danger">
+              <p className="font-medium">Não foi possível salvar agora.</p>
+              <p className="mt-1 break-words text-danger/80">
+                {salvarMutation.error instanceof Error
+                  ? salvarMutation.error.message
+                  : "Verifique a conexão e tente de novo."}
+              </p>
+            </div>
           )}
         </div>
 
