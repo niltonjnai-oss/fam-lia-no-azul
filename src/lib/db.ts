@@ -564,6 +564,17 @@ export async function inserirSubitem(args: {
   if (error) throw new Error(error.message);
 }
 
+/** Garante (get-or-create) que o usuário tem uma família, numa transação
+ *  própria. Necessário ANTES do primeiro insert de dados: o `familia_id` das
+ *  tabelas usa DEFAULT `minha_familia_id()`, mas o WITH CHECK da RLS usa uma
+ *  função STABLE que não enxerga a família criada no MESMO statement — então o
+ *  1º insert de um usuário novo falha ("violates row-level security"). Chamar a
+ *  RPC antes commita a família, e o insert seguinte já a encontra. */
+export async function garantirFamilia(): Promise<void> {
+  const { error } = await supabase.rpc("minha_familia_id");
+  if (error) throw new Error(error.message);
+}
+
 export async function inserirRenda(args: {
   mes_ref: string;
   descricao: string;

@@ -33,6 +33,7 @@ import {
   inserirDivida,
   fetchContasRecorrentes,
   inserirContaRecorrente,
+  garantirFamilia,
   type Categoria,
   type Subitem,
 } from "@/lib/db";
@@ -205,6 +206,11 @@ function OnboardingPage() {
   // ----- Persistência por passo (só salva o que tiver valor) -----
   const salvarMutation = useMutation({
     mutationFn: async (passoId: string) => {
+      // Provisiona a família ANTES de qualquer gravação: sem isso, o 1º insert
+      // de um usuário novo falha na RLS (a família criada pelo DEFAULT não é
+      // vista pelo WITH CHECK no mesmo statement). Idempotente (get-or-create).
+      await garantirFamilia();
+
       if (passoId === "renda") {
         const validas = rendas.filter((r) => parseBR(r.valor) > 0);
         if (validas.length === 0) return;
