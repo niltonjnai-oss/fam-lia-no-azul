@@ -110,6 +110,7 @@ export const shiftMes = (mesRef: string, delta: number): string => {
 export const qk = {
   categorias: ["categoria"] as const,
   subitens: ["subitem"] as const,
+  subitensOcultos: ["subitem_oculto"] as const,
   lancamentos: (mes: string) => ["lancamento", mes] as const,
   renda: (mes: string) => ["renda", mes] as const,
   resumo: (mes: string) => ["v_resumo_mensal", mes] as const,
@@ -561,6 +562,30 @@ export async function inserirSubitem(args: {
   const { error } = await supabase
     .from("subitem")
     .insert({ ...args, ativo: true });
+  if (error) throw new Error(error.message);
+}
+
+// ---------- Itens do orçamento ocultos pela família ----------
+// O catálogo de subitens é global (compartilhado). Pra cada família poder
+// enxugar a própria lista sem afetar as outras nem perder histórico, guardamos
+// os itens ocultos numa tabela por família (subitem_oculto). "Ocultar" é
+// reversível; não apaga nada.
+
+/** IDs dos subitens que a família escolheu ocultar. Tolerante: se a tabela
+ *  ainda não existir (SQL não rodado), retorna vazio em vez de quebrar a tela. */
+export async function fetchSubitensOcultosIds(): Promise<string[]> {
+  const { data, error } = await supabase.from("subitem_oculto").select("subitem_id");
+  if (error) return [];
+  return (data ?? []).map((r) => (r as { subitem_id: string }).subitem_id);
+}
+
+export async function ocultarSubitem(subitem_id: string): Promise<void> {
+  const { error } = await supabase.from("subitem_oculto").insert({ subitem_id });
+  if (error) throw new Error(error.message);
+}
+
+export async function restaurarSubitem(subitem_id: string): Promise<void> {
+  const { error } = await supabase.from("subitem_oculto").delete().eq("subitem_id", subitem_id);
   if (error) throw new Error(error.message);
 }
 

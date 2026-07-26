@@ -10,7 +10,10 @@ import {
   Upload,
   HelpCircle,
   ArrowUp,
+  X,
+  Undo2,
 } from "lucide-react";
+import { toast } from "sonner";
 import {
   Accordion,
   AccordionContent,
@@ -42,6 +45,9 @@ import {
   fetchCategorias,
   fetchSubitens,
   fetchLancamentos,
+  fetchSubitensOcultosIds,
+  ocultarSubitem,
+  restaurarSubitem,
   inserirCategoria,
   inserirSubitem,
   upsertLancamento,
@@ -111,8 +117,11 @@ function OrcamentoPage() {
   const catsQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
   const subsQ = useQuery({ queryKey: qk.subitens, queryFn: fetchSubitens });
   const lancsQ = useQuery({ queryKey: qk.lancamentos(mes), queryFn: () => fetchLancamentos(mes) });
+  const ocultosQ = useQuery({ queryKey: qk.subitensOcultos, queryFn: fetchSubitensOcultosIds });
 
   const carregando = catsQ.isLoading || subsQ.isLoading || lancsQ.isLoading;
+
+  const ocultosSet = useMemo(() => new Set(ocultosQ.data ?? []), [ocultosQ.data]);
 
   const lancsBySub = useMemo(() => {
     const m = new Map<string, Lancamento>();
@@ -120,15 +129,31 @@ function OrcamentoPage() {
     return m;
   }, [lancsQ.data]);
 
+  // Itens visíveis e ocultos por categoria. Ocultar é por família e reversível.
   const subsByCat = useMemo(() => {
-    const m = new Map<string, Subitem[]>();
+    const m = new Map<string, { visiveis: Subitem[]; ocultos: Subitem[] }>();
     (subsQ.data ?? []).forEach((s) => {
-      if (!m.has(s.categoria_id)) m.set(s.categoria_id, []);
-      m.get(s.categoria_id)!.push(s);
+      if (!m.has(s.categoria_id)) m.set(s.categoria_id, { visiveis: [], ocultos: [] });
+      const bucket = m.get(s.categoria_id)!;
+      (ocultosSet.has(s.id) ? bucket.ocultos : bucket.visiveis).push(s);
     });
-    for (const arr of m.values()) arr.sort((a, b) => a.ordem - b.ordem);
+    for (const b of m.values()) {
+      b.visiveis.sort((a, z) => a.ordem - z.ordem);
+      b.ocultos.sort((a, z) => a.ordem - z.ordem);
+    }
     return m;
-  }, [subsQ.data]);
+  }, [subsQ.data, ocultosSet]);
+
+  const ocultarMut = useMutation({
+    mutationFn: ocultarSubitem,
+    onSuccess: () => qc.invalidateQueries({ queryKey: qk.subitensOcultos }),
+    onError: (e: Error) => toast.error(e.message || "Não foi possível ocultar o item."),
+  });
+  const restaurarMut = useMutation({
+    mutationFn: restaurarSubitem,
+    onSuccess: () => qc.invalidateQueries({ queryKey: qk.subitensOcultos }),
+    onError: (e: Error) => toast.error(e.message || "Não foi possível restaurar o item."),
+  });
 
   const totais = useMemo(() => {
     let prev = 0, real = 0, diff = 0;
@@ -255,11 +280,14 @@ function OrcamentoPage() {
             <CategoriaSection
               key={cat.id}
               categoria={cat}
-              subitens={subsByCat.get(cat.id) ?? []}
+              subitens={subsByCat.get(cat.id)?.visiveis ?? []}
+              subitensOcultos={subsByCat.get(cat.id)?.ocultos ?? []}
               lancsBySub={lancsBySub}
               onSave={(subitem_id, custo_previsto, custo_real) =>
                 upsertMut.mutateAsync({ subitem_id, mes_ref: mes, custo_previsto, custo_real })
               }
+              onOcultar={(subitem_id) => ocultarMut.mutate(subitem_id)}
+              onRestaurar={(subitem_id) => restaurarMut.mutate(subitem_id)}
             />
           ))}
         </Accordion>
@@ -362,14 +390,21 @@ function OrcamentoPage() {
 function CategoriaSection({
   categoria,
   subitens,
+  subitensOcultos,
   lancsBySub,
   onSave,
+  onOcultar,
+  onRestaurar,
 }: {
   categoria: Categoria;
   subitens: Subitem[];
+  subitensOcultos: Subitem[];
   lancsBySub: Map<string, Lancamento>;
   onSave: (subitem_id: string, custo_previsto: number, custo_real: number) => Promise<void>;
+  onOcultar: (subitem_id: string) => void;
+  onRestaurar: (subitem_id: string) => void;
 }) {
+  const [mostrarOcultos, setMostrarOcultos] = useState(false);
   const sub = useMemo(() => {
     let prev = 0, real = 0, diff = 0;
     subitens.forEach((s) => {
@@ -426,11 +461,45 @@ function CategoriaSection({
                   subitem={s}
                   lancamento={lancsBySub.get(s.id)}
                   onSave={(p, r) => onSave(s.id, p, r)}
+                  onOcultar={() => onOcultar(s.id)}
                 />
               ))}
             </ul>
           </>
         )}
+
+        {subitensOcultos.length > 0 && (
+          <div className="mt-3 border-t border-border pt-3">
+            <button
+              type="button"
+              onClick={() => setMostrarOcultos((v) => !v)}
+              className="text-xs font-medium text-muted-foreground hover:text-foreground"
+            >
+              {mostrarOcultos ? "Esconder" : "Ver"} {subitensOcultos.length}{" "}
+              {subitensOcultos.length === 1 ? "item oculto" : "itens ocultos"}
+            </button>
+            {mostrarOcultos && (
+              <ul className="mt-2 space-y-1.5">
+                {subitensOcultos.map((s) => (
+                  <li
+                    key={s.id}
+                    className="flex items-center justify-between gap-2 rounded-lg bg-muted/40 px-3 py-1.5 text-sm"
+                  >
+                    <span className="truncate text-muted-foreground">{s.nome}</span>
+                    <button
+                      type="button"
+                      onClick={() => onRestaurar(s.id)}
+                      className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-primary hover:underline"
+                    >
+                      <Undo2 className="h-3.5 w-3.5" /> restaurar
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
         <NovoSubitemDialog categoriaId={categoria.id} proximaOrdem={subitens.length + 1} />
       </AccordionContent>
     </AccordionItem>
@@ -441,14 +510,18 @@ function SubitemRow({
   subitem,
   lancamento,
   onSave,
+  onOcultar,
 }: {
   subitem: Subitem;
   lancamento: Lancamento | undefined;
   onSave: (previsto: number, real: number) => Promise<void>;
+  onOcultar?: () => void;
 }) {
   const prevDb = Number(lancamento?.custo_previsto ?? 0);
   const realDb = Number(lancamento?.custo_real ?? 0);
   const diff = Number(lancamento?.diferenca ?? 0);
+  // Só dá pra ocultar item sem nada lançado no mês — evita esconder algo com valor.
+  const podeOcultar = onOcultar && prevDb === 0 && realDb === 0;
 
   const [prev, setPrev] = useState(String(prevDb));
   const [real, setReal] = useState(String(realDb));
@@ -465,7 +538,20 @@ function SubitemRow({
 
   return (
     <li className="py-2 sm:grid sm:grid-cols-[1fr_120px_120px_110px] sm:items-center sm:gap-3 sm:px-1">
-      <div className="min-w-0 truncate text-sm font-medium">{subitem.nome}</div>
+      <div className="flex min-w-0 items-center gap-1.5">
+        <span className="min-w-0 truncate text-sm font-medium">{subitem.nome}</span>
+        {podeOcultar && (
+          <button
+            type="button"
+            onClick={onOcultar}
+            aria-label={`Remover ${subitem.nome} da minha lista`}
+            title="Remover da minha lista"
+            className="grid h-6 w-6 shrink-0 place-items-center rounded-md text-muted-foreground/60 hover:bg-danger/10 hover:text-danger"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
 
       {/* Mobile: lado a lado */}
       <div className="mt-2 grid grid-cols-2 gap-2 sm:hidden">
