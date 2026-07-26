@@ -48,6 +48,7 @@ import { LancamentoRapido } from "@/components/LancamentoRapido";
 import { UltimosLancamentos } from "@/components/UltimosLancamentos";
 import { ProjecaoMes, DiasNoAzul } from "@/components/PainelInsights";
 import { InstalarAppCard } from "@/components/InstalarAppCard";
+import { ComoPagou } from "@/components/ComoPagou";
 import { DespesasFixasDisponivel } from "@/components/DespesasFixasDisponivel";
 
 import { PageTitle } from "@/components/PageTitle";
@@ -359,6 +360,12 @@ function PainelPage() {
         fallback={<DashboardSectionError titulo="Não foi possível carregar despesas fixas." />}
       >
         <DespesasFixasDisponivel mes={mes} />
+      </DashboardSectionBoundary>
+
+      <DashboardSectionBoundary
+        fallback={<DashboardSectionError titulo="Não foi possível carregar as formas de pagamento." />}
+      >
+        <ComoPagou mes={mes} />
       </DashboardSectionBoundary>
 
       <DashboardSectionBoundary

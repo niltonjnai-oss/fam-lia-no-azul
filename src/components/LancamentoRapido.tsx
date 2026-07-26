@@ -13,6 +13,7 @@ import {
   excluirGastoRapido,
   hojeISO,
   mesAtual,
+  type FormaPagamento,
 } from "@/lib/db";
 import { formatBRL } from "@/lib/format";
 import {
@@ -117,6 +118,7 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
   const [categoriaId, setCategoriaId] = useState<string>("");
   const [subitemId, setSubitemId] = useState<string>("");
   const [descricao, setDescricao] = useState("");
+  const [formaPagamento, setFormaPagamento] = useState<string>("");
 
   const categoriasQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
   const subitensQ = useQuery({ queryKey: qk.subitens, queryFn: fetchSubitens });
@@ -149,6 +151,7 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
     qc.invalidateQueries({ queryKey: qk.gastosMes(mes) });
     qc.invalidateQueries({ queryKey: qk.transacoesHoje(hoje) });
     qc.invalidateQueries({ queryKey: qk.transacoesRecentes });
+    qc.invalidateQueries({ queryKey: qk.formaPagamento(mes) });
   };
 
   const addMut = useMutation({
@@ -168,11 +171,13 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
         mes_ref: mes,
         valor: v,
         descricao: descricao.trim() || null,
+        forma_pagamento: (formaPagamento || null) as FormaPagamento | null,
       });
     },
     onSuccess: () => {
       setValor("");
       setDescricao("");
+      setFormaPagamento("");
       invalidarPainel();
       valorRef.current?.focus();
     },
@@ -275,6 +280,23 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
             className="h-11"
             autoComplete="off"
           />
+        </div>
+
+        <div className="space-y-1 sm:col-span-2">
+          <Label htmlFor="lr-forma" className="text-xs">
+            Forma de pagamento <span className="text-muted-foreground">(opcional)</span>
+          </Label>
+          <Select value={formaPagamento} onValueChange={setFormaPagamento}>
+            <SelectTrigger id="lr-forma" className="h-11">
+              <SelectValue placeholder="Como você pagou?" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="dinheiro">Dinheiro</SelectItem>
+              <SelectItem value="debito">Cartão de débito</SelectItem>
+              <SelectItem value="credito">Cartão de crédito</SelectItem>
+              <SelectItem value="pix">Pix</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="sm:col-span-2">

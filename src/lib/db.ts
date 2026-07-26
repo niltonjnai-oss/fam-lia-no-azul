@@ -120,12 +120,15 @@ export const qk = {
   reserva: ["reserva_config"] as const,
   transacoesHoje: (data: string) => ["transacao", "dia", data] as const,
   transacoesRecentes: ["transacao", "recentes"] as const,
+  formaPagamento: (mes: string) => ["transacao", "forma-pagamento", mes] as const,
 };
 
 export const hojeISO = (): string => {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 };
+
+export type FormaPagamento = "dinheiro" | "debito" | "credito" | "pix";
 
 export interface TransacaoDia {
   id: string;
@@ -135,6 +138,7 @@ export interface TransacaoDia {
   subitem_id: string;
   mes_ref: string;
   banco: string | null;
+  forma_pagamento: string | null;
 }
 
 // ---------- Importação de extrato ----------
@@ -394,7 +398,7 @@ export async function fetchMinhaAssinatura(): Promise<MinhaAssinatura | null> {
 export async function fetchTransacoesDoDia(data: string): Promise<TransacaoDia[]> {
   const { data: rows, error } = await supabase
     .from("transacao")
-    .select("id, data, valor, descricao, subitem_id, mes_ref, banco")
+    .select("id, data, valor, descricao, subitem_id, mes_ref, banco, forma_pagamento")
     .eq("data", data)
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
@@ -406,7 +410,7 @@ export async function fetchTransacoesDoDia(data: string): Promise<TransacaoDia[]
 export async function fetchTransacoesRecentes(limite = 5): Promise<TransacaoDia[]> {
   const { data: rows, error } = await supabase
     .from("transacao")
-    .select("id, data, valor, descricao, subitem_id, mes_ref, banco")
+    .select("id, data, valor, descricao, subitem_id, mes_ref, banco, forma_pagamento")
     .order("created_at", { ascending: false })
     .limit(limite);
   if (error) throw new Error(error.message);
@@ -418,14 +422,62 @@ export async function registrarGasto(args: {
   mes_ref: string;
   valor: number;
   descricao?: string | null;
+  forma_pagamento?: FormaPagamento | null;
 }): Promise<void> {
   const { error } = await supabase.rpc("registrar_gasto_rapido", {
     p_subitem_id: args.subitem_id,
     p_mes_ref: args.mes_ref,
     p_valor: args.valor,
     p_descricao: args.descricao ?? null,
+    p_forma_pagamento: args.forma_pagamento ?? null,
   });
   if (error) throw new Error(error.message);
+}
+
+/** Total gasto no mês por forma de pagamento (agrega no cliente). Tolerante:
+ *  se a coluna ainda não existir, retorna tudo zerado. `naoInformado` = gastos
+ *  sem forma escolhida. */
+export interface ResumoFormaPagamento {
+  dinheiro: number;
+  debito: number;
+  credito: number;
+  pix: number;
+  naoInformado: number;
+}
+
+export async function fetchResumoFormaPagamento(mes: string): Promise<ResumoFormaPagamento> {
+  const zero: ResumoFormaPagamento = {
+    dinheiro: 0,
+    debito: 0,
+    credito: 0,
+    pix: 0,
+    naoInformado: 0,
+  };
+  const { data, error } = await supabase
+    .from("transacao")
+    .select("valor, forma_pagamento")
+    .eq("mes_ref", mes);
+  if (error) return zero;
+  for (const r of (data ?? []) as { valor: number; forma_pagamento: string | null }[]) {
+    const v = Number(r.valor) || 0;
+    switch (r.forma_pagamento) {
+      case "dinheiro":
+        zero.dinheiro += v;
+        break;
+      case "debito":
+        zero.debito += v;
+        break;
+      case "credito":
+        zero.credito += v;
+        break;
+      case "pix":
+        zero.pix += v;
+        break;
+      default:
+        zero.naoInformado += v;
+    }
+  }
+  return zero;
 }
 
 export async function excluirGastoRapido(id: string): Promise<void> {
