@@ -51,7 +51,7 @@ export function DespesasFixasDisponivel({ mes }: { mes: string }) {
         <div className="min-w-0">
           <h2 className="text-sm font-semibold">Despesas fixas</h2>
           <p className="text-xs text-muted-foreground">
-            O que já está comprometido este mês.
+            O que você paga todo mês, sem falta.
           </p>
         </div>
       </header>
