@@ -85,7 +85,7 @@ function AdminEmailsPage() {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error ? JSON.stringify(json.error) : `HTTP ${res.status}`);
-      setStatus(`✅ Enviado (id: ${json.id || "—"})`);
+      setStatus(`✅ Enviado (id: ${json.id || "-"})`);
     } catch (err) {
       setStatus(`❌ ${err instanceof Error ? err.message : "Falha"}`);
     } finally {
@@ -131,7 +131,7 @@ function AdminEmailsPage() {
       const json = await res.json().catch(() => ({}));
       if (!res.ok)
         throw new Error(json.error ? JSON.stringify(json.error) : `HTTP ${res.status}`);
-      setTestStatus(`✅ Teste enviado para ${email} (id: ${json.id || "—"})`);
+      setTestStatus(`✅ Teste enviado para ${email} (id: ${json.id || "-"})`);
     } catch (err) {
       setTestStatus(`❌ ${err instanceof Error ? err.message : "Falha"}`);
     } finally {
@@ -281,7 +281,7 @@ function AdminEmailsPage() {
           className="h-[600px] w-full rounded border bg-white"
         />
         <p className="mt-2 text-xs text-slate-500">
-          Renderização local — nada é enviado até você clicar em <strong>Enviar</strong>.
+          Renderização local - nada é enviado até você clicar em <strong>Enviar</strong>.
         </p>
       </section>
     </div>

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/auth")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Entrar — Família no Azul" },
+      { title: "Entrar - Família no Azul" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// Checkout da Kiwify (mesmo link da LP) — oferecido quando o cadastro é
+// Checkout da Kiwify (mesmo link da LP) - oferecido quando o cadastro é
 // bloqueado por falta de compra aprovada.
 const KIWIFY_URL = "https://pay.kiwify.com.br/4FFlpa2";
 const AUTH_NOTICE_STORAGE_KEY = "familia_auth_notice";
@@ -150,7 +150,7 @@ function AuthPage() {
           <img src={logoHorizontalUrl} alt="Família no Azul" className="mb-3 h-10 w-auto max-w-full object-contain" />
           <p className="mt-1 text-sm text-white/90">
             {mode === "signup"
-              ? "Comece a sua virada — crie a conta da sua família."
+              ? "Comece a sua virada - crie a conta da sua família."
               : "Entre para acompanhar o orçamento da sua família."}
           </p>
         </div>
@@ -249,7 +249,7 @@ function LoginForm() {
             <p className="font-semibold">Link a caminho</p>
             <p className="text-sm text-muted-foreground">
               Se existir uma conta com <strong>{email.trim()}</strong>, enviamos um link pra você
-              redefinir a senha. Confira sua caixa de entrada — e o spam, por via das dúvidas.
+              redefinir a senha. Confira sua caixa de entrada - e o spam, por via das dúvidas.
             </p>
           </div>
           <Button variant="outline" className="w-full" onClick={voltarAoLogin}>

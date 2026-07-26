@@ -14,7 +14,7 @@ export const Route = createFileRoute("/reset-password")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Redefinir senha — Família no Azul" },
+      { title: "Redefinir senha - Família no Azul" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -32,7 +32,7 @@ function ResetPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Convidado (cônjuge) chega sem nome no cadastro — pedimos aqui, junto da
+  // Convidado (cônjuge) chega sem nome no cadastro - pedimos aqui, junto da
   // senha, para ele aparecer com o nome no painel e na família. Recuperação de
   // senha de quem já tem conta não mostra o campo. Independe do hash da URL.
   const nomeAtual = (
@@ -89,7 +89,7 @@ function ResetPasswordPage() {
 
       // Quem chega aqui é usuário JÁ existente: recuperação de senha (titular ou
       // cônjuge que já usam o app) ou convite de cônjuge (família já montada).
-      // Em todos os casos o destino é o painel — nunca refazer o onboarding.
+      // Em todos os casos o destino é o painel - nunca refazer o onboarding.
       // Rede de segurança: se o orçamento estiver vazio, o próprio /app mostra o
       // card "Comece aqui" que leva ao onboarding.
       navigate({ to: "/app", replace: true });

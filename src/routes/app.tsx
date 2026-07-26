@@ -55,7 +55,7 @@ import { PageTitle } from "@/components/PageTitle";
 export const Route = createFileRoute("/app")({
   head: () => ({
     meta: [
-      { title: "Painel — Família no Azul" },
+      { title: "Painel - Família no Azul" },
       {
         name: "description",
         content: "Resumo do mês: renda, gastos, saldo e método 50-30-20 da família.",
@@ -134,7 +134,7 @@ class DashboardSectionBoundary extends Component<
   }
 }
 
-/** Data e hora atuais, atualizadas a cada minuto — dá noção de "agora" no painel. */
+/** Data e hora atuais, atualizadas a cada minuto - dá noção de "agora" no painel. */
 function useAgora(): Date {
   const [agora, setAgora] = useState(() => new Date());
   useEffect(() => {
@@ -266,7 +266,7 @@ function PainelPage() {
         </div>
       </section>
 
-      {/* Ações rápidas — as 4 tarefas mais comuns a um toque do saldo. */}
+      {/* Ações rápidas - as 4 tarefas mais comuns a um toque do saldo. */}
       <section aria-label="Ações rápidas" className="grid grid-cols-4 gap-2">
         <button
           type="button"

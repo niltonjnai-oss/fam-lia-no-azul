@@ -203,13 +203,13 @@ function CaminhoParcelas({ onDone }: { onDone: () => void }) {
       {resultado && resultado.juros < -0.005 && (
         <p className="rounded-xl bg-warning/15 p-3 text-xs font-medium text-warning-foreground">
           As parcelas somam menos que o valor à vista ({formatBRL(resultado.total)} vs{" "}
-          {formatBRL(vistaN)}) — confira se os números estão certos.
+          {formatBRL(vistaN)}) - confira se os números estão certos.
         </p>
       )}
 
       {resultado && resultado.taxa === null && (
         <p className="rounded-xl bg-danger/10 p-3 text-xs font-medium text-danger">
-          Esses números não fecham — confira se o valor à vista e as parcelas estão certos.
+          Esses números não fecham - confira se o valor à vista e as parcelas estão certos.
         </p>
       )}
 
@@ -288,7 +288,7 @@ function CaminhoJuros({ onDone }: { onDone: () => void }) {
 
       {pronto && !resultado && (
         <p className="rounded-xl bg-danger/10 p-3 text-xs font-medium text-danger">
-          Pagando {formatBRL(pagamentoN)}/mês, essa dívida <strong>nunca acaba</strong> — os
+          Pagando {formatBRL(pagamentoN)}/mês, essa dívida <strong>nunca acaba</strong> - os
           juros crescem mais do que você paga. Aumente o valor mensal ou renegocie a taxa.
         </p>
       )}
@@ -435,7 +435,7 @@ function CaminhoAcordo({ onDone }: { onDone: () => void }) {
             </p>
           ) : (
             <p>
-              🔴 Essa proposta é <strong>maior</strong> do que a própria dívida — não aceite.
+              🔴 Essa proposta é <strong>maior</strong> do que a própria dívida - não aceite.
               Peça o valor atualizado por escrito e negocie de novo.
             </p>
           )}
@@ -449,13 +449,13 @@ function CaminhoAcordo({ onDone }: { onDone: () => void }) {
             {avaliacao.desconto > 0 ? (
               <>
                 {" "}
-                — <strong className="text-success">{formatBRL(avaliacao.desconto)} a menos</strong>{" "}
+                - <strong className="text-success">{formatBRL(avaliacao.desconto)} a menos</strong>{" "}
                 do que a dívida de hoje. 🟢 Desconto mesmo parcelado: proposta boa.
               </>
             ) : (
               <>
                 {" "}
-                — {formatBRL(-avaliacao.desconto)} a mais do que a dívida de hoje. A proposta
+                - {formatBRL(-avaliacao.desconto)} a mais do que a dívida de hoje. A proposta
                 tem <strong>{fmtTaxa(avaliacao.taxa)} de juros ao mês embutidos</strong>.
               </>
             )}
@@ -493,7 +493,7 @@ function ResultadoCusto({
       {juros > 0.005 ? (
         <>
           <p className="mt-1">
-            São <strong className="text-danger">{formatBRL(juros)} de juros</strong> —{" "}
+            São <strong className="text-danger">{formatBRL(juros)} de juros</strong> -{" "}
             {pctMais.toFixed(0)}% a mais. Isso equivale a{" "}
             <strong>{fmtTaxa(taxa)} ao mês</strong>.
           </p>
@@ -534,9 +534,9 @@ function SeloTaxa({ taxa }: { taxa: number }) {
 }
 
 const DICAS = [
-  "Pergunte sempre o valor à vista primeiro — é a base para saber se o parcelado compensa.",
+  "Pergunte sempre o valor à vista primeiro - é a base para saber se o parcelado compensa.",
   "Peça toda proposta por escrito antes de aceitar (protocolo, boleto ou contrato).",
-  "Não aceite parcela que não cabe no seu mês — acordo quebrado vira dívida pior.",
+  "Não aceite parcela que não cabe no seu mês - acordo quebrado vira dívida pior.",
   "Juros acima de 5% ao mês? Pesquise um empréstimo mais barato para trocar de dívida.",
 ];
 

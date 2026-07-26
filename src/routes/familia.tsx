@@ -1,6 +1,6 @@
 // Modo Casal: mostra os membros da família (titular + cônjuge) e permite
 // convidar por e-mail quando há vaga (máx. 2). O convite libera o cadastro
-// do cônjuge sem precisar de compra própria — ver verificar_compra_kiwify.
+// do cônjuge sem precisar de compra própria - ver verificar_compra_kiwify.
 
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -25,7 +25,7 @@ import { useAuth } from "@/lib/auth-context";
 export const Route = createFileRoute("/familia")({
   head: () => ({
     meta: [
-      { title: "Modo Casal — Família no Azul" },
+      { title: "Modo Casal - Família no Azul" },
       {
         name: "description",
         content: "Convide seu cônjuge para acessar o mesmo orçamento da família.",
@@ -167,7 +167,7 @@ function FamiliaPage() {
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-medium">{c.email}</div>
                   <div className="text-xs text-muted-foreground">
-                    Convite enviado — aguardando aceite
+                    Convite enviado - aguardando aceite
                   </div>
                 </div>
                 <Button
@@ -197,7 +197,7 @@ function FamiliaPage() {
             <div>
               <h2 className="text-sm font-semibold">Convidar seu cônjuge</h2>
               <p className="text-xs text-muted-foreground">
-                Ele(a) recebe um e-mail para criar a conta — sem custo extra.
+                Ele(a) recebe um e-mail para criar a conta - sem custo extra.
               </p>
             </div>
           </div>

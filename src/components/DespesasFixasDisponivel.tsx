@@ -31,8 +31,8 @@ export function DespesasFixasDisponivel({ mes }: { mes: string }) {
         const sub = subById.get(l.subitem_id);
         return {
           id: l.id,
-          nome: sub?.nome ?? "—",
-          categoria: sub ? (catById.get(sub.categoria_id) ?? "—") : "—",
+          nome: sub?.nome ?? "-",
+          categoria: sub ? (catById.get(sub.categoria_id) ?? "-") : "-",
           previsto: Number(l.custo_previsto),
         };
       })

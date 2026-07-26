@@ -186,7 +186,7 @@ export function PainelExtras({ mes, prefs }: { mes: string; prefs: Record<CardKe
       tot.set(catId, (tot.get(catId) ?? 0) + Number(l.custo_real));
     });
     return Array.from(tot.entries())
-      .map(([id, v]) => ({ id, nome: catName.get(id) ?? "—", total: v }))
+      .map(([id, v]) => ({ id, nome: catName.get(id) ?? "-", total: v }))
       .filter((x) => x.total > 0)
       .sort((a, b) => b.total - a.total);
   }, [catsQ.data, subsQ.data, lancsQ.data]);
@@ -197,7 +197,7 @@ export function PainelExtras({ mes, prefs }: { mes: string; prefs: Record<CardKe
     return (lancsQ.data ?? [])
       .filter((l) => Number(l.custo_real) > Number(l.custo_previsto))
       .map((l) => ({
-        nome: subName.get(l.subitem_id) ?? "—",
+        nome: subName.get(l.subitem_id) ?? "-",
         diferenca: Number(l.diferenca), // negativa = estouro
       }))
       .sort((a, b) => a.diferenca - b.diferenca);
@@ -216,7 +216,7 @@ export function PainelExtras({ mes, prefs }: { mes: string; prefs: Record<CardKe
   const deltaAbs = realAtual - realAnt;
   const deltaPct = realAnt > 0 ? (deltaAbs / realAnt) * 100 : 0;
 
-  // Todos os hooks já foram chamados acima — seguro retornar cedo aqui.
+  // Todos os hooks já foram chamados acima - seguro retornar cedo aqui.
   if (ativos.length === 0) return null;
 
   return (

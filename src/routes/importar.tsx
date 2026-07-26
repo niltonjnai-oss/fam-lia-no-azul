@@ -1,6 +1,6 @@
 // Importação de extrato bancário (CSV/OFX).
 // Privacidade em primeiro lugar: o arquivo é lido e interpretado 100% no
-// navegador — nada é enviado ao servidor. Só as linhas confirmadas viram
+// navegador - nada é enviado ao servidor. Só as linhas confirmadas viram
 // gastos, pelo mesmo registrar_gasto_rapido do lançamento manual.
 //
 // Suporta VÁRIOS extratos de uma vez (um por banco): cada extrato é marcado
@@ -46,7 +46,7 @@ import { parseExtrato, type LinhaExtrato } from "@/lib/extrato";
 export const Route = createFileRoute("/importar")({
   head: () => ({
     meta: [
-      { title: "Importar extrato — Família no Azul" },
+      { title: "Importar extrato - Família no Azul" },
       {
         name: "description",
         content: "Importe o extrato do banco (CSV ou OFX) e registre os gastos de uma vez.",
@@ -154,7 +154,7 @@ function ImportarPage() {
     const temNegativos = parseadas.some((l) => l.valor < 0);
     const gastos = temNegativos ? parseadas.filter((l) => l.valor < 0) : parseadas;
     if (gastos.length === 0) {
-      toast.error("O arquivo só tem entradas (créditos) — nenhum gasto para importar.");
+      toast.error("O arquivo só tem entradas (créditos) - nenhum gasto para importar.");
       return;
     }
 
@@ -258,7 +258,7 @@ function ImportarPage() {
       <div className="flex items-start gap-2 rounded-xl bg-muted/50 p-3 text-xs text-muted-foreground">
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
         <span>
-          O arquivo é lido <strong>somente no seu navegador</strong> — nada é enviado aos nossos
+          O arquivo é lido <strong>somente no seu navegador</strong> - nada é enviado aos nossos
           servidores. Só os gastos que você confirmar são salvos na sua conta.
         </span>
       </div>
@@ -269,7 +269,7 @@ function ImportarPage() {
           <div>
             <strong>{resultado.ok} gastos importados.</strong>{" "}
             {resultado.falhas > 0 &&
-              `${resultado.falhas} falharam — importe o arquivo de novo (duplicatas são detectadas).`}{" "}
+              `${resultado.falhas} falharam - importe o arquivo de novo (duplicatas são detectadas).`}{" "}
             <Link to="/app" className="font-medium text-primary hover:underline">
               Ver no painel
             </Link>
@@ -501,7 +501,7 @@ function ImportarPage() {
                 <span className="tabular font-bold">{formatBRL(totalSelecionado)}</span>
                 {prontas.length < selecionadas.length && (
                   <div className="text-xs text-warning-foreground">
-                    {selecionadas.length - prontas.length} sem categoria — escolha para importar.
+                    {selecionadas.length - prontas.length} sem categoria - escolha para importar.
                   </div>
                 )}
               </div>

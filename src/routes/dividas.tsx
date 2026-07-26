@@ -45,7 +45,7 @@ import { PageTitle } from "@/components/PageTitle";
 export const Route = createFileRoute("/dividas")({
   head: () => ({
     meta: [
-      { title: "Dívidas — Família no Azul" },
+      { title: "Dívidas - Família no Azul" },
       {
         name: "description",
         content: "Lista de dívidas familiares, parcelas e prazo para quitação.",
@@ -126,12 +126,12 @@ function DividasPage() {
                 <div className="text-xs text-muted-foreground">
                   No ritmo atual ({formatBRL(simulacao.plano.pagamentoMensal)}/mês), sua família
                   fica <strong className="text-foreground">livre de dívidas em {formatMesAno(simulacao.plano.dataLiberdade)}</strong>{" "}
-                  ({simulacao.plano.meses} {simulacao.plano.meses === 1 ? "mês" : "meses"}) — pagando{" "}
+                  ({simulacao.plano.meses} {simulacao.plano.meses === 1 ? "mês" : "meses"}) - pagando{" "}
                   {formatBRL(simulacao.plano.totalJurosPagos)} de juros no caminho.
                 </div>
               ) : (
                 <div className="text-xs font-medium text-danger">
-                  No ritmo atual, as parcelas não vencem os juros — as dívidas não zeram.
+                  No ritmo atual, as parcelas não vencem os juros - as dívidas não zeram.
                   Use o simulador abaixo para ver o efeito de um aporte extra, ou renegocie as taxas.
                 </div>
               )}
@@ -239,13 +239,13 @@ function SimuladorAporte({ dividas }: { dividas: Divida[] }) {
             <p className="mt-1 text-xs text-muted-foreground">
               <strong className="text-success">{mesesGanhos} {mesesGanhos === 1 ? "mês" : "meses"} antes</strong>{" "}
               do ritmo atual{jurosEconomizados !== null && jurosEconomizados > 0.005 && (
-                <> — e {formatBRL(jurosEconomizados)} a menos em juros</>
+                <> - e {formatBRL(jurosEconomizados)} a menos em juros</>
               )}. Esse é o poder de pagar um pouquinho a mais. 💙
             </p>
           )}
           {mesesGanhos !== null && mesesGanhos <= 0 && extra > 0 && (
             <p className="mt-1 text-xs text-muted-foreground">
-              O prazo não mudou — o valor extra é pequeno perto das dívidas. Experimente um valor maior.
+              O prazo não mudou - o valor extra é pequeno perto das dívidas. Experimente um valor maior.
             </p>
           )}
           {!base.plano && (
@@ -317,7 +317,7 @@ function DividaCard({ divida: d, prioritaria }: { divida: Divida; prioritaria: b
             <p className="mt-1 text-xs">
               {semQuitacao ? (
                 <span className="inline-flex items-center gap-1 rounded-md bg-danger/10 px-2 py-0.5 font-semibold text-danger">
-                  <AlertTriangle className="h-3 w-3" /> A parcela é menor que os juros — assim a dívida nunca acaba
+                  <AlertTriangle className="h-3 w-3" /> A parcela é menor que os juros - assim a dívida nunca acaba
                 </span>
               ) : (
                 <span className="text-muted-foreground">
@@ -415,7 +415,7 @@ function NovaDividaDialog() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Nova dívida</DialogTitle>
-          <DialogDescription>Cartão, empréstimo, financiamento — registre o que ainda está pagando.</DialogDescription>
+          <DialogDescription>Cartão, empréstimo, financiamento - registre o que ainda está pagando.</DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
           <div>

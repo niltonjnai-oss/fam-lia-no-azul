@@ -63,7 +63,7 @@ function useSubitensPorCategoria() {
 export const Route = createFileRoute("/contas")({
   head: () => ({
     meta: [
-      { title: "Contas do mês — Família no Azul" },
+      { title: "Contas do mês - Família no Azul" },
       {
         name: "description",
         content: "Contas recorrentes da família com alerta antes do vencimento.",
@@ -122,7 +122,7 @@ function ContasPage() {
                   <Skeleton className="h-5 w-32" />
                 ) : proxima ? (
                   <>
-                    {proxima.nome} — dia {proxima.dia_vencimento}
+                    {proxima.nome} - dia {proxima.dia_vencimento}
                   </>
                 ) : (
                   "Nenhuma conta ativa"
@@ -282,7 +282,7 @@ function ChegouBoletoDialog({ conta: c, jaPaga }: { conta: ContaRecorrente; jaPa
         <DialogHeader>
           <DialogTitle>Chegou o boleto de {c.nome}</DialogTitle>
           <DialogDescription>
-            Lance o valor que veio de verdade — o painel e o 50-30-20 recalculam na hora.
+            Lance o valor que veio de verdade - o painel e o 50-30-20 recalculam na hora.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
@@ -324,7 +324,7 @@ function ChegouBoletoDialog({ conta: c, jaPaga }: { conta: ContaRecorrente; jaPa
                 ))}
               </select>
               <p className="mt-1 text-[11px] text-muted-foreground">
-                A gente guarda essa escolha — da próxima vez não pergunta de novo.
+                A gente guarda essa escolha - da próxima vez não pergunta de novo.
               </p>
             </div>
           )}
@@ -388,7 +388,7 @@ function NovaContaDialog() {
         <DialogHeader>
           <DialogTitle>Nova conta recorrente</DialogTitle>
           <DialogDescription>
-            Boleto, assinatura, mensalidade — tudo que vence todo mês no mesmo dia.
+            Boleto, assinatura, mensalidade - tudo que vence todo mês no mesmo dia.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">

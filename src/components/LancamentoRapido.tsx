@@ -39,7 +39,7 @@ function parseValorBRL(s: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-/** Sheet do "Anotar um gasto", controlável de fora — usado pelo card do
+/** Sheet do "Anotar um gasto", controlável de fora - usado pelo card do
  *  painel, pela linha de ações rápidas e pelo botão central do bottom nav. */
 export function LancamentoRapidoSheet({
   open,
@@ -320,7 +320,7 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-medium">{titulo}</div>
                     <div className="truncate text-[11px] text-muted-foreground">
-                      {catNome ?? "—"}
+                      {catNome ?? "-"}
                       {sub && t.descricao ? ` · ${sub.nome}` : ""}
                     </div>
                   </div>

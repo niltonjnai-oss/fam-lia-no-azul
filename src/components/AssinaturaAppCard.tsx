@@ -75,7 +75,7 @@ export function AssinaturaAppCard() {
         });
         return;
       } catch {
-        // usuário cancelou ou não suportado — cai no fallback
+        // usuário cancelou ou não suportado - cai no fallback
       }
     }
     copiar();
@@ -83,7 +83,7 @@ export function AssinaturaAppCard() {
 
   return (
     <section className="grid gap-4 md:grid-cols-2">
-      {/* Bloco A — Sua assinatura */}
+      {/* Bloco A - Sua assinatura */}
       <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
@@ -150,7 +150,7 @@ export function AssinaturaAppCard() {
         </Button>
       </div>
 
-      {/* Bloco B — Indique e ganhe */}
+      {/* Bloco B - Indique e ganhe */}
       <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-5 shadow-soft">
         <div className="flex items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">

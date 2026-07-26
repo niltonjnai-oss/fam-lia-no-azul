@@ -60,7 +60,7 @@ import { PageTitle } from "@/components/PageTitle";
 export const Route = createFileRoute("/orcamento")({
   head: () => ({
     meta: [
-      { title: "Orçamento do mês — Família no Azul" },
+      { title: "Orçamento do mês - Família no Azul" },
       {
         name: "description",
         content: "Veja categorias, valores previstos e gastos reais do mês.",
@@ -298,7 +298,7 @@ function OrcamentoPage() {
             </span>
             <span>
               <strong className="text-foreground">Planejado:</strong> no começo do mês, preencha
-              quanto você <em>pretende</em> gastar em cada item. Não precisa ser exato — use o
+              quanto você <em>pretende</em> gastar em cada item. Não precisa ser exato - use o
               valor do mês passado ou um chute honesto. Esse número é a sua meta.
             </span>
           </li>
@@ -309,7 +309,7 @@ function OrcamentoPage() {
             <span>
               <strong className="text-foreground">Realizado:</strong> é o que você gastou de
               verdade. Ele cresce sozinho quando você usa o{" "}
-              <strong className="text-foreground">&quot;Anotar um gasto&quot;</strong> do Painel —
+              <strong className="text-foreground">&quot;Anotar um gasto&quot;</strong> do Painel -
               mas você também pode digitar direto aqui, no campo do item.
             </span>
           </li>
@@ -321,7 +321,7 @@ function OrcamentoPage() {
               <strong className="text-foreground">Diferença:</strong> o app calcula sozinho:
               Planejado − Realizado. <strong className="text-success">Verde</strong> = sobrou
               dinheiro nesse item. <strong className="text-danger">Vermelho</strong> = passou do
-              planejado — vale olhar com carinho no próximo mês.
+              planejado - vale olhar com carinho no próximo mês.
             </span>
           </li>
         </ol>
@@ -661,7 +661,7 @@ function NovoGastoFab() {
         <DialogHeader>
           <DialogTitle>Adicionar gasto</DialogTitle>
           <DialogDescription>
-            Digite ou fale seu gasto. (A categorização por IA entra numa fase futura — por
+            Digite ou fale seu gasto. (A categorização por IA entra numa fase futura - por
             enquanto edite os subitens direto na lista acima.)
           </DialogDescription>
         </DialogHeader>

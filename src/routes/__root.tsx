@@ -173,7 +173,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 // Captura o beforeinstallprompt o mais cedo possível: este script roda durante
 // o parse do HTML, ANTES dos bundles. O Chrome dispara esse evento uma única
-// vez, logo no load — se a gente só escutasse depois da hidratação (quando o
+// vez, logo no load - se a gente só escutasse depois da hidratação (quando o
 // botão de instalar monta), o evento já teria passado e o app cairia sempre no
 // guia manual em vez do prompt nativo. O módulo pwa-install.ts lê deste global.
 const PWA_PROMPT_CAPTURE = `(function(){
@@ -233,7 +233,7 @@ function AuthGate() {
   const isLegal = pathname === "/termos" || pathname === "/privacidade";
   // Convite do Modo Casal: acessível logado ou não (a própria página decide).
   const isConvite = pathname.startsWith("/convite/");
-  // Blog é conteúdo público (SEO) — acessível logado ou não.
+  // Blog é conteúdo público (SEO) - acessível logado ou não.
   const isBlog = pathname.startsWith("/blog");
   const isPublicRoute = isAuthRoute || isResetPassword || isLanding || isLegal || isConvite || isBlog;
   const isOnboarding = pathname.startsWith("/onboarding");
@@ -262,7 +262,7 @@ function AuthGate() {
     }
 
     // Sem login em rota protegida (ex.: PWA abre em /app): direto pro login,
-    // não pra landing page — quem chegou aqui já é cliente.
+    // não pra landing page - quem chegou aqui já é cliente.
     if (!session && !isPublicRoute) {
       navigate({ to: "/auth", replace: true });
       return;
@@ -274,7 +274,7 @@ function AuthGate() {
     }
   }, [session, loading, pathname, isPublicRoute, navigate]);
 
-  // Blog e páginas legais não têm nenhum redirect condicionado à sessão —
+  // Blog e páginas legais não têm nenhum redirect condicionado à sessão -
   // podem renderizar direto no servidor (SSR), sem esperar o loading do
   // Supabase resolver (que só existe no navegador). Isso é o que faz o
   // conteúdo aparecer no HTML puro para crawlers que não executam JS.

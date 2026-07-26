@@ -1,6 +1,6 @@
 // Página pública de aceite de convite do Modo Casal.
 // - Sem sessão: mostra o e-mail convidado e leva para /auth (guarda o token
-//   para retomar depois do login/cadastro — ver auth.tsx).
+//   para retomar depois do login/cadastro - ver auth.tsx).
 // - Com sessão: aceita automaticamente (RPC) e redireciona pro painel.
 
 import { useEffect, useState } from "react";
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/convite/$token")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Convite para a família — Família no Azul" },
+      { title: "Convite para a família - Família no Azul" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

@@ -37,7 +37,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/reserva")({
   head: () => ({
     meta: [
-      { title: "Reserva de Emergência — Família no Azul" },
+      { title: "Reserva de Emergência - Família no Azul" },
       {
         name: "description",
         content:
@@ -160,7 +160,7 @@ function ReservaPage() {
     prevConcluidos.current = atuais;
   }, [etapas]);
 
-  // Calcular pra mim — soma essenciais do mês atual
+  // Calcular pra mim - soma essenciais do mês atual
   const essenciaisDoMes = useMemo(() => {
     const rows = bloco503020Q.data ?? [];
     const ess = rows.find((x) => x.classificacao === "Essencial");
@@ -230,7 +230,7 @@ function ReservaPage() {
         </p>
       </header>
 
-      {/* 1 — Topo: explicação humana */}
+      {/* 1 - Topo: explicação humana */}
       <section className="rounded-2xl border border-border bg-primary/5 border-l-4 border-l-[var(--color-warning)] p-5 shadow-soft">
         <div className="flex items-start gap-3">
           <div className="rounded-full bg-primary/10 p-2 text-primary">
@@ -239,7 +239,7 @@ function ReservaPage() {
           <div className="flex-1 space-y-3 text-sm leading-relaxed">
             <h2 className="text-base font-semibold text-primary">O que é a sua reserva</h2>
             <p>
-              É um dinheiro guardado <strong>só para emergências de verdade</strong> — o carro
+              É um dinheiro guardado <strong>só para emergências de verdade</strong> - o carro
               que quebra, uma consulta urgente ou a perda de uma renda. É o que impede que um
               susto vire dívida. Pense nela como o <strong>colchão que protege a sua família</strong>.
             </p>
@@ -248,7 +248,7 @@ function ReservaPage() {
               <div className="space-y-3">
                 <p>
                   <strong>Para que serve:</strong> cobrir os gastos da casa quando a renda falta.
-                  Não é para viagem ou compras — para isso, use as metas.
+                  Não é para viagem ou compras - para isso, use as metas.
                 </p>
                 <p>
                   <strong>Quanto guardar:</strong> o ideal é juntar de <strong>3 a 12 meses</strong>{" "}
@@ -282,7 +282,7 @@ function ReservaPage() {
         </div>
       </section>
 
-      {/* 2 — Defina sua meta */}
+      {/* 2 - Defina sua meta */}
       <DefinaMetaSection
         modo={modo}
         setModo={setModo}
@@ -301,7 +301,7 @@ function ReservaPage() {
         calcularPraMim={calcularPraMim}
       />
 
-      {/* 3 — Primeiro passo fácil */}
+      {/* 3 - Primeiro passo fácil */}
       <section className="rounded-2xl border-2 border-[var(--color-warning)]/40 bg-[var(--color-warning)]/5 p-5 shadow-soft">
         <div className="flex items-start gap-3">
           <div className="rounded-full bg-[var(--color-warning)]/15 p-2 text-[var(--color-warning-foreground)]">
@@ -352,7 +352,7 @@ function ReservaPage() {
         </div>
       </section>
 
-      {/* 4 — Progresso */}
+      {/* 4 - Progresso */}
       <section className="rounded-2xl border border-border bg-card p-6 shadow-soft">
         <div className="flex flex-col items-center">
           <div className="relative h-56 w-56">
@@ -390,7 +390,7 @@ function ReservaPage() {
         </div>
       </section>
 
-      {/* 6 — Aviso gentil */}
+      {/* 6 - Aviso gentil */}
       {avisoLento && (
         <section className="rounded-2xl border-2 border-[var(--color-warning)]/40 bg-[var(--color-warning)]/5 p-4 shadow-soft">
           <div className="flex items-start gap-3">
@@ -412,7 +412,7 @@ function ReservaPage() {
         </section>
       )}
 
-      {/* 5 — Plano em etapas */}
+      {/* 5 - Plano em etapas */}
       <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">
         <h2 className="text-sm font-semibold">Seu plano em etapas</h2>
         <p className="text-xs text-muted-foreground">
@@ -445,7 +445,7 @@ function ReservaPage() {
               </div>
               <div className="flex-1">
                 <div className="flex items-baseline justify-between gap-2">
-                  <div className="text-sm font-semibold">Etapa {i + 1} — {et.nome}</div>
+                  <div className="text-sm font-semibold">Etapa {i + 1} - {et.nome}</div>
                   <div className="tabular text-sm font-bold">{formatBRL(et.valor)}</div>
                 </div>
                 <div className="text-xs text-muted-foreground">{et.sub}</div>
@@ -555,7 +555,7 @@ function DefinaMetaSection(props: {
         })}
       </div>
 
-      {/* MODO A — Pelo meu gasto mensal */}
+      {/* MODO A - Pelo meu gasto mensal */}
       {modo === "gasto" && (
         <div className="space-y-4">
           <div>
@@ -568,7 +568,7 @@ function DefinaMetaSection(props: {
             />
             <p className="mt-1 text-[11px] text-muted-foreground">
               É tudo o que sai por mês: aluguel, luz, água, mercado, transporte, escola.
-              Não é o quanto você ganha — é o quanto você gasta.
+              Não é o quanto você ganha - é o quanto você gasta.
             </p>
 
             {essenciaisDoMes > 0 && (
@@ -631,7 +631,7 @@ function DefinaMetaSection(props: {
         </div>
       )}
 
-      {/* MODO B — Por valor que quero juntar */}
+      {/* MODO B - Por valor que quero juntar */}
       {modo === "alvo" && (
         <div className="space-y-4">
           <CurrencyInput
@@ -698,7 +698,7 @@ function DefinaMetaSection(props: {
         </div>
       )}
 
-      {/* MODO C — Por prazo (valor + meses) */}
+      {/* MODO C - Por prazo (valor + meses) */}
       {modo === "prazo" && (
         <div className="space-y-4">
           <CurrencyInput

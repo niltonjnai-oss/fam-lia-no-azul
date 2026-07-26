@@ -43,7 +43,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
-      { title: "Comece aqui — Família no Azul" },
+      { title: "Comece aqui - Família no Azul" },
       {
         name: "description",
         content: "Em 1 minuto seu orçamento inicial fica montado.",
@@ -93,7 +93,7 @@ interface DespesaQ {
   label: string;
   categoria: string;
   subitem: string;
-  /** Conta com dia de vencimento por natureza (boleto/mensalidade) — candidata
+  /** Conta com dia de vencimento por natureza (boleto/mensalidade) - candidata
    *  a lembrete por email no passo final. Combustível, material escolar etc.
    *  não têm vencimento, então ficam de fora. */
   lembrete?: boolean;
@@ -295,7 +295,7 @@ function OnboardingPage() {
 
       if (passoId === "lembretes") {
         // Cria conta_recorrente pra cada conta marcada COM dia válido (1-31).
-        // Marcada sem dia fica de fora — sem vencimento não há quando avisar.
+        // Marcada sem dia fica de fora - sem vencimento não há quando avisar.
         const aCriar = TODAS_LEMBRAVEIS.map((q) => {
           const key = `${q.categoria}::${q.subitem}`;
           const pref = lembretes[key] ?? { marcado: true, dia: "" };
@@ -320,7 +320,7 @@ function OnboardingPage() {
             nome: q.label,
             valor,
             dia_vencimento: dia,
-            // Conta nasce vinculada ao item do orçamento — o "Chegou o boleto"
+            // Conta nasce vinculada ao item do orçamento - o "Chegou o boleto"
             // não precisa perguntar a categoria depois.
             subitem_id: findSubitemId(cats, subs, q.categoria, q.subitem),
           });
@@ -329,7 +329,7 @@ function OnboardingPage() {
       }
     },
     onError: (e) => {
-      // Loga o erro real (RLS, constraint, rede) — a mensagem genérica na tela
+      // Loga o erro real (RLS, constraint, rede) - a mensagem genérica na tela
       // escondia a causa. Ajuda a diagnosticar falhas de gravação no onboarding.
       console.error("[onboarding] falha ao salvar passo:", e);
     },
@@ -401,7 +401,7 @@ function OnboardingPage() {
           ))}
         </div>
         <p className="mt-2 text-xs text-muted-foreground">
-          Passo {step + 1} de {total} — {atual.titulo}
+          Passo {step + 1} de {total} - {atual.titulo}
         </p>
 
         {/* conteúdo */}
@@ -420,7 +420,7 @@ function OnboardingPage() {
                 <strong>sai</strong> da sua casa num mês normal.
               </p>
               <div className="mt-4 rounded-xl bg-warning/15 p-3 text-sm text-warning-foreground">
-                💡 <strong>Não precisa ser exato.</strong> Use valores aproximados — pra contas que
+                💡 <strong>Não precisa ser exato.</strong> Use valores aproximados - pra contas que
                 variam (luz, água), chute a média. Você ajusta tudo depois.
               </div>
               <p className="mt-4 text-sm text-muted-foreground">
@@ -508,7 +508,7 @@ function OnboardingPage() {
                         ? "Saúde e seguros"
                         : "Assinaturas e bem-estar"
               }
-              descricao="É só o que você já sabe de cabeça. Campos em branco a gente pula. Pode ser um valor aproximado — vale a média dos últimos meses."
+              descricao="É só o que você já sabe de cabeça. Campos em branco a gente pula. Pode ser um valor aproximado - vale a média dos últimos meses."
               perguntas={
                 atual.id === "moradia"
                   ? PASSO_MORADIA
@@ -557,7 +557,7 @@ function OnboardingPage() {
                 Tem alguma dívida ativa?
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                Cartão, empréstimo, financiamento — qualquer coisa que ainda esteja pagando.
+                Cartão, empréstimo, financiamento - qualquer coisa que ainda esteja pagando.
               </p>
               <div className="mt-5 grid grid-cols-2 gap-3">
                 {(["sim", "nao"] as const).map((opt) => (
@@ -668,7 +668,7 @@ function OnboardingPage() {
 
               {candidatosLembrete.length === 0 ? (
                 <p className="mt-5 rounded-xl bg-muted/50 p-3 text-sm text-muted-foreground">
-                  Você não preencheu contas fixas nos passos anteriores. Sem problema — dá pra
+                  Você não preencheu contas fixas nos passos anteriores. Sem problema - dá pra
                   cadastrar depois na tela <strong>Contas</strong>.
                 </p>
               ) : (
@@ -719,7 +719,7 @@ function OnboardingPage() {
                     );
                   })}
                   <p className="text-[11px] text-muted-foreground">
-                    Conta marcada sem o dia fica de fora — sem vencimento, não sabemos quando
+                    Conta marcada sem o dia fica de fora - sem vencimento, não sabemos quando
                     avisar. Dá pra ajustar tudo depois na tela <strong>Contas</strong>.
                   </p>
                 </div>
@@ -734,7 +734,7 @@ function OnboardingPage() {
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
                 Esses valores são o seu <strong>plano</strong>. Agora é só anotar os gastos do dia a
-                dia — o app compara o planejado com o que realmente saiu e te avisa se algo passar
+                dia - o app compara o planejado com o que realmente saiu e te avisa se algo passar
                 do combinado.
               </p>
               <p className="mt-2 text-sm text-muted-foreground">

@@ -1,5 +1,5 @@
 // Card do Painel convidando a instalar o app (PWA). Complementa o botão fixo
-// da sidebar (InstalarAppButton) — no mobile a sidebar não existe, então o
+// da sidebar (InstalarAppButton) - no mobile a sidebar não existe, então o
 // card é o convite principal. Dispensável (localStorage); some quando o app
 // já está instalado.
 
@@ -65,7 +65,7 @@ export function InstalarAppCard() {
         <div className="text-sm font-semibold">Instale o app no seu aparelho</div>
         <div className="text-xs text-muted-foreground">
           {isIOS()
-            ? "Ícone na tela de início, acesso em 1 toque — sem loja de aplicativos."
+            ? "Ícone na tela de início, acesso em 1 toque - sem loja de aplicativos."
             : "Direto do navegador, sem loja de aplicativos. Acesso em 1 toque, como app nativo."}
         </div>
         <p className="mt-0.5 text-[11px] text-muted-foreground">Android · iOS · Desktop</p>

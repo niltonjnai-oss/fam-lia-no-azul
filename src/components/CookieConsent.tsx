@@ -9,7 +9,7 @@ const NAVY = "#0F2A47";
 
 /**
  * Banner de consentimento de cookies (LGPD). Aparece só na primeira visita
- * (enquanto não houver escolha salva) e oferece recusa real — recusar mantém
+ * (enquanto não houver escolha salva) e oferece recusa real - recusar mantém
  * o Meta Pixel desligado. Cookies estritamente necessários (login) não
  * dependem deste banner e continuam funcionando de qualquer forma.
  */
@@ -17,7 +17,7 @@ export function CookieConsent() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Só decide a visibilidade no cliente, após ler o localStorage — evita
+    // Só decide a visibilidade no cliente, após ler o localStorage - evita
     // piscar o banner no SSR pra quem já escolheu.
     if (getConsent() === null) setVisible(true);
   }, []);

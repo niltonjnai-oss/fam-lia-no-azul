@@ -1,5 +1,5 @@
 // Cards de insight do Painel: projeção de fim de mês e streak "Dias no Azul".
-// Ambos usam só dados que o app já grava — nenhuma tabela nova.
+// Ambos usam só dados que o app já grava - nenhuma tabela nova.
 
 import { useQuery } from "@tanstack/react-query";
 import { Flame, TrendingUp, TrendingDown, ArrowDown, ArrowUp } from "lucide-react";
@@ -36,7 +36,7 @@ export function ProjecaoMes({
   const diasNoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
   const projecao = diaAtual > 0 ? (totalReal / diaAtual) * diasNoMes : 0;
 
-  // Tendência: projeção deste mês vs total REALIZADO no mês passado — mesma
+  // Tendência: projeção deste mês vs total REALIZADO no mês passado - mesma
   // base do card "Comparativo mensal", pra os dois "mês anterior" baterem.
   const totalMesAnterior = Number(gastosAnteriorQ.data?.total_real ?? 0);
   const temTendencia = totalMesAnterior > 0 && totalReal > 0;
@@ -82,8 +82,8 @@ export function ProjecaoMes({
               <span
                 className={`inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
                   // Cor só quando concorda com o veredito principal (dentro/fora
-                  // do previsto). Quando contradiz — ex.: gastando menos que mês
-                  // passado, mas acima do previsto — fica neutro, pra não dar
+                  // do previsto). Quando contradiz - ex.: gastando menos que mês
+                  // passado, mas acima do previsto - fica neutro, pra não dar
                   // verde e vermelho ao mesmo tempo no mesmo card.
                   dentro === gastandoMenos
                     ? gastandoMenos

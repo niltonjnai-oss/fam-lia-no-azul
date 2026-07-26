@@ -1,5 +1,5 @@
 // Feed "Últimos lançamentos" do painel: os gastos mais recentes da família,
-// com ícone da categoria em chip colorido suave — feedback imediato de que o
+// com ícone da categoria em chip colorido suave - feedback imediato de que o
 // registro entrou (e, no Modo Casal, do que o outro membro lançou).
 
 import { useMemo, type ComponentType } from "react";
@@ -54,7 +54,7 @@ function iconeDaCategoria(nome: string | undefined): IconType {
   return Wallet;
 }
 
-/** Tints suaves cicladas por categoria — ritmo visual das listas fintech. */
+/** Tints suaves cicladas por categoria - ritmo visual das listas fintech. */
 const CHIP_TINTS = [
   "bg-primary/10 text-primary",
   "bg-success/10 text-success",

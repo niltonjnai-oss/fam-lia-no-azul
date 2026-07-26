@@ -45,7 +45,7 @@ const navItems: NavItem[] = [
 ];
 
 /** Itens fixos da barra mobile; o resto vai pro sheet "Mais". O botão central
- *  laranja (Anotar gasto) ocupa o 3º slot — a ação nº 1 do app na zona do polegar. */
+ *  laranja (Anotar gasto) ocupa o 3º slot - a ação nº 1 do app na zona do polegar. */
 const MOBILE_NAV_FIXO = ["/app", "/orcamento", "/dividas"];
 
 const logoHorizontalUrl = assetUrl(logoHorizontal);
@@ -213,7 +213,7 @@ export function AppLayout() {
         <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
 
-      {/* Sheet do botão central (global — funciona em qualquer tela do app) */}
+      {/* Sheet do botão central (global - funciona em qualquer tela do app) */}
       <LancamentoRapidoSheet open={gastoOpen} onOpenChange={setGastoOpen} />
 
       {/* Sheet "Mais" com o restante da navegação */}

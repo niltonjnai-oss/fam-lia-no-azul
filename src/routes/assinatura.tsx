@@ -23,7 +23,7 @@ import {
 export const Route = createFileRoute("/assinatura")({
   head: () => ({
     meta: [
-      { title: "Sua assinatura — Família no Azul" },
+      { title: "Sua assinatura - Família no Azul" },
       {
         name: "description",
         content:
@@ -220,8 +220,8 @@ function ComoFunciona() {
             <div>
               <p className="font-medium text-foreground">Acesso completo por 12 meses</p>
               <p className="mt-0.5 text-xs">
-                Sua compra libera todos os módulos do app — Painel, Orçamento, 50-30-20, Dívidas
-                e Reserva — por um ano a partir da data de aquisição.
+                Sua compra libera todos os módulos do app - Painel, Orçamento, 50-30-20, Dívidas
+                e Reserva - por um ano a partir da data de aquisição.
               </p>
             </div>
           </li>

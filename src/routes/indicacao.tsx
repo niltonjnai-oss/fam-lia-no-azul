@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { PageTitle } from "@/components/PageTitle";
 
 // Cupom real criado na Kiwify (10%, ativo). O parâmetro ?coupon= pré-aplica o
-// desconto no checkout — quem abre o link não precisa digitar nada.
+// desconto no checkout - quem abre o link não precisa digitar nada.
 const CUPOM = "AZUL10";
 const DESCONTO = "10% OFF";
 const LINK_INDICACAO = `https://pay.kiwify.com.br/4FFlpa2?coupon=${CUPOM}`;
@@ -16,7 +16,7 @@ const LINK_INDICACAO = `https://pay.kiwify.com.br/4FFlpa2?coupon=${CUPOM}`;
 export const Route = createFileRoute("/indicacao")({
   head: () => ({
     meta: [
-      { title: "Indique e ganhe — Família no Azul" },
+      { title: "Indique e ganhe - Família no Azul" },
       {
         name: "description",
         content:
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/indicacao")({
 
 function IndicacaoPage() {
   const link = LINK_INDICACAO;
-  const mensagem = `Estou usando o Família no Azul para organizar as finanças da minha casa — sem planilha, sem briga. Use meu link que o cupom ${CUPOM} (${DESCONTO}) já entra aplicado: ${link}`;
+  const mensagem = `Estou usando o Família no Azul para organizar as finanças da minha casa - sem planilha, sem briga. Use meu link que o cupom ${CUPOM} (${DESCONTO}) já entra aplicado: ${link}`;
   const [copiado, setCopiado] = useState(false);
 
   async function copiar() {
@@ -147,7 +147,7 @@ function IndicacaoPage() {
             <div>
               <p className="font-medium text-foreground">3. Mais famílias organizadas</p>
               <p className="mt-0.5 text-xs">
-                Cada indicação ajuda outra família a sair do vermelho — e fortalece a comunidade
+                Cada indicação ajuda outra família a sair do vermelho - e fortalece a comunidade
                 Família no Azul.
               </p>
             </div>
