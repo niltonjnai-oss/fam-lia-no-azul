@@ -93,7 +93,7 @@ export function LancamentoRapido({
             {transacoesQ.isLoading ? (
               "Carregando..."
             ) : qtdHoje === 0 ? (
-              "Nenhum gasto anotado hoje"
+              "Compras, almoço, Uber, cafezinho…"
             ) : (
               <>
                 {formatBRL(totalHoje)} hoje · {qtdHoje} {qtdHoje === 1 ? "gasto" : "gastos"}
