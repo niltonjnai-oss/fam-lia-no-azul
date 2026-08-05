@@ -448,11 +448,12 @@ function CategoriaSection({
           </p>
         ) : (
           <>
-            <div className="hidden border-t border-border pt-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground sm:grid sm:grid-cols-[1fr_120px_120px_110px] sm:gap-3 sm:px-1">
+            <div className="hidden border-t border-border pt-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground sm:grid sm:grid-cols-[1fr_120px_120px_110px_2rem] sm:gap-3 sm:px-1">
               <span>Item</span>
               <span className="text-right">Planejado</span>
               <span className="text-right">Realizado</span>
               <span className="text-right">Diferença</span>
+              <span aria-hidden="true" />
             </div>
             <ul className="divide-y divide-border border-t border-border">
               {subitens.map((s) => (
@@ -537,20 +538,9 @@ function SubitemRow({
   };
 
   return (
-    <li className="py-2 sm:grid sm:grid-cols-[1fr_120px_120px_110px] sm:items-center sm:gap-3 sm:px-1">
+    <li className="py-2 sm:grid sm:grid-cols-[1fr_120px_120px_110px_2rem] sm:items-center sm:gap-3 sm:px-1">
       <div className="flex min-w-0 items-center gap-1.5">
         <span className="min-w-0 truncate text-sm font-medium">{subitem.nome}</span>
-        {podeOcultar && (
-          <button
-            type="button"
-            onClick={onOcultar}
-            aria-label={`Remover ${subitem.nome} da minha lista`}
-            title="Remover da minha lista"
-            className="grid h-6 w-6 shrink-0 place-items-center rounded-md text-muted-foreground/60 hover:bg-danger/10 hover:text-danger"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        )}
       </div>
 
       {/* Mobile: lado a lado */}
@@ -576,7 +566,7 @@ function SubitemRow({
           />
         </label>
       </div>
-      <div className="mt-2 flex justify-end sm:hidden">
+      <div className="mt-2 flex items-center justify-end gap-2 sm:hidden">
         <span
           className={`tabular inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold ${diffBadgeClasses(diff)}`}
           aria-label={`${diffLabel(diff)} ${signed(diff)}`}
@@ -587,6 +577,17 @@ function SubitemRow({
           })()}
           {signed(diff)}
         </span>
+        {podeOcultar && (
+          <button
+            type="button"
+            onClick={onOcultar}
+            aria-label={`Remover ${subitem.nome} da minha lista`}
+            title="Remover da minha lista"
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground/60 hover:bg-danger/10 hover:text-danger"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {/* Desktop: colunas */}
@@ -613,6 +614,21 @@ function SubitemRow({
           return <I className="h-4 w-4" aria-hidden="true" />;
         })()}
         <span>{signed(diff)}</span>
+      </div>
+
+      {/* Coluna do ✕ (desktop): alinhada no fim, depois da diferença */}
+      <div className="hidden sm:flex sm:justify-end">
+        {podeOcultar && (
+          <button
+            type="button"
+            onClick={onOcultar}
+            aria-label={`Remover ${subitem.nome} da minha lista`}
+            title="Remover da minha lista"
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground/50 hover:bg-danger/10 hover:text-danger"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
     </li>
   );
