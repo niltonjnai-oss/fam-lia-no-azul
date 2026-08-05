@@ -128,7 +128,7 @@ export const hojeISO = (): string => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 };
 
-export type FormaPagamento = "dinheiro" | "debito" | "credito" | "pix";
+export type FormaPagamento = "dinheiro" | "debito" | "credito" | "pix" | "boleto";
 
 export interface TransacaoDia {
   id: string;
@@ -442,6 +442,7 @@ export interface ResumoFormaPagamento {
   debito: number;
   credito: number;
   pix: number;
+  boleto: number;
   naoInformado: number;
 }
 
@@ -451,6 +452,7 @@ export async function fetchResumoFormaPagamento(mes: string): Promise<ResumoForm
     debito: 0,
     credito: 0,
     pix: 0,
+    boleto: 0,
     naoInformado: 0,
   };
   const { data, error } = await supabase
@@ -472,6 +474,9 @@ export async function fetchResumoFormaPagamento(mes: string): Promise<ResumoForm
         break;
       case "pix":
         zero.pix += v;
+        break;
+      case "boleto":
+        zero.boleto += v;
         break;
       default:
         zero.naoInformado += v;

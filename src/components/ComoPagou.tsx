@@ -3,7 +3,7 @@
 // forma escolhida; gastos sem forma entram em "Não informado".
 
 import { useQuery } from "@tanstack/react-query";
-import { Banknote, CreditCard, Landmark, Smartphone, HelpCircle } from "lucide-react";
+import { Banknote, CreditCard, Landmark, Smartphone, Receipt, HelpCircle } from "lucide-react";
 import type { ComponentType } from "react";
 
 import { qk, fetchResumoFormaPagamento } from "@/lib/db";
@@ -15,6 +15,7 @@ const LINHAS: { chave: keyof ResumoView; label: string; Icon: ComponentType<{ cl
   { chave: "debito", label: "Cartão de débito", Icon: Landmark, tint: "bg-primary/10 text-primary" },
   { chave: "credito", label: "Cartão de crédito", Icon: CreditCard, tint: "bg-danger/10 text-danger" },
   { chave: "pix", label: "Pix", Icon: Smartphone, tint: "bg-cta/10 text-cta" },
+  { chave: "boleto", label: "Boleto", Icon: Receipt, tint: "bg-warning/15 text-warning-foreground" },
   { chave: "naoInformado", label: "Não informado", Icon: HelpCircle, tint: "bg-muted text-muted-foreground" },
 ];
 
@@ -23,6 +24,7 @@ type ResumoView = {
   debito: number;
   credito: number;
   pix: number;
+  boleto: number;
   naoInformado: number;
 };
 
@@ -33,7 +35,7 @@ export function ComoPagou({ mes }: { mes: string }) {
   });
 
   const r = resumoQ.data;
-  const total = r ? r.dinheiro + r.debito + r.credito + r.pix + r.naoInformado : 0;
+  const total = r ? r.dinheiro + r.debito + r.credito + r.pix + r.boleto + r.naoInformado : 0;
 
   return (
     <section className="rounded-2xl border border-border bg-card p-5 shadow-soft">

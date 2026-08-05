@@ -295,6 +295,7 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
               <SelectItem value="debito">Cartão de débito</SelectItem>
               <SelectItem value="credito">Cartão de crédito</SelectItem>
               <SelectItem value="pix">Pix</SelectItem>
+              <SelectItem value="boleto">Boleto</SelectItem>
             </SelectContent>
           </Select>
         </div>
