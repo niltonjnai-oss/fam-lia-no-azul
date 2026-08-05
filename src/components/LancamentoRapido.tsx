@@ -10,6 +10,7 @@ import {
   fetchSubitemOutros,
   fetchTransacoesDoDia,
   registrarGasto,
+  registrarCompraParcelada,
   excluirGastoRapido,
   hojeISO,
   mesAtual,
@@ -26,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Sheet,
@@ -119,6 +121,13 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
   const [subitemId, setSubitemId] = useState<string>("");
   const [descricao, setDescricao] = useState("");
   const [formaPagamento, setFormaPagamento] = useState<string>("");
+  const [parcelado, setParcelado] = useState(false);
+  const [numParcelas, setNumParcelas] = useState("");
+
+  // Parcelamento só faz sentido no crédito ou boleto.
+  const permiteParcelar = formaPagamento === "credito" || formaPagamento === "boleto";
+  const nParc = Math.max(0, Math.floor(Number(numParcelas) || 0));
+  const valorParcela = parcelado && nParc >= 2 ? parseValorBRL(valor) / nParc : 0;
 
   const categoriasQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
   const subitensQ = useQuery({ queryKey: qk.subitens, queryFn: fetchSubitens });
@@ -158,6 +167,21 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
     mutationFn: async () => {
       const v = parseValorBRL(valor);
       if (v <= 0) throw new Error("Informe um valor maior que zero.");
+
+      // Compra parcelada (crédito/boleto): cria a dívida e espalha a parcela
+      // pelos meses. Não usa categoria — a parcela entra em Reserva/Dívidas.
+      if (parcelado && permiteParcelar) {
+        if (nParc < 2) throw new Error("Em quantas vezes? Informe 2 ou mais parcelas.");
+        await registrarCompraParcelada({
+          descricao: descricao.trim() || "Compra parcelada",
+          valor_total: v,
+          parcelas: nParc,
+          mes_ref: mes,
+          forma_pagamento: formaPagamento as FormaPagamento,
+        });
+        return;
+      }
+
       if (!categoriaId) throw new Error("Escolha uma categoria.");
       let subId = subitemId;
       if (!subId) {
@@ -178,7 +202,10 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
       setValor("");
       setDescricao("");
       setFormaPagamento("");
+      setParcelado(false);
+      setNumParcelas("");
       invalidarPainel();
+      qc.invalidateQueries({ queryKey: qk.dividas });
       valorRef.current?.focus();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -286,7 +313,16 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
           <Label htmlFor="lr-forma" className="text-xs">
             Forma de pagamento <span className="text-muted-foreground">(opcional)</span>
           </Label>
-          <Select value={formaPagamento} onValueChange={setFormaPagamento}>
+          <Select
+            value={formaPagamento}
+            onValueChange={(v) => {
+              setFormaPagamento(v);
+              if (v !== "credito" && v !== "boleto") {
+                setParcelado(false);
+                setNumParcelas("");
+              }
+            }}
+          >
             <SelectTrigger id="lr-forma" className="h-11">
               <SelectValue placeholder="Como você pagou?" />
             </SelectTrigger>
@@ -300,6 +336,44 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
           </Select>
         </div>
 
+        {permiteParcelar && (
+          <div className="rounded-xl border border-border bg-muted/30 p-3 sm:col-span-2">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Checkbox
+                checked={parcelado}
+                onCheckedChange={(c) => setParcelado(c === true)}
+              />
+              Foi parcelado?
+            </label>
+            {parcelado && (
+              <div className="mt-3 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="lr-parcelas" className="text-xs">
+                    Em quantas vezes?
+                  </Label>
+                  <Input
+                    id="lr-parcelas"
+                    inputMode="numeric"
+                    value={numParcelas}
+                    onChange={(e) => setNumParcelas(e.target.value.replace(/\D/g, ""))}
+                    placeholder="ex.: 12"
+                    className="tabular h-10 w-24 text-center"
+                  />
+                </div>
+                {valorParcela > 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    <strong className="text-foreground">
+                      {nParc}x de {formatBRL(valorParcela)}
+                    </strong>{" "}
+                    — a parcela entra no seu orçamento (Reserva/Dívidas) por {nParc} meses, a partir
+                    deste. Também vira uma dívida pra você acompanhar.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="sm:col-span-2">
           <Button
             type="submit"
@@ -307,7 +381,11 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
             disabled={addMut.isPending}
           >
             <Plus className="mr-1 h-4 w-4" />
-            {addMut.isPending ? "Salvando..." : "Salvar gasto"}
+            {addMut.isPending
+              ? "Salvando..."
+              : parcelado && permiteParcelar
+                ? "Salvar compra parcelada"
+                : "Salvar gasto"}
           </Button>
         </div>
       </form>

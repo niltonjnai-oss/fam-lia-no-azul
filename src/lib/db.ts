@@ -492,6 +492,26 @@ export async function excluirGastoRapido(id: string): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
+/** Registra uma compra parcelada (crédito ou boleto): cria a dívida e espalha
+ *  a parcela (valor_total / parcelas) por cada mês, do mês inicial em diante,
+ *  no item "Parcelas de compras" (fatia Reserva/Dívidas). RPC atômica. */
+export async function registrarCompraParcelada(args: {
+  descricao: string;
+  valor_total: number;
+  parcelas: number;
+  mes_ref: string;
+  forma_pagamento?: FormaPagamento | null;
+}): Promise<void> {
+  const { error } = await supabase.rpc("registrar_compra_parcelada", {
+    p_descricao: args.descricao,
+    p_valor_total: args.valor_total,
+    p_parcelas: args.parcelas,
+    p_mes_ref_inicial: args.mes_ref,
+    p_forma_pagamento: args.forma_pagamento ?? null,
+  });
+  if (error) throw new Error(error.message);
+}
+
 export async function fetchSubitemOutros(categoriaId: string): Promise<string | null> {
   const { data, error } = await supabase
     .from("subitem")
