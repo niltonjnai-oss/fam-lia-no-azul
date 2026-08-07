@@ -1,11 +1,13 @@
-// Cadastro dos cartões de crédito da família.
+// Cartões de crédito da família: cadastro, lista e exclusão.
 //
 // Só existe por um motivo: sem o dia de FECHAMENTO o app não sabe em que
 // fatura a compra cai, e erra o mês do gasto. E não dá pra deduzir o
 // fechamento a partir do vencimento - o intervalo entre os dois varia de 5 a
 // 10 dias por emissor, e o Banco Central não define isso (é contrato).
 //
-// Mora em /contas junto das contas fixas, pra não criar mais um item de menu.
+// Dois lugares, mesmo componente: a seção completa em /contas e a versão
+// `compacto` no painel. No painel ele NÃO some depois do primeiro cadastro -
+// é de lá que se cadastra o segundo cartão ou se apaga um com dia errado.
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -35,49 +37,100 @@ import {
 } from "@/lib/db";
 import { faturaDaCompra } from "@/lib/cartao";
 
-export function MeusCartoes() {
+export function MeusCartoes({ compacto = false }: { compacto?: boolean }) {
+  const [novoAberto, setNovoAberto] = useState(false);
   const cartoesQ = useQuery({ queryKey: qk.cartoes, queryFn: fetchCartoes });
   const cartoes = cartoesQ.data ?? [];
+  const vazio = !cartoesQ.isLoading && cartoes.length === 0;
 
-  return (
-    <section className="space-y-3">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
-            <h2 className="text-sm font-semibold">Meus cartões</h2>
-          </div>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            Com o dia de fechamento e de vencimento, o app sabe em qual fatura cada compra cai.
-          </p>
+  const conteudo = (
+    <>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <CreditCard className="h-4 w-4 text-muted-foreground" />
+          <h2 className="text-sm font-semibold">Meus cartões</h2>
         </div>
-        <BotaoNovoCartao />
+        <Button variant="outline" size="sm" onClick={() => setNovoAberto(true)}>
+          <Plus className="h-4 w-4" /> Novo cartão
+        </Button>
       </div>
 
+      {!compacto && (
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          Com o dia de fechamento e de vencimento, o app sabe em qual fatura cada compra cai.
+        </p>
+      )}
+
       {cartoesQ.isLoading ? (
-        <Skeleton className="h-20 w-full rounded-2xl" />
-      ) : cartoes.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-border p-4 text-xs text-muted-foreground">
+        <Skeleton className="mt-3 h-14 w-full rounded-xl" />
+      ) : vazio ? (
+        <p className={compacto ? "mt-2 text-xs text-muted-foreground" : "mt-3 rounded-2xl border border-dashed border-border p-4 text-xs text-muted-foreground"}>
           Nenhum cartão cadastrado. Sem isso, o gasto no crédito entra no mês da compra - e se você
           comprou depois do fechamento, quem paga é a fatura do mês seguinte.
         </p>
       ) : (
-        cartoes.map((c) => <CartaoCard key={c.id} cartao={c} />)
+        <div className={compacto ? "mt-3 space-y-1.5" : "mt-3 space-y-3"}>
+          {cartoes.map((c) => (
+            <CartaoCard key={c.id} cartao={c} compacto={compacto} />
+          ))}
+        </div>
       )}
-    </section>
+
+      <NovoCartaoDialog open={novoAberto} onOpenChange={setNovoAberto} />
+    </>
+  );
+
+  // No painel vira um card próprio; em /contas herda o espaçamento da página.
+  return compacto ? (
+    <section className="rounded-2xl border border-border bg-card p-4 shadow-soft">{conteudo}</section>
+  ) : (
+    <section>{conteudo}</section>
   );
 }
 
-function CartaoCard({ cartao: c }: { cartao: Cartao }) {
+function CartaoCard({ cartao: c, compacto }: { cartao: Cartao; compacto: boolean }) {
   const qc = useQueryClient();
   const excluir = useMutation({
     mutationFn: () => excluirCartao(c.id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.cartoes }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.cartoes });
+      toast.success("Cartão excluído.");
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
   // Uma compra feita hoje serve de exemplo concreto do que o cadastro faz.
   const exemplo = faturaDaCompra(hojeISO(), c.dia_fechamento, c.dia_vencimento);
+
+  const botaoExcluir = (
+    <Button
+      size="sm"
+      variant="ghost"
+      onClick={() => {
+        if (confirm(`Excluir o cartão "${c.nome}"?`)) excluir.mutate();
+      }}
+      disabled={excluir.isPending}
+      className="shrink-0 text-danger hover:bg-danger/10 hover:text-danger"
+      aria-label={`Excluir ${c.nome}`}
+    >
+      <Trash2 className="h-4 w-4" />
+    </Button>
+  );
+
+  if (compacto) {
+    return (
+      <div className="flex items-center gap-2 rounded-xl bg-muted/40 px-3 py-2">
+        <div className="min-w-0 flex-1">
+          <span className="text-sm font-medium">{c.nome}</span>
+          <span className="text-xs text-muted-foreground">
+            {" "}
+            · fecha dia {c.dia_fechamento} · vence dia {c.dia_vencimento}
+          </span>
+        </div>
+        {botaoExcluir}
+      </div>
+    );
+  }
 
   return (
     <article className="rounded-2xl border border-border bg-card p-4 shadow-soft">
@@ -92,37 +145,14 @@ function CartaoCard({ cartao: c }: { cartao: Cartao }) {
             Compra de hoje cai na fatura de {formatMes(exemplo.mesRef)}.
           </p>
         </div>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => {
-            if (confirm(`Excluir o cartão "${c.nome}"?`)) excluir.mutate();
-          }}
-          disabled={excluir.isPending}
-          className="text-danger hover:bg-danger/10 hover:text-danger"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        {botaoExcluir}
       </div>
     </article>
   );
 }
 
-/** Botão + diálogo, pra usar dentro da própria seção de cartões. */
-function BotaoNovoCartao() {
-  const [open, setOpen] = useState(false);
-  return (
-    <>
-      <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-        <Plus className="h-4 w-4" /> Novo cartão
-      </Button>
-      <NovoCartaoDialog open={open} onOpenChange={setOpen} />
-    </>
-  );
-}
-
-/** Diálogo controlado de fora - o aviso do painel abre este mesmo, em vez de
- *  mandar a pessoa rolar até o rodapé da tela Contas. */
+/** Diálogo controlado de fora: é aberto tanto pela seção em /contas quanto
+ *  pelo bloco do painel. */
 export function NovoCartaoDialog({
   open,
   onOpenChange,
