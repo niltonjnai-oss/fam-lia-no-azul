@@ -20,6 +20,21 @@
 -- ATENÇÃO: compras parceladas registradas ANTES desta migração não têm recibo
 -- e não vão aparecer na lista nova (nem dá pra desfazê-las pela tela).
 
+-- ========== 0. "Hoje" em Brasília ==========
+-- O banco roda em UTC: das 21h à meia-noite, `current_date` já é o dia
+-- seguinte. Gasto anotado à noite ficava com a data de amanhã e sumia do
+-- "Gasto hoje" do painel (e o do dia 31 iria pro mês seguinte).
+-- Ver supabase/sql/fix_data_fuso_brt.sql, que também conserta o DEFAULT de
+-- transacao.data (o caminho do gasto normal).
+
+create or replace function public.hoje_brt()
+returns date
+language sql
+stable
+as $$ select (now() at time zone 'America/Sao_Paulo')::date $$;
+
+grant execute on function public.hoje_brt() to authenticated;
+
 -- ========== 1. Pré-requisito da Fase 1 ==========
 -- O item global "Parcelas de compras" (fatia Reserva/Dívidas) tem que existir.
 
@@ -185,8 +200,10 @@ begin
   end loop;
 
   -- Uma transação no mês inicial só pra a compra aparecer no feed do painel.
+  -- Data em BRASÍLIA, não `current_date`: o banco é UTC, então das 21h à
+  -- meia-noite `current_date` já é amanhã e o gasto sumiria do "Gasto hoje".
   v_data := case
-    when to_char(current_date, 'YYYY-MM') = p_mes_ref_inicial then current_date
+    when to_char(public.hoje_brt(), 'YYYY-MM') = p_mes_ref_inicial then public.hoje_brt()
     else v_inicio
   end;
   insert into public.transacao (subitem_id, mes_ref, valor, descricao, data, forma_pagamento)
@@ -344,8 +361,8 @@ begin
     values (
       c.subitem_id, p_mes_corrente, v_saldo,
       c.descricao || ' (quitação)',
-      case when to_char(current_date, 'YYYY-MM') = p_mes_corrente
-           then current_date
+      case when to_char(public.hoje_brt(), 'YYYY-MM') = p_mes_corrente
+           then public.hoje_brt()
            else to_date(p_mes_corrente || '-01', 'YYYY-MM-DD') end,
       c.forma_pagamento
     )
