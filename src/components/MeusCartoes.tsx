@@ -19,7 +19,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,7 +51,7 @@ export function MeusCartoes() {
             Com o dia de fechamento e de vencimento, o app sabe em qual fatura cada compra cai.
           </p>
         </div>
-        <NovoCartaoDialog />
+        <BotaoNovoCartao />
       </div>
 
       {cartoesQ.isLoading ? (
@@ -109,8 +108,28 @@ function CartaoCard({ cartao: c }: { cartao: Cartao }) {
   );
 }
 
-function NovoCartaoDialog() {
+/** Botão + diálogo, pra usar dentro da própria seção de cartões. */
+function BotaoNovoCartao() {
   const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+        <Plus className="h-4 w-4" /> Novo cartão
+      </Button>
+      <NovoCartaoDialog open={open} onOpenChange={setOpen} />
+    </>
+  );
+}
+
+/** Diálogo controlado de fora - o aviso do painel abre este mesmo, em vez de
+ *  mandar a pessoa rolar até o rodapé da tela Contas. */
+export function NovoCartaoDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+}) {
   const [nome, setNome] = useState("");
   const [fechamento, setFechamento] = useState("");
   const [vencimento, setVencimento] = useState("");
@@ -136,18 +155,14 @@ function NovoCartaoDialog() {
       setNome("");
       setFechamento("");
       setVencimento("");
-      setOpen(false);
+      onOpenChange(false);
+      toast.success("Cartão cadastrado.");
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Plus className="h-4 w-4" /> Novo cartão
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Novo cartão de crédito</DialogTitle>
