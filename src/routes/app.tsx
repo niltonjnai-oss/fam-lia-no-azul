@@ -49,6 +49,7 @@ import { UltimosLancamentos } from "@/components/UltimosLancamentos";
 import { ProjecaoMes, DiasNoAzul } from "@/components/PainelInsights";
 import { InstalarAppCard } from "@/components/InstalarAppCard";
 import { ComoPagou } from "@/components/ComoPagou";
+import { AvisoCartao } from "@/components/AvisoCartao";
 import { DespesasFixasDisponivel } from "@/components/DespesasFixasDisponivel";
 
 import { PageTitle } from "@/components/PageTitle";
@@ -353,6 +354,10 @@ function PainelPage() {
         fallback={<DashboardSectionError titulo="Não foi possível carregar os últimos lançamentos." />}
       >
         <UltimosLancamentos />
+      </DashboardSectionBoundary>
+
+      <DashboardSectionBoundary fallback={null}>
+        <AvisoCartao />
       </DashboardSectionBoundary>
 
 

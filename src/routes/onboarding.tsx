@@ -33,10 +33,15 @@ import {
   inserirDivida,
   fetchContasRecorrentes,
   inserirContaRecorrente,
+  fetchCartoes,
+  inserirCartao,
   garantirFamilia,
+  hojeISO,
+  formatMes,
   type Categoria,
   type Subitem,
 } from "@/lib/db";
+import { faturaDaCompra } from "@/lib/cartao";
 import { formatBRL } from "@/lib/format";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -163,6 +168,11 @@ function OnboardingPage() {
   const [lembretes, setLembretes] = useState<Record<string, { marcado: boolean; dia: string }>>(
     {},
   );
+  // Cartões de crédito: sem o dia de fechamento o app não sabe em que fatura
+  // a compra cai, e joga o gasto no mês errado. Passo opcional.
+  const [cartoes, setCartoes] = useState<{ nome: string; fechamento: string; vencimento: string }[]>(
+    [{ nome: "", fechamento: "", vencimento: "" }],
+  );
 
   // ----- Dados do schema -----
   const catsQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
@@ -189,6 +199,7 @@ function OnboardingPage() {
     base.push({ id: "dividas", titulo: "Dívidas", Icon: CreditCard });
     if (temDividas === "sim") base.push({ id: "dividas_detalhe", titulo: "Suas dívidas", Icon: CreditCard });
     base.push({ id: "lembretes", titulo: "Lembretes", Icon: BellRing });
+    base.push({ id: "cartoes", titulo: "Cartões de crédito", Icon: CreditCard });
     base.push({ id: "resumo", titulo: "Tudo pronto", Icon: PartyPopper });
     return base;
   }, [temFilhos, temDividas]);
@@ -326,6 +337,37 @@ function OnboardingPage() {
           });
         }
         qc.invalidateQueries({ queryKey: ["conta_recorrente"] });
+      }
+
+      if (passoId === "cartoes") {
+        const validos = cartoes
+          .map((c) => ({
+            nome: c.nome.trim(),
+            dia_fechamento: Number.parseInt(c.fechamento, 10),
+            dia_vencimento: Number.parseInt(c.vencimento, 10),
+          }))
+          .filter(
+            (c) =>
+              c.nome.length > 0 &&
+              c.dia_fechamento >= 1 &&
+              c.dia_fechamento <= 31 &&
+              c.dia_vencimento >= 1 &&
+              c.dia_vencimento <= 31,
+          );
+        if (validos.length === 0) return;
+
+        // Dedupe por nome: refazer o onboarding não duplica cartão já criado.
+        let existentes = new Set<string>();
+        try {
+          existentes = new Set((await fetchCartoes()).map((c) => norm(c.nome)));
+        } catch {
+          // sem bloqueio: na dúvida cria (usuário remove na tela Contas)
+        }
+        for (const c of validos) {
+          if (existentes.has(norm(c.nome))) continue;
+          await inserirCartao(c);
+        }
+        qc.invalidateQueries({ queryKey: qk.cartoes });
       }
     },
     onError: (e) => {
@@ -652,6 +694,94 @@ function OnboardingPage() {
                 >
                   <Plus className="h-4 w-4" /> adicionar outra dívida
                 </button>
+              </div>
+            </>
+          )}
+
+          {atual.id === "cartoes" && (
+            <>
+              <h1 className="mt-5 text-2xl font-bold tracking-tight">
+                Você usa cartão de crédito?
+              </h1>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Quem paga a compra no crédito é a fatura, não o dia da compra. Com o{" "}
+                <strong>dia do fechamento</strong> e o <strong>dia do vencimento</strong>, a gente
+                põe cada gasto no mês certo do seu orçamento - inclusive quando você compra depois
+                do fechamento e só paga no mês seguinte.
+              </p>
+
+              <div className="mt-5 space-y-3">
+                {cartoes.map((c, i) => {
+                  const nFech = Number.parseInt(c.fechamento, 10);
+                  const nVenc = Number.parseInt(c.vencimento, 10);
+                  const ok =
+                    nFech >= 1 && nFech <= 31 && nVenc >= 1 && nVenc <= 31 && c.nome.trim() !== "";
+                  const previa = ok ? faturaDaCompra(hojeISO(), nFech, nVenc) : null;
+                  const set = (patch: Partial<(typeof cartoes)[number]>) =>
+                    setCartoes((arr) => arr.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+                  return (
+                    <div key={i} className="rounded-xl border border-border bg-card p-3">
+                      <input
+                        type="text"
+                        value={c.nome}
+                        onChange={(e) => set({ nome: e.target.value })}
+                        placeholder="Nome do cartão (ex.: Nubank)"
+                        className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      />
+                      <div className="mt-2 flex flex-wrap gap-3">
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          Fecha dia
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={2}
+                            value={c.fechamento}
+                            onChange={(e) =>
+                              set({ fechamento: e.target.value.replace(/\D/g, "") })
+                            }
+                            placeholder="2"
+                            className="tabular h-10 w-14 rounded-lg border border-input bg-background px-2 text-center text-sm font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          />
+                        </label>
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          Vence dia
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={2}
+                            value={c.vencimento}
+                            onChange={(e) =>
+                              set({ vencimento: e.target.value.replace(/\D/g, "") })
+                            }
+                            placeholder="9"
+                            className="tabular h-10 w-14 rounded-lg border border-input bg-background px-2 text-center text-sm font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          />
+                        </label>
+                      </div>
+                      {previa && (
+                        <p className="mt-2 text-[11px] text-muted-foreground">
+                          Uma compra feita hoje entraria no orçamento de{" "}
+                          <strong className="text-foreground">{formatMes(previa.mesRef)}</strong>.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCartoes((arr) => [...arr, { nome: "", fechamento: "", vencimento: "" }])
+                  }
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  + Adicionar outro cartão
+                </button>
+
+                <p className="text-[11px] text-muted-foreground">
+                  Os dois dias estão no app do banco ou na própria fatura. Não usa cartão? É só
+                  seguir - dá pra cadastrar depois na tela <strong>Contas</strong>.
+                </p>
               </div>
             </>
           )}
