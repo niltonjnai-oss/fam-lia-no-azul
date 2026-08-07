@@ -117,6 +117,8 @@ export const qk = {
   bloco503020: (mes: string) => ["v_50_30_20", mes] as const,
   gastosMes: (mes: string) => ["v_gastos_mes", mes] as const,
   dividas: ["divida"] as const,
+  comprasParceladas: ["compra_parcelada"] as const,
+  contas: ["conta_recorrente"] as const,
   reserva: ["reserva_config"] as const,
   transacoesHoje: (data: string) => ["transacao", "dia", data] as const,
   transacoesRecentes: ["transacao", "recentes"] as const,
@@ -218,12 +220,20 @@ export interface ContaRecorrente {
   subitem_id: string | null;
   /** "YYYY-MM" do último lançamento via "Chegou o boleto" — badge ✓ paga. */
   ultimo_mes_pago: string | null;
+  /** Último mês em que a conta vence ("YYYY-MM"); null = sem prazo. */
+  mes_fim: string | null;
+  /** "parcelamento" = criada por uma compra parcelada. Só lembra do
+   *  vencimento: o valor já está no orçamento, então NÃO tem "Chegou o
+   *  boleto" (lançaria a parcela duas vezes). */
+  origem: string | null;
 }
 
 export async function fetchContasRecorrentes(): Promise<ContaRecorrente[]> {
   const { data, error } = await supabase
     .from("conta_recorrente")
-    .select("id, nome, valor, dia_vencimento, ativo, subitem_id, ultimo_mes_pago")
+    .select(
+      "id, nome, valor, dia_vencimento, ativo, subitem_id, ultimo_mes_pago, mes_fim, origem",
+    )
     .order("dia_vencimento", { ascending: true });
   if (error) throw new Error(error.message);
   return (data ?? []) as ContaRecorrente[];
@@ -492,15 +502,67 @@ export async function excluirGastoRapido(id: string): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
+// ---------- Compras parceladas ----------
+// A RPC espalha a parcela por N meses e cria a dívida; a tabela
+// `compra_parcelada` guarda o "recibo" da operação (mês inicial, valor da
+// parcela, ids da dívida/transação/lembrete) — é o que permite desfazer,
+// quitar ou corrigir depois. Compras registradas antes da Fase 2 não têm
+// recibo e não aparecem aqui.
+
+export interface CompraParcelada {
+  id: string;
+  descricao: string;
+  valor_total: number;
+  parcelas: number;
+  valor_parcela: number;
+  /** "YYYY-MM" da primeira parcela. */
+  mes_inicial: string;
+  forma_pagamento: string | null;
+  dia_vencimento: number | null;
+  /** Dívida gerada pela compra - o card dela sai da lista de dívidas pra não
+   *  duplicar (e pra ninguém editar os dois lados e dessincronizar). */
+  divida_id: string | null;
+  conta_recorrente_id: string | null;
+  status: "ativa" | "quitada";
+  /** Meses que ainda têm a parcela somada no orçamento. */
+  meses_aplicados: number;
+  mes_quitacao: string | null;
+}
+
+export async function fetchComprasParceladas(): Promise<CompraParcelada[]> {
+  const { data, error } = await supabase
+    .from("compra_parcelada")
+    .select(
+      "id, descricao, valor_total, parcelas, valor_parcela, mes_inicial, forma_pagamento, dia_vencimento, divida_id, conta_recorrente_id, status, meses_aplicados, mes_quitacao",
+    )
+    .order("created_at", { ascending: false });
+  // Tolerante: se o SQL da Fase 2 ainda não rodou, a tela some em vez de quebrar.
+  if (error) return [];
+  return (data ?? []) as CompraParcelada[];
+}
+
+/** Quantas parcelas já venceram até `mes` (1..parcelas), pra mostrar o
+ *  progresso "parcela X de N". O mês da compra conta como a primeira. */
+export function parcelaAtual(c: CompraParcelada, mes: string): number {
+  const [ai, mi] = c.mes_inicial.split("-").map(Number);
+  const [a, m] = mes.split("-").map(Number);
+  const diff = (a - ai) * 12 + (m - mi);
+  return Math.min(c.parcelas, Math.max(0, diff + 1));
+}
+
 /** Registra uma compra parcelada (crédito ou boleto): cria a dívida e espalha
  *  a parcela (valor_total / parcelas) por cada mês, do mês inicial em diante,
- *  no item "Parcelas de compras" (fatia Reserva/Dívidas). RPC atômica. */
+ *  no item "Parcelas de compras" (fatia Reserva/Dívidas). RPC atômica.
+ *  Com dia de vencimento + lembrete, cria também a conta recorrente que avisa
+ *  antes de cada parcela vencer (com prazo na última). */
 export async function registrarCompraParcelada(args: {
   descricao: string;
   valor_total: number;
   parcelas: number;
   mes_ref: string;
   forma_pagamento?: FormaPagamento | null;
+  dia_vencimento?: number | null;
+  criar_lembrete?: boolean;
 }): Promise<void> {
   const { error } = await supabase.rpc("registrar_compra_parcelada", {
     p_descricao: args.descricao,
@@ -508,6 +570,52 @@ export async function registrarCompraParcelada(args: {
     p_parcelas: args.parcelas,
     p_mes_ref_inicial: args.mes_ref,
     p_forma_pagamento: args.forma_pagamento ?? null,
+    p_dia_vencimento: args.dia_vencimento ?? null,
+    p_criar_lembrete: args.criar_lembrete ?? false,
+  });
+  if (error) throw new Error(error.message);
+}
+
+/** Desfaz a compra por completo: tira a parcela do orçamento de TODOS os
+ *  meses e apaga dívida, transação e lembrete. */
+export async function cancelarCompraParcelada(id: string): Promise<void> {
+  const { error } = await supabase.rpc("cancelar_compra_parcelada", { p_id: id });
+  if (error) throw new Error(error.message);
+}
+
+/** Quitação antecipada: mantém o que já foi pago, tira as parcelas dos meses
+ *  futuros e encerra a dívida. `lancarSaldo` registra o valor quitado como
+ *  gasto do mês corrente. */
+export async function quitarCompraParcelada(args: {
+  id: string;
+  mes: string;
+  lancarSaldo: boolean;
+}): Promise<void> {
+  const { error } = await supabase.rpc("quitar_compra_parcelada", {
+    p_id: args.id,
+    p_mes_corrente: args.mes,
+    p_lancar_saldo: args.lancarSaldo,
+  });
+  if (error) throw new Error(error.message);
+}
+
+/** Correção: desfaz e refaz com os valores novos (mesmo mês inicial e forma de
+ *  pagamento). Todos os meses são recalculados. */
+export async function editarCompraParcelada(args: {
+  id: string;
+  descricao: string;
+  valor_total: number;
+  parcelas: number;
+  dia_vencimento?: number | null;
+  criar_lembrete?: boolean;
+}): Promise<void> {
+  const { error } = await supabase.rpc("editar_compra_parcelada", {
+    p_id: args.id,
+    p_descricao: args.descricao,
+    p_valor_total: args.valor_total,
+    p_parcelas: args.parcelas,
+    p_dia_vencimento: args.dia_vencimento ?? null,
+    p_criar_lembrete: args.criar_lembrete ?? false,
   });
   if (error) throw new Error(error.message);
 }

@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label";
 import {
   qk,
   fetchDividas,
+  fetchComprasParceladas,
   inserirDivida,
   atualizarDivida,
   excluirDivida,
@@ -38,6 +39,7 @@ import {
 import { formatBRL } from "@/lib/format";
 import { EmptyState } from "@/components/EmptyState";
 import { AssistenteDividaCard } from "@/components/AssistenteDivida";
+import { ComprasParceladasSection } from "@/components/ComprasParceladas";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageTitle } from "@/components/PageTitle";
@@ -57,10 +59,27 @@ export const Route = createFileRoute("/dividas")({
 
 function DividasPage() {
   const dividasQ = useQuery({ queryKey: qk.dividas, queryFn: fetchDividas });
+  const comprasQ = useQuery({
+    queryKey: qk.comprasParceladas,
+    queryFn: fetchComprasParceladas,
+  });
   const [openSim, setOpenSim] = useState(false);
 
   const todas = useMemo(() => dividasQ.data ?? [], [dividasQ.data]);
   const ativas = todas.filter((d) => d.status === "Ativa");
+
+  // As dívidas criadas por uma compra parcelada entram nos totais e no Plano de
+  // Liberdade (são dívida de verdade), mas o card sai da lista: quem manda
+  // nelas é a seção "Compras parceladas", que mexe na dívida e nas parcelas
+  // juntas. Dois cards editáveis pro mesmo dado dessincronizariam.
+  const dividasDeCompra = useMemo(
+    () => new Set((comprasQ.data ?? []).map((c) => c.divida_id).filter(Boolean) as string[]),
+    [comprasQ.data],
+  );
+  const avulsas = useMemo(
+    () => todas.filter((d) => !dividasDeCompra.has(d.id)),
+    [todas, dividasDeCompra],
+  );
   const totalAtivo = ativas.reduce((a, d) => a + Number(d.valor_total), 0);
   const parcelaMensal = ativas.reduce((a, d) => a + Number(d.parcela_mensal), 0);
   const prioritaria = ativas.length
@@ -163,13 +182,15 @@ function DividasPage() {
           title="Nenhuma dívida ativa"
           description="Parabéns! Quando precisar registrar uma, use o botão Nova dívida."
         />
-      ) : (
+      ) : avulsas.length > 0 ? (
         <section className="space-y-3">
-          {todas.map((d) => (
+          {avulsas.map((d) => (
             <DividaCard key={d.id} divida={d} prioritaria={prioritaria?.id === d.id} />
           ))}
         </section>
-      )}
+      ) : null}
+
+      <ComprasParceladasSection />
 
       <button
         onClick={() => setOpenSim(true)}

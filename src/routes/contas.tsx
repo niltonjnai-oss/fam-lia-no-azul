@@ -25,6 +25,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   qk,
   mesAtual,
+  formatMes,
   hojeISO,
   fetchCategorias,
   fetchSubitens,
@@ -40,7 +41,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageTitle } from "@/components/PageTitle";
 
-const QK_CONTAS = ["conta_recorrente"] as const;
+const QK_CONTAS = qk.contas;
 
 const parseValorBR = (s: string): number => {
   const n = Number(s.replace(/\./g, "").replace(",", "."));
@@ -158,6 +159,10 @@ function ContasPage() {
 function ContaCard({ conta: c }: { conta: ContaRecorrente }) {
   const qc = useQueryClient();
   const pagaEsteMes = c.ultimo_mes_pago === mesAtual();
+  // Parcela de compra parcelada: a conta existe só pra lembrar do vencimento.
+  // O valor já entrou no orçamento quando a compra foi registrada, então
+  // "Chegou o boleto" aqui lançaria a parcela uma segunda vez.
+  const soLembrete = c.origem === "parcelamento";
   const alternar = useMutation({
     mutationFn: () => atualizarContaRecorrente(c.id, { ativo: !c.ativo }),
     onSuccess: () => qc.invalidateQueries({ queryKey: QK_CONTAS }),
@@ -176,6 +181,7 @@ function ContaCard({ conta: c }: { conta: ContaRecorrente }) {
           <h3 className="truncate text-sm font-semibold sm:text-base">{c.nome}</h3>
           <p className="text-xs text-muted-foreground">
             Vence todo dia <strong>{c.dia_vencimento}</strong>
+            {c.mes_fim && ` · até ${formatMes(c.mes_fim)}`}
             {!c.ativo && " · alertas pausados"}
           </p>
         </div>
@@ -203,7 +209,16 @@ function ContaCard({ conta: c }: { conta: ContaRecorrente }) {
         </div>
       </div>
 
-      {c.ativo && (
+      {c.ativo && soLembrete && (
+        <div className="mt-3 border-t border-border/60 pt-3">
+          <span className="text-xs text-muted-foreground">
+            Parcela de uma compra parcelada - já está no seu orçamento todo mês. Aqui é só o
+            lembrete do vencimento.
+          </span>
+        </div>
+      )}
+
+      {c.ativo && !soLembrete && (
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
           {pagaEsteMes ? (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-success/15 px-2.5 py-1 text-xs font-semibold text-success">
