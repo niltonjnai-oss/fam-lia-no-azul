@@ -40,6 +40,7 @@ import { formatBRL } from "@/lib/format";
 import { EmptyState } from "@/components/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageTitle } from "@/components/PageTitle";
+import { MeusCartoes } from "@/components/MeusCartoes";
 
 const QK_CONTAS = qk.contas;
 
@@ -152,6 +153,10 @@ function ContasPage() {
           ))}
         </section>
       )}
+
+      <div className="border-t border-border pt-5">
+        <MeusCartoes />
+      </div>
     </div>
   );
 }

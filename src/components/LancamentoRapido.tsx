@@ -12,10 +12,13 @@ import {
   registrarGasto,
   registrarCompraParcelada,
   excluirGastoRapido,
+  fetchCartoes,
   hojeISO,
   mesAtual,
+  formatMes,
   type FormaPagamento,
 } from "@/lib/db";
+import { faturaDaCompra } from "@/lib/cartao";
 import { formatBRL } from "@/lib/format";
 import {
   Select,
@@ -136,6 +139,7 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
   const [numParcelas, setNumParcelas] = useState("");
   const [primeiroVenc, setPrimeiroVenc] = useState(() => proximoMesISO(hoje));
   const [entrada, setEntrada] = useState("");
+  const [cartaoId, setCartaoId] = useState<string>("");
 
   // Parcelamento só faz sentido no crédito ou boleto.
   const permiteParcelar = formaPagamento === "credito" || formaPagamento === "boleto";
@@ -149,6 +153,18 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
 
   const categoriasQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
   const subitensQ = useQuery({ queryKey: qk.subitens, queryFn: fetchSubitens });
+  const cartoesQ = useQuery({ queryKey: qk.cartoes, queryFn: fetchCartoes });
+  const cartoes = (cartoesQ.data ?? []).filter((c) => c.ativo);
+
+  // Crédito: quem paga é a fatura, não o mês da compra. Com o cartão
+  // cadastrado o app sabe em qual delas o gasto cai - compra feita depois do
+  // fechamento só entra na fatura seguinte.
+  const cartaoSel = cartoes.find((c) => c.id === cartaoId) ?? null;
+  const fatura = cartaoSel
+    ? faturaDaCompra(hoje, cartaoSel.dia_fechamento, cartaoSel.dia_vencimento)
+    : null;
+  // Mês do orçamento que recebe o gasto: o da fatura, quando há cartão.
+  const mesDestino = fatura?.mesRef ?? mes;
   const transacoesQ = useQuery({
     queryKey: qk.transacoesHoje(hoje),
     queryFn: () => fetchTransacoesDoDia(hoje),
@@ -171,14 +187,18 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
     return m;
   }, [categoriasQ.data]);
 
-  const invalidarPainel = () => {
-    qc.invalidateQueries({ queryKey: qk.resumo(mes) });
-    qc.invalidateQueries({ queryKey: qk.bloco503020(mes) });
-    qc.invalidateQueries({ queryKey: qk.lancamentos(mes) });
-    qc.invalidateQueries({ queryKey: qk.gastosMes(mes) });
+  // `alvo` pode não ser o mês corrente: gasto no crédito entra no mês da
+  // fatura, e a parcela, no mês do vencimento.
+  const invalidarPainel = (alvo = mes) => {
+    for (const m of new Set([mes, alvo])) {
+      qc.invalidateQueries({ queryKey: qk.resumo(m) });
+      qc.invalidateQueries({ queryKey: qk.bloco503020(m) });
+      qc.invalidateQueries({ queryKey: qk.lancamentos(m) });
+      qc.invalidateQueries({ queryKey: qk.gastosMes(m) });
+      qc.invalidateQueries({ queryKey: qk.formaPagamento(m) });
+    }
     qc.invalidateQueries({ queryKey: qk.transacoesHoje(hoje) });
     qc.invalidateQueries({ queryKey: qk.transacoesRecentes });
-    qc.invalidateQueries({ queryKey: qk.formaPagamento(mes) });
   };
 
   const addMut = useMutation({
@@ -213,15 +233,21 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
           throw new Error("Escolha um tipo de gasto para esta categoria.");
         subId = outros;
       }
+      // No crédito com cartão cadastrado, o gasto entra no orçamento do mês
+      // em que a FATURA vence - não no mês da compra.
       await registrarGasto({
         subitem_id: subId,
-        mes_ref: mes,
+        mes_ref: mesDestino,
         valor: v,
         descricao: descricao.trim() || null,
         forma_pagamento: (formaPagamento || null) as FormaPagamento | null,
       });
     },
     onSuccess: () => {
+      const alvo = parcelado && permiteParcelar ? primeiroVenc.slice(0, 7) : mesDestino;
+      if (alvo !== mes) {
+        toast.success(`Lançado no orçamento de ${formatMes(alvo)}.`);
+      }
       setValor("");
       setDescricao("");
       setFormaPagamento("");
@@ -229,7 +255,8 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
       setNumParcelas("");
       setEntrada("");
       setPrimeiroVenc(proximoMesISO(hoje));
-      invalidarPainel();
+      setCartaoId("");
+      invalidarPainel(alvo);
       qc.invalidateQueries({ queryKey: qk.dividas });
       qc.invalidateQueries({ queryKey: qk.comprasParceladas });
       qc.invalidateQueries({ queryKey: qk.contas });
@@ -240,7 +267,7 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
 
   const delMut = useMutation({
     mutationFn: (id: string) => excluirGastoRapido(id),
-    onSuccess: invalidarPainel,
+    onSuccess: () => invalidarPainel(),
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -349,6 +376,7 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
                 setNumParcelas("");
                 setEntrada("");
               }
+              if (v !== "credito") setCartaoId("");
             }}
           >
             <SelectTrigger id="lr-forma" className="h-11">
@@ -363,6 +391,46 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
             </SelectContent>
           </Select>
         </div>
+
+        {formaPagamento === "credito" && cartoes.length > 0 && (
+          <div className="space-y-1 sm:col-span-2">
+            <Label htmlFor="lr-cartao" className="text-xs">
+              Qual cartão? <span className="text-muted-foreground">(opcional)</span>
+            </Label>
+            <Select
+              value={cartaoId}
+              onValueChange={(v) => {
+                setCartaoId(v);
+                const c = cartoes.find((x) => x.id === v);
+                // Preenche o 1º vencimento com a fatura calculada; a pessoa
+                // ainda pode mudar (feriado, banco que antecipa, etc).
+                if (c) {
+                  setPrimeiroVenc(
+                    faturaDaCompra(hoje, c.dia_fechamento, c.dia_vencimento).vencimento,
+                  );
+                }
+              }}
+            >
+              <SelectTrigger id="lr-cartao" className="h-11">
+                <SelectValue placeholder="Em qual cartão?" />
+              </SelectTrigger>
+              <SelectContent>
+                {cartoes.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {fatura && !parcelado && (
+              <p className="text-[11px] text-muted-foreground">
+                Cai na fatura de <strong className="text-foreground">{formatMes(fatura.mesRef)}</strong>{" "}
+                (vence {fatura.vencimento.split("-").reverse().join("/")}) - é nesse mês que o gasto
+                entra no orçamento.
+              </p>
+            )}
+          </div>
+        )}
 
         {permiteParcelar && (
           <div className="rounded-xl border border-border bg-muted/30 p-3 sm:col-span-2">

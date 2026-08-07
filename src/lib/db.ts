@@ -119,6 +119,7 @@ export const qk = {
   dividas: ["divida"] as const,
   comprasParceladas: ["compra_parcelada"] as const,
   contas: ["conta_recorrente"] as const,
+  cartoes: ["cartao"] as const,
   reserva: ["reserva_config"] as const,
   transacoesHoje: (data: string) => ["transacao", "dia", data] as const,
   transacoesRecentes: ["transacao", "recentes"] as const,
@@ -506,6 +507,52 @@ export async function excluirGastoRapido(id: string): Promise<void> {
   const { error } = await supabase.rpc("excluir_gasto_rapido", {
     p_transacao_id: id,
   });
+  if (error) throw new Error(error.message);
+}
+
+// ---------- Cartões de crédito ----------
+// Guardam fechamento e vencimento pra o app saber em que FATURA a compra cai
+// (regra em src/lib/cartao.ts). Sem isso, gasto no crédito feito depois do
+// fechamento entrava no mês errado do orçamento.
+
+export interface Cartao {
+  id: string;
+  nome: string;
+  dia_fechamento: number;
+  dia_vencimento: number;
+  ativo: boolean;
+}
+
+/** Tolerante: sem a tabela (SQL não rodado), o seletor some em vez de quebrar
+ *  o "Anotar um gasto". */
+export async function fetchCartoes(): Promise<Cartao[]> {
+  const { data, error } = await supabase
+    .from("cartao")
+    .select("id, nome, dia_fechamento, dia_vencimento, ativo")
+    .order("nome", { ascending: true });
+  if (error) return [];
+  return (data ?? []) as Cartao[];
+}
+
+export async function inserirCartao(args: {
+  nome: string;
+  dia_fechamento: number;
+  dia_vencimento: number;
+}): Promise<void> {
+  const { error } = await supabase.from("cartao").insert({ ...args, ativo: true });
+  if (error) throw new Error(error.message);
+}
+
+export async function atualizarCartao(
+  id: string,
+  patch: Partial<Pick<Cartao, "nome" | "dia_fechamento" | "dia_vencimento" | "ativo">>,
+): Promise<void> {
+  const { error } = await supabase.from("cartao").update(patch).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function excluirCartao(id: string): Promise<void> {
+  const { error } = await supabase.from("cartao").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
 
