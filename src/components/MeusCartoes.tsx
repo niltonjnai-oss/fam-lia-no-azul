@@ -64,10 +64,26 @@ export function MeusCartoes({ compacto = false }: { compacto?: boolean }) {
       {cartoesQ.isLoading ? (
         <Skeleton className="mt-3 h-14 w-full rounded-xl" />
       ) : vazio ? (
-        <p className={compacto ? "mt-2 text-xs text-muted-foreground" : "mt-3 rounded-2xl border border-dashed border-border p-4 text-xs text-muted-foreground"}>
-          Nenhum cartão cadastrado. Sem isso, o gasto no crédito entra no mês da compra - e se você
-          comprou depois do fechamento, quem paga é a fatura do mês seguinte.
-        </p>
+        <div
+          className={
+            compacto
+              ? "mt-2 space-y-1.5 text-xs text-muted-foreground"
+              : "mt-3 space-y-1.5 rounded-2xl border border-dashed border-border p-4 text-xs text-muted-foreground"
+          }
+        >
+          <p>
+            Nenhum cartão cadastrado. Sem isso, o gasto no crédito entra no mês da compra - e se
+            você comprou depois do fechamento, quem paga é a fatura do mês seguinte.
+          </p>
+          {/* Quem lê "cadastre seu cartão" imagina número e CVV e trava. Dizer
+              o que NÃO é pedido remove o medo antes de ele aparecer. */}
+          <p>
+            <strong className="text-foreground">
+              Só os dias de fechamento e vencimento.
+            </strong>{" "}
+            Nenhum número de cartão, nenhuma senha - o app não se conecta ao seu banco.
+          </p>
+        </div>
       ) : (
         <div className={compacto ? "mt-3 space-y-1.5" : "mt-3 space-y-3"}>
           {cartoes.map((c) => (
@@ -197,7 +213,8 @@ export function NovoCartaoDialog({
         <DialogHeader>
           <DialogTitle>Novo cartão de crédito</DialogTitle>
           <DialogDescription>
-            Os dois dias estão no app do banco ou na própria fatura.
+            Só os dias de fechamento e vencimento - nenhum número de cartão, nenhuma senha. Os dois
+            estão no app do banco ou na própria fatura.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">

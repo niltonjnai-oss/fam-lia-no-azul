@@ -779,8 +779,12 @@ function OnboardingPage() {
                 </button>
 
                 <p className="text-[11px] text-muted-foreground">
-                  Os dois dias estão no app do banco ou na própria fatura. Não usa cartão? É só
-                  seguir - dá pra cadastrar depois na tela <strong>Contas</strong>.
+                  <strong className="text-foreground">
+                    Só os dias de fechamento e vencimento.
+                  </strong>{" "}
+                  Nenhum número de cartão, nenhuma senha - o app não se conecta ao seu banco. Os
+                  dois dias estão no app do banco ou na própria fatura. Não usa cartão? É só seguir
+                  - dá pra cadastrar depois na tela <strong>Contas</strong>.
                 </p>
               </div>
             </>
