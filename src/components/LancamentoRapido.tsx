@@ -42,6 +42,17 @@ function parseValorBRL(s: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+/** Mesmo dia do mês que vem, em ISO - chute inicial pro 1º vencimento, que é
+ *  onde a maioria dos carnês e faturas cai. Dia que não existe no mês seguinte
+ *  (31 → fevereiro) volta pro último dia dele. */
+function proximoMesISO(hojeISO: string): string {
+  const [a, m, d] = hojeISO.split("-").map(Number);
+  const ultimoDia = new Date(a, m + 1, 0).getDate();
+  const dia = Math.min(d, ultimoDia);
+  const alvo = new Date(a, m, dia);
+  return `${alvo.getFullYear()}-${String(alvo.getMonth() + 1).padStart(2, "0")}-${String(alvo.getDate()).padStart(2, "0")}`;
+}
+
 /** Sheet do "Anotar um gasto", controlável de fora - usado pelo card do
  *  painel, pela linha de ações rápidas e pelo botão central do bottom nav. */
 export function LancamentoRapidoSheet({
@@ -123,17 +134,18 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
   const [formaPagamento, setFormaPagamento] = useState<string>("");
   const [parcelado, setParcelado] = useState(false);
   const [numParcelas, setNumParcelas] = useState("");
-  const [diaVencimento, setDiaVencimento] = useState("");
+  const [primeiroVenc, setPrimeiroVenc] = useState(() => proximoMesISO(hoje));
+  const [entrada, setEntrada] = useState("");
 
   // Parcelamento só faz sentido no crédito ou boleto.
   const permiteParcelar = formaPagamento === "credito" || formaPagamento === "boleto";
-  // No crédito o vencimento é o da fatura, que o app não conhece; no boleto
-  // cada parcela tem data própria, então dá pra lembrar antes de vencer.
+  // No boleto cada parcela tem data própria, então dá pra avisar antes de
+  // vencer. No crédito o aviso da fatura já vem do banco.
   const permiteLembrete = formaPagamento === "boleto";
   const nParc = Math.max(0, Math.floor(Number(numParcelas) || 0));
-  const valorParcela = parcelado && nParc >= 2 ? parseValorBRL(valor) / nParc : 0;
-  const diaVenc = Math.floor(Number(diaVencimento) || 0);
-  const diaVencValido = diaVenc >= 1 && diaVenc <= 31;
+  const entradaNum = parseValorBRL(entrada);
+  const financiado = Math.max(0, parseValorBRL(valor) - entradaNum);
+  const valorParcela = parcelado && nParc >= 2 ? financiado / nParc : 0;
 
   const categoriasQ = useQuery({ queryKey: qk.categorias, queryFn: fetchCategorias });
   const subitensQ = useQuery({ queryKey: qk.subitens, queryFn: fetchSubitens });
@@ -178,16 +190,17 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
       // pelos meses. Não usa categoria — a parcela entra em Reserva/Dívidas.
       if (parcelado && permiteParcelar) {
         if (nParc < 2) throw new Error("Em quantas vezes? Informe 2 ou mais parcelas.");
-        if (permiteLembrete && diaVencimento && !diaVencValido)
-          throw new Error("O dia do vencimento tem que ser entre 1 e 31.");
+        if (!primeiroVenc) throw new Error("Informe a data do primeiro vencimento.");
+        if (entradaNum >= v) throw new Error("A entrada tem que ser menor que o valor total.");
         await registrarCompraParcelada({
           descricao: descricao.trim() || "Compra parcelada",
           valor_total: v,
+          entrada: entradaNum,
           parcelas: nParc,
-          mes_ref: mes,
+          mes_compra: mes,
+          primeiro_vencimento: primeiroVenc,
           forma_pagamento: formaPagamento as FormaPagamento,
-          dia_vencimento: permiteLembrete && diaVencValido ? diaVenc : null,
-          criar_lembrete: permiteLembrete && diaVencValido,
+          criar_lembrete: permiteLembrete,
         });
         return;
       }
@@ -214,7 +227,8 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
       setFormaPagamento("");
       setParcelado(false);
       setNumParcelas("");
-      setDiaVencimento("");
+      setEntrada("");
+      setPrimeiroVenc(proximoMesISO(hoje));
       invalidarPainel();
       qc.invalidateQueries({ queryKey: qk.dividas });
       qc.invalidateQueries({ queryKey: qk.comprasParceladas });
@@ -333,8 +347,8 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
               if (v !== "credito" && v !== "boleto") {
                 setParcelado(false);
                 setNumParcelas("");
+                setEntrada("");
               }
-              if (v !== "boleto") setDiaVencimento("");
             }}
           >
             <SelectTrigger id="lr-forma" className="h-11">
@@ -374,37 +388,59 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
                     className="tabular h-10 w-24 text-center"
                   />
                 </div>
-                {permiteLembrete && (
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="lr-venc" className="text-xs">
-                      Vence todo dia{" "}
-                      <span className="text-muted-foreground">(opcional)</span>
-                    </Label>
-                    <Input
-                      id="lr-venc"
-                      inputMode="numeric"
-                      value={diaVencimento}
-                      onChange={(e) =>
-                        setDiaVencimento(e.target.value.replace(/\D/g, "").slice(0, 2))
-                      }
-                      placeholder="ex.: 10"
-                      className="tabular h-10 w-20 text-center"
-                    />
-                  </div>
-                )}
+                <div className="space-y-1">
+                  <Label htmlFor="lr-entrada" className="text-xs">
+                    Deu entrada? <span className="text-muted-foreground">(opcional)</span>
+                  </Label>
+                  <Input
+                    id="lr-entrada"
+                    inputMode="decimal"
+                    value={entrada}
+                    onChange={(e) => setEntrada(e.target.value)}
+                    placeholder="ex.: 30,00"
+                    className="tabular h-10 w-32"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="lr-venc" className="text-xs">
+                    Quando vence a 1ª parcela?
+                  </Label>
+                  <Input
+                    id="lr-venc"
+                    type="date"
+                    value={primeiroVenc}
+                    onChange={(e) => setPrimeiroVenc(e.target.value)}
+                    className="tabular h-10 w-44"
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    {permiteLembrete
+                      ? "A data do primeiro boleto."
+                      : "A data da fatura em que esta compra cai - se você comprou depois do fechamento, é a fatura do mês seguinte."}
+                  </p>
+                </div>
+
                 {valorParcela > 0 && (
                   <p className="text-xs text-muted-foreground">
+                    {entradaNum > 0 && (
+                      <>
+                        <strong className="text-foreground">
+                          {formatBRL(entradaNum)} de entrada
+                        </strong>{" "}
+                        (gasto deste mês) mais{" "}
+                      </>
+                    )}
                     <strong className="text-foreground">
                       {nParc}x de {formatBRL(valorParcela)}
-                    </strong>{" "}
-                    - a parcela entra no seu orçamento (Reserva/Dívidas) por {nParc} meses, a partir
-                    deste. Também vira uma dívida pra você acompanhar.
+                    </strong>
+                    {entradaNum > 0 ? ". " : " "}A parcela entra no seu orçamento
+                    (Reserva/Dívidas) por {nParc} meses, a partir do vencimento. Também vira uma
+                    dívida pra você acompanhar.
                   </p>
                 )}
-                {permiteLembrete && diaVencValido && valorParcela > 0 && (
+                {permiteLembrete && primeiroVenc && valorParcela > 0 && (
                   <p className="text-xs text-muted-foreground">
-                    Vamos te lembrar antes de cada boleto vencer (dia {diaVenc}), até a última
-                    parcela.
+                    Vamos te lembrar antes de cada boleto vencer, até a última parcela.
                   </p>
                 )}
               </div>

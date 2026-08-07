@@ -302,10 +302,12 @@ export async function excluirContaRecorrente(id: string): Promise<void> {
 export async function fetchDiasComRegistro(dias = 60): Promise<string[]> {
   const desde = new Date(Date.now() - dias * 86_400_000);
   const desdeISO = `${desde.getFullYear()}-${String(desde.getMonth() + 1).padStart(2, "0")}-${String(desde.getDate()).padStart(2, "0")}`;
+  // Só até hoje: parcela futura de compra parcelada não é "dia registrado".
   const { data, error } = await supabase
     .from("transacao")
     .select("data")
-    .gte("data", desdeISO);
+    .gte("data", desdeISO)
+    .lte("data", hojeISO());
   if (error) throw new Error(error.message);
   return Array.from(new Set((data ?? []).map((r) => (r as { data: string }).data)));
 }
@@ -418,9 +420,14 @@ export async function fetchTransacoesDoDia(data: string): Promise<TransacaoDia[]
 /** Últimos lançamentos da família (qualquer dia), pro feed do painel.
  *  RLS garante que só vêm os da família do usuário. */
 export async function fetchTransacoesRecentes(limite = 5): Promise<TransacaoDia[]> {
+  // `data` no futuro fica de fora: as parcelas de uma compra parcelada são
+  // gravadas todas de uma vez, cada uma na data do seu vencimento. Sem esta
+  // trava, uma compra em 12x despejaria 11 lançamentos futuros no topo do
+  // feed (que ordena por created_at, e todas foram criadas agora).
   const { data: rows, error } = await supabase
     .from("transacao")
     .select("id, data, valor, descricao, subitem_id, mes_ref, banco, forma_pagamento")
+    .lte("data", hojeISO())
     .order("created_at", { ascending: false })
     .limit(limite);
   if (error) throw new Error(error.message);
@@ -512,11 +519,16 @@ export async function excluirGastoRapido(id: string): Promise<void> {
 export interface CompraParcelada {
   id: string;
   descricao: string;
+  /** Preço cheio da compra, entrada inclusa. O parcelado é total - entrada. */
   valor_total: number;
+  /** Pago à vista no ato; 0 quando não houve. */
+  entrada: number;
   parcelas: number;
   valor_parcela: number;
-  /** "YYYY-MM" da primeira parcela. */
+  /** "YYYY-MM" da primeira parcela (derivado de primeiro_vencimento). */
   mes_inicial: string;
+  /** Data (YYYY-MM-DD) em que a 1ª parcela vence. */
+  primeiro_vencimento: string | null;
   forma_pagamento: string | null;
   dia_vencimento: number | null;
   /** Dívida gerada pela compra - o card dela sai da lista de dívidas pra não
@@ -533,7 +545,7 @@ export async function fetchComprasParceladas(): Promise<CompraParcelada[]> {
   const { data, error } = await supabase
     .from("compra_parcelada")
     .select(
-      "id, descricao, valor_total, parcelas, valor_parcela, mes_inicial, forma_pagamento, dia_vencimento, divida_id, conta_recorrente_id, status, meses_aplicados, mes_quitacao",
+      "id, descricao, valor_total, entrada, parcelas, valor_parcela, mes_inicial, primeiro_vencimento, forma_pagamento, dia_vencimento, divida_id, conta_recorrente_id, status, meses_aplicados, mes_quitacao",
     )
     .order("created_at", { ascending: false });
   // Tolerante: se o SQL da Fase 2 ainda não rodou, a tela some em vez de quebrar.
@@ -550,27 +562,34 @@ export function parcelaAtual(c: CompraParcelada, mes: string): number {
   return Math.min(c.parcelas, Math.max(0, diff + 1));
 }
 
-/** Registra uma compra parcelada (crédito ou boleto): cria a dívida e espalha
- *  a parcela (valor_total / parcelas) por cada mês, do mês inicial em diante,
- *  no item "Parcelas de compras" (fatia Reserva/Dívidas). RPC atômica.
- *  Com dia de vencimento + lembrete, cria também a conta recorrente que avisa
- *  antes de cada parcela vencer (com prazo na última). */
+/** Registra uma compra parcelada (crédito ou boleto). Quem decide em que mês
+ *  as parcelas entram é a DATA do primeiro vencimento - não o mês da compra:
+ *  o primeiro boleto costuma vencer no mês seguinte, e no cartão a compra
+ *  feita depois do fechamento só cai na fatura seguinte.
+ *  A entrada (se houver) é gasto do mês da compra; o parcelado é o resto.
+ *  Cria a dívida, uma linha por parcela no item "Parcelas de compras" (fatia
+ *  Reserva/Dívidas) e, no boleto com lembrete, a conta recorrente que avisa
+ *  antes de cada vencimento. RPC atômica. */
 export async function registrarCompraParcelada(args: {
   descricao: string;
   valor_total: number;
+  entrada?: number;
   parcelas: number;
-  mes_ref: string;
+  /** Mês da compra ("YYYY-MM") - onde a entrada entra. */
+  mes_compra: string;
+  /** Vencimento da 1ª parcela, "YYYY-MM-DD". */
+  primeiro_vencimento: string;
   forma_pagamento?: FormaPagamento | null;
-  dia_vencimento?: number | null;
   criar_lembrete?: boolean;
 }): Promise<void> {
   const { error } = await supabase.rpc("registrar_compra_parcelada", {
     p_descricao: args.descricao,
     p_valor_total: args.valor_total,
+    p_entrada: args.entrada ?? 0,
     p_parcelas: args.parcelas,
-    p_mes_ref_inicial: args.mes_ref,
+    p_mes_compra: args.mes_compra,
+    p_primeiro_vencimento: args.primeiro_vencimento,
     p_forma_pagamento: args.forma_pagamento ?? null,
-    p_dia_vencimento: args.dia_vencimento ?? null,
     p_criar_lembrete: args.criar_lembrete ?? false,
   });
   if (error) throw new Error(error.message);
@@ -599,22 +618,24 @@ export async function quitarCompraParcelada(args: {
   if (error) throw new Error(error.message);
 }
 
-/** Correção: desfaz e refaz com os valores novos (mesmo mês inicial e forma de
- *  pagamento). Todos os meses são recalculados. */
+/** Correção: desfaz e refaz com os valores novos (mantém a forma de pagamento
+ *  e o mês da compra). Todos os meses são recalculados. */
 export async function editarCompraParcelada(args: {
   id: string;
   descricao: string;
   valor_total: number;
+  entrada?: number;
   parcelas: number;
-  dia_vencimento?: number | null;
+  primeiro_vencimento: string;
   criar_lembrete?: boolean;
 }): Promise<void> {
   const { error } = await supabase.rpc("editar_compra_parcelada", {
     p_id: args.id,
     p_descricao: args.descricao,
     p_valor_total: args.valor_total,
+    p_entrada: args.entrada ?? 0,
     p_parcelas: args.parcelas,
-    p_dia_vencimento: args.dia_vencimento ?? null,
+    p_primeiro_vencimento: args.primeiro_vencimento,
     p_criar_lembrete: args.criar_lembrete ?? false,
   });
   if (error) throw new Error(error.message);
