@@ -10,7 +10,7 @@ import {
   Upload,
   HelpCircle,
   ArrowUp,
-  X,
+  EyeOff,
   Undo2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -581,11 +581,11 @@ function SubitemRow({
           <button
             type="button"
             onClick={onOcultar}
-            aria-label={`Remover ${subitem.nome} da minha lista`}
-            title="Remover da minha lista"
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground/60 hover:bg-danger/10 hover:text-danger"
+            aria-label={`Tirar ${subitem.nome} da minha lista`}
+            title="Tirar da minha lista - dá pra trazer de volta depois"
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground/60 hover:bg-muted hover:text-foreground"
           >
-            <X className="h-4 w-4" />
+            <EyeOff className="h-4 w-4" />
           </button>
         )}
       </div>
@@ -616,17 +616,17 @@ function SubitemRow({
         <span>{signed(diff)}</span>
       </div>
 
-      {/* Coluna do ✕ (desktop): alinhada no fim, depois da diferença */}
+      {/* Coluna do "ocultar" (desktop): alinhada no fim, depois da diferença */}
       <div className="hidden sm:flex sm:justify-end">
         {podeOcultar && (
           <button
             type="button"
             onClick={onOcultar}
-            aria-label={`Remover ${subitem.nome} da minha lista`}
-            title="Remover da minha lista"
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground/50 hover:bg-danger/10 hover:text-danger"
+            aria-label={`Tirar ${subitem.nome} da minha lista`}
+            title="Tirar da minha lista - dá pra trazer de volta depois"
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground/50 hover:bg-muted hover:text-foreground"
           >
-            <X className="h-4 w-4" />
+            <EyeOff className="h-4 w-4" />
           </button>
         )}
       </div>
