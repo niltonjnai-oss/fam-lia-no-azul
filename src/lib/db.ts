@@ -21,6 +21,9 @@ export interface Subitem {
   classificacao: Classificacao;
   ordem: number;
   ativo: boolean;
+  /** null = item do catálogo global (compartilhado, intocável). Preenchido =
+   *  item que a família criou - só esse pode ser renomeado. */
+  user_id: string | null;
 }
 
 export interface Lancamento {
@@ -716,7 +719,7 @@ export async function fetchCategorias(): Promise<Categoria[]> {
 export async function fetchSubitens(): Promise<Subitem[]> {
   const { data, error } = await supabase
     .from("subitem")
-    .select("id, categoria_id, nome, classificacao, ordem, ativo")
+    .select("id, categoria_id, nome, classificacao, ordem, ativo, user_id")
     .eq("ativo", true)
     .order("ordem", { ascending: true });
   return throwIf<Subitem[]>(data as Subitem[] | null, error);
@@ -815,6 +818,14 @@ export async function inserirSubitem(args: {
   const { error } = await supabase
     .from("subitem")
     .insert({ ...args, ativo: true });
+  if (error) throw new Error(error.message);
+}
+
+/** Renomeia um item criado pela família (corrigir "empregado" → "empregada").
+ *  A RLS só deixa editar linha com familia_id da pessoa: item do catálogo
+ *  global é compartilhado com todo mundo e não pode ser alterado. */
+export async function renomearSubitem(id: string, nome: string): Promise<void> {
+  const { error } = await supabase.from("subitem").update({ nome }).eq("id", id);
   if (error) throw new Error(error.message);
 }
 

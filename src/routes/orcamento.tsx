@@ -11,6 +11,7 @@ import {
   HelpCircle,
   ArrowUp,
   EyeOff,
+  Pencil,
   Undo2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -48,6 +49,7 @@ import {
   fetchSubitensOcultosIds,
   ocultarSubitem,
   restaurarSubitem,
+  renomearSubitem,
   inserirCategoria,
   inserirSubitem,
   upsertLancamento,
@@ -153,6 +155,11 @@ function OrcamentoPage() {
     mutationFn: restaurarSubitem,
     onSuccess: () => qc.invalidateQueries({ queryKey: qk.subitensOcultos }),
     onError: (e: Error) => toast.error(e.message || "Não foi possível restaurar o item."),
+  });
+  const renomearMut = useMutation({
+    mutationFn: ({ id, nome }: { id: string; nome: string }) => renomearSubitem(id, nome),
+    onSuccess: () => qc.invalidateQueries({ queryKey: qk.subitens }),
+    onError: (e: Error) => toast.error(e.message || "Não foi possível renomear o item."),
   });
 
   const totais = useMemo(() => {
@@ -288,6 +295,7 @@ function OrcamentoPage() {
               }
               onOcultar={(subitem_id) => ocultarMut.mutate(subitem_id)}
               onRestaurar={(subitem_id) => restaurarMut.mutate(subitem_id)}
+              onRenomear={(id, nome) => renomearMut.mutate({ id, nome })}
             />
           ))}
         </Accordion>
@@ -395,6 +403,7 @@ function CategoriaSection({
   onSave,
   onOcultar,
   onRestaurar,
+  onRenomear,
 }: {
   categoria: Categoria;
   subitens: Subitem[];
@@ -403,6 +412,7 @@ function CategoriaSection({
   onSave: (subitem_id: string, custo_previsto: number, custo_real: number) => Promise<void>;
   onOcultar: (subitem_id: string) => void;
   onRestaurar: (subitem_id: string) => void;
+  onRenomear: (subitem_id: string, nome: string) => void;
 }) {
   const [mostrarOcultos, setMostrarOcultos] = useState(false);
   const sub = useMemo(() => {
@@ -463,6 +473,7 @@ function CategoriaSection({
                   lancamento={lancsBySub.get(s.id)}
                   onSave={(p, r) => onSave(s.id, p, r)}
                   onOcultar={() => onOcultar(s.id)}
+                  onRenomear={(nome) => onRenomear(s.id, nome)}
                 />
               ))}
             </ul>
@@ -512,17 +523,25 @@ function SubitemRow({
   lancamento,
   onSave,
   onOcultar,
+  onRenomear,
 }: {
   subitem: Subitem;
   lancamento: Lancamento | undefined;
   onSave: (previsto: number, real: number) => Promise<void>;
   onOcultar?: () => void;
+  onRenomear?: (nome: string) => void;
 }) {
   const prevDb = Number(lancamento?.custo_previsto ?? 0);
   const realDb = Number(lancamento?.custo_real ?? 0);
   const diff = Number(lancamento?.diferenca ?? 0);
   // Só dá pra ocultar item sem nada lançado no mês — evita esconder algo com valor.
   const podeOcultar = onOcultar && prevDb === 0 && realDb === 0;
+
+  // Só item criado pela família pode ser renomeado: o catálogo global é
+  // compartilhado entre todas as famílias (e a RLS barra a edição dele).
+  const podeRenomear = Boolean(onRenomear && subitem.user_id);
+  const [editando, setEditando] = useState(false);
+  const [nomeEdit, setNomeEdit] = useState(subitem.nome);
 
   const [prev, setPrev] = useState(String(prevDb));
   const [real, setReal] = useState(String(realDb));
@@ -540,7 +559,54 @@ function SubitemRow({
   return (
     <li className="py-2 sm:grid sm:grid-cols-[1fr_120px_120px_110px_2rem] sm:items-center sm:gap-3 sm:px-1">
       <div className="flex min-w-0 items-center gap-1.5">
-        <span className="min-w-0 truncate text-sm font-medium">{subitem.nome}</span>
+        {editando ? (
+          <form
+            className="flex min-w-0 flex-1 items-center gap-1.5"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const novo = nomeEdit.trim();
+              if (novo && novo !== subitem.nome) onRenomear?.(novo);
+              setEditando(false);
+            }}
+          >
+            <Input
+              autoFocus
+              value={nomeEdit}
+              onChange={(e) => setNomeEdit(e.target.value)}
+              onBlur={() => {
+                const novo = nomeEdit.trim();
+                if (novo && novo !== subitem.nome) onRenomear?.(novo);
+                setEditando(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  setNomeEdit(subitem.nome);
+                  setEditando(false);
+                }
+              }}
+              className="h-8 text-sm"
+              aria-label={`Novo nome para ${subitem.nome}`}
+            />
+          </form>
+        ) : (
+          <>
+            <span className="min-w-0 truncate text-sm font-medium">{subitem.nome}</span>
+            {podeRenomear && (
+              <button
+                type="button"
+                onClick={() => {
+                  setNomeEdit(subitem.nome);
+                  setEditando(true);
+                }}
+                aria-label={`Renomear ${subitem.nome}`}
+                title="Renomear item"
+                className="grid h-6 w-6 shrink-0 place-items-center rounded-md text-muted-foreground/60 hover:bg-muted hover:text-foreground"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </>
+        )}
       </div>
 
       {/* Mobile: lado a lado */}
