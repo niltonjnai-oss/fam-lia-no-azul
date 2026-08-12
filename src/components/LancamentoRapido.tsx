@@ -12,6 +12,7 @@ import {
   registrarGasto,
   registrarCompraParcelada,
   excluirGastoRapido,
+  garantirFamilia,
   fetchCartoes,
   hojeISO,
   mesAtual,
@@ -205,6 +206,14 @@ function LancamentoRapidoConteudo({ hoje }: { hoje: string }) {
     mutationFn: async () => {
       const v = parseValorBRL(valor);
       if (v <= 0) throw new Error("Informe um valor maior que zero.");
+
+      // Provisiona a família ANTES de gravar (idempotente, get-or-create). Sem
+      // isso, quem chega no painel sem ter concluído o onboarding falha no 1º
+      // lançamento: a família criada pelo DEFAULT não é vista pelo WITH CHECK
+      // da RLS no mesmo statement, e o usuário só vê "new row violates
+      // row-level security policy". Mesmo motivo do salvarMutation do
+      // onboarding - vale para as duas gravações abaixo.
+      await garantirFamilia();
 
       // Compra parcelada (crédito/boleto): cria a dívida e espalha a parcela
       // pelos meses. Não usa categoria — a parcela entra em Reserva/Dívidas.

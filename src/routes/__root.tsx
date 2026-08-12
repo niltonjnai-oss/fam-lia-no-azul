@@ -10,12 +10,13 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import type { Session } from "@supabase/supabase-js";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppLayout } from "../components/AppLayout";
 import { AuthProvider, signOut, useAuth } from "../lib/auth-context";
+import { garantirFamilia } from "../lib/db";
 import { Toaster } from "../components/ui/sonner";
 import { MesProvider } from "../lib/mes-context";
 import { MetaPixel } from "../components/MetaPixel";
@@ -240,6 +241,27 @@ function AuthGate() {
   const authErrorNotice = !loading ? getAuthErrorNotice(pathname) : null;
   const isHandlingEmailConfirmation = !loading && shouldSendConfirmedEmailUserToAuth(pathname, session);
   const isHandlingAuthError = !loading && Boolean(authErrorNotice);
+
+  // Provisiona a família assim que existe sessão em rota protegida, uma vez por
+  // usuário. As tabelas têm familia_id DEFAULT minha_familia_id(), mas o WITH
+  // CHECK da RLS usa uma função STABLE que não enxerga a família criada no
+  // MESMO statement - então a 1ª gravação de quem não passou pelo onboarding
+  // falharia com "new row violates row-level security policy" (visto no
+  // "Anotar um gasto"). Fazer aqui cobre todas as telas que gravam - gasto
+  // rápido, dívidas, contas, cartões, importação de extrato - em vez de repetir
+  // a chamada em cada uma e esquecer na próxima que surgir. É get-or-create
+  // (idempotente) e não bloqueia a navegação: se falhar, libera para nova
+  // tentativa e quem grava mostra o erro.
+  const familiaGarantidaPara = useRef<string | null>(null);
+  useEffect(() => {
+    const userId = session?.user.id;
+    if (loading || !userId || isPublicRoute) return;
+    if (familiaGarantidaPara.current === userId) return;
+    familiaGarantidaPara.current = userId;
+    void garantirFamilia().catch(() => {
+      familiaGarantidaPara.current = null;
+    });
+  }, [session, loading, isPublicRoute]);
 
   useEffect(() => {
     if (loading) return;
